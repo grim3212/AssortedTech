@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "assortedtech:block/spikes/nickel_spike_powered"
+  }
+}

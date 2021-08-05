@@ -1,0 +1,16 @@
+{
+	"spike_deploy": {
+		"category": "block",
+		"subtitle": "assortedtech.subtitle.spike_deploy",
+		"sounds": [
+			"assortedtech:spike_deploy"
+		]
+	},
+	"spike_close": {
+		"category": "block",
+		"subtitle": "assortedtech.subtitle.spike_close",
+		"sounds": [
+			"assortedtech:spike_close"
+		]
+	}
+}

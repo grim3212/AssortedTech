@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "assortedtech:block/spikes/lead_spike_powered"
+  }
+}
