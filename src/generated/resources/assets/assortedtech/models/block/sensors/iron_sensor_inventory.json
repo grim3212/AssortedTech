@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "side": "assortedtech:block/sensors/iron_sensor_side",
+    "front": "assortedtech:block/sensors/iron_sensor_off",
+    "top": "assortedtech:block/sensors/iron_sensor_side"
+  }
+}

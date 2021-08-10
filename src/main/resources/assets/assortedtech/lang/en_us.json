@@ -27,6 +27,7 @@
 	"block.assortedtech.flip_flop_wall_torch": "Flip Flop Torch",
 	"block.assortedtech.glowstone_torch": "Glowstone Torch",
 	"block.assortedtech.glowstone_wall_torch": "Glowstone Torch",
+	"block.assortedtech.fan": "Fan",
 	"block.assortedtech.wood_sensor": "Wood Sensor",
 	"block.assortedtech.stone_sensor": "Stone Sensor",
 	"block.assortedtech.iron_sensor": "Iron Sensor",
@@ -62,5 +63,22 @@
 	"block.assortedtech.ruby_spike": "Ruby Spikes",
 	"block.assortedtech.topaz_spike": "Topaz Spikes",
 	"block.assortedtech.sapphire_spike": "Sapphire Spikes",
-	"block.assortedtech.peridot_spike": "Peridot Spikes"
+	"block.assortedtech.peridot_spike": "Peridot Spikes",
+	
+	"fan.screen": "Fan",
+	"fan.screen.ok": "Ok",
+	"fan.screen.cancel": "Cancel",
+	"fan.screen.mode": "Mode:",
+	"fan.screen.range": "Range:",
+	"fan.screen.mode.blow": "Blow",
+	"fan.screen.mode.suck": "Suck",
+	"fan.screen.mode.off": "Off",
+	"fan.screen.max": "Max",
+	"fan.screen.min": "Min",
+	"fan.screen.add_one": "+1",
+	"fan.screen.add_five": "+5",
+	"fan.screen.add_one": "+1",
+	"fan.screen.add_five": "+5",
+	"fan.screen.minus_one": "-1",
+	"fan.screen.minus_five": "-5"
 }

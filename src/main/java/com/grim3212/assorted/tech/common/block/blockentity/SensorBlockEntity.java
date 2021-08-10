@@ -61,7 +61,7 @@ public class SensorBlockEntity extends BlockEntity {
 
 		List<? extends Entity> list = level.getEntities((Entity) null, aabb, type.getTrigger());
 
-		if (list.isEmpty()) {
+		if (list.isEmpty() && state.getValue(SensorBlock.DETECTED)) {
 			level.setBlock(pos, state.setValue(SensorBlock.DETECTED, false), 3);
 		} else if (!list.isEmpty() && !state.getValue(SensorBlock.DETECTED)) {
 			level.setBlock(pos, state.setValue(SensorBlock.DETECTED, true), 3);

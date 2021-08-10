@@ -39,7 +39,6 @@ public class SensorBlockEntityRenderer implements BlockEntityRenderer<SensorBloc
 
 			// The plus 1 is because we deflate by 1 so we don't include the block itself
 			int maxLength = entity.getRange() + 1;
-			
 
 			boolean obstructed = false;
 			int traverse = 1;
@@ -52,15 +51,12 @@ public class SensorBlockEntityRenderer implements BlockEntityRenderer<SensorBloc
 					traverse++;
 				}
 			}
-			
-			Vec3i position = dir.getNormal().multiply(obstructed ? traverse : maxLength);
 
-			//AssortedTech.LOGGER.info("isobstructed: " + obstructed + ", " + traverse);
-			
-			AABB aabb = entity.getBlockState().getCollisionShape(entity.getLevel(), entity.getBlockPos()).bounds().expandTowards(position.getX(), position.getY(), position.getZ()).deflate(1D);
+			Vec3i position = dir.getNormal().multiply(obstructed ? traverse : maxLength);
+			AABB aabb = entity.getBlockState().getCollisionShape(entity.getLevel(), entity.getBlockPos()).bounds().expandTowards(position.getX(), position.getY(), position.getZ()).deflate(1D).inflate(0.0020000000949949026D);
 			VoxelShape shape = Block.box(aabb.minX * 16D, aabb.minY * 16D, aabb.minZ * 16D, aabb.maxX * 16D, aabb.maxY * 16D, aabb.maxZ * 16D);
 
-			LevelRenderer.renderShape(stack, vertexconsumer, shape, 0.0D, 0.0D, 0.0D, obstructed ? 1.0F : 255.0F,  obstructed ? 255.0F : 1.0F,  obstructed ? 255.0F : 255.0F, 1.0F);
+			LevelRenderer.renderShape(stack, vertexconsumer, shape, 0.0D, 0.0D, 0.0D, obstructed ? 1.0F : 255.0F, obstructed ? 255.0F : 1.0F, obstructed ? 255.0F : 255.0F, 1.0F);
 
 			RenderSystem.depthMask(true);
 			RenderSystem.enableTexture();

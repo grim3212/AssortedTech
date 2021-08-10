@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/orientable_vertical",
-  "textures": {
-    "side": "assortedtech:block/wood_sensor_side",
-    "front": "assortedtech:block/wood_sensor_off"
-  }
-}

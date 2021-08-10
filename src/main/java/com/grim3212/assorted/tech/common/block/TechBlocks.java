@@ -36,12 +36,14 @@ public class TechBlocks {
 	public static final RegistryObject<GlowstoneTorchBlock> GLOWSTONE_TORCH = registerNoItem("glowstone_torch", () -> new GlowstoneTorchBlock(Properties.of(Material.DECORATION).noCollission().instabreak().sound(SoundType.WOOD)));
 	public static final RegistryObject<GlowstoneWallTorchBlock> GLOWSTONE_WALL_TORCH = registerNoItem("glowstone_wall_torch", () -> new GlowstoneWallTorchBlock(Properties.of(Material.DECORATION).noCollission().instabreak().sound(SoundType.WOOD)));
 
+	public static final RegistryObject<FanBlock> FAN = register("fan", EnabledCondition.FAN_CONDITION, () -> new FanBlock(Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5F, 10F)));
+
 	public static final List<RegistryObject<SpikeBlock>> SPIKES = Lists.newArrayList();
 	public static final List<RegistryObject<SensorBlock>> SENSORS = Lists.newArrayList();
 
 	static {
 		Stream.of(SpikeType.values()).forEach((type) -> SPIKES.add(register(type.toString() + "_spike", EnabledCondition.SPIKES_CONDITION, () -> new SpikeBlock(Properties.of(Material.METAL).sound(SoundType.METAL).noCollission().strength(1.5F, 10F), type))));
-		Stream.of(SensorType.values()).forEach((type) -> SENSORS.add(register(type.toString() + "_sensor", EnabledCondition.SENSORS_CONDITION, () -> new SensorBlock(Properties.of(type.getMaterial()).sound(type.getSoundType()).noCollission().strength(1.0F, 10.0F), type))));
+		Stream.of(SensorType.values()).forEach((type) -> SENSORS.add(register(type.toString() + "_sensor", EnabledCondition.SENSORS_CONDITION, () -> new SensorBlock(Properties.of(type.getMaterial()).sound(type.getSoundType()).strength(1.0F, 10.0F), type))));
 	}
 
 	private static <T extends Block> RegistryObject<T> register(String name, String enabledCondition, Supplier<? extends T> sup) {

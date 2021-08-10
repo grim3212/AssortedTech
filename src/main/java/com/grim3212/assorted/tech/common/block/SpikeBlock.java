@@ -56,6 +56,10 @@ public class SpikeBlock extends Block {
 		this.spikeType = spikeType;
 	}
 
+	public SpikeType getSpikeType() {
+		return spikeType;
+	}
+
 	@Override
 	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
 		tooltip.add(new TranslatableComponent("tooltip.spike.damage", new TranslatableComponent(String.valueOf(this.spikeType.getDamage())).withStyle(ChatFormatting.AQUA)).withStyle(ChatFormatting.GRAY));

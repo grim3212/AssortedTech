@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "part": "spikes",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "X X",
+          " X ",
+          "XXX"
+        ],
+        "key": {
+          "X": {
+            "tag": "forge:ingots/lead"
+          }
+        },
+        "result": {
+          "item": "assortedtech:lead_spike",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

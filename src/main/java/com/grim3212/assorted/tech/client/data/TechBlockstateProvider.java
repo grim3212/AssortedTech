@@ -1,14 +1,17 @@
 package com.grim3212.assorted.tech.client.data;
 
 import com.grim3212.assorted.tech.AssortedTech;
+import com.grim3212.assorted.tech.common.block.FanBlock;
 import com.grim3212.assorted.tech.common.block.FlipFlopTorchBlock;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
+import com.grim3212.assorted.tech.common.util.FanMode;
 
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -35,6 +38,41 @@ public class TechBlockstateProvider extends BlockStateProvider {
 
 		TechBlocks.SENSORS.forEach((sensor) -> this.sensorModel(sensor.get()));
 		TechBlocks.SPIKES.forEach((spike) -> this.spikeModel(spike.get()));
+		
+		this.fanModel();
+	}
+
+	private void fanModel() {
+		String fanName = name(TechBlocks.FAN.get());
+		String fanLoc = prefix("block/" + fanName);
+		ModelFile suckModel = models().getBuilder(fanLoc + "_suck").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("front", fanLoc + "_suck").texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+		ModelFile blowModel = models().getBuilder(fanLoc + "_blow").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("front", fanLoc).texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+		ModelFile offModel = models().getBuilder(fanLoc + "_stopped").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("front", fanLoc + "_stopped").texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+
+		ModelFile suckModelVertical = models().getBuilder(fanLoc + "_suck_vertical").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("front", fanLoc + "_suck").texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+		ModelFile blowModelVertical = models().getBuilder(fanLoc + "_blow_vertical").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("front", fanLoc).texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+		ModelFile offModelVertical = models().getBuilder(fanLoc + "_stopped_vertical").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("front", fanLoc + "_stopped").texture("top", mcLoc("block/note_block")).texture("side", mcLoc("block/note_block"));
+
+		getVariantBuilder(TechBlocks.FAN.get()).forAllStates(state -> {
+			Direction dir = state.getValue(BlockStateProperties.FACING);
+			FanMode mode = state.getValue(FanBlock.MODE);
+			ModelFile model = null;
+			switch (mode) {
+				case BLOW:
+					model = dir.getAxis().isVertical() ? blowModelVertical : blowModel;
+					break;
+				case OFF:
+					model = dir.getAxis().isVertical() ? offModelVertical : offModel;
+					break;
+				case SUCK:
+					model = dir.getAxis().isVertical() ? suckModelVertical : suckModel;
+					break;
+			}
+
+			return ConfiguredModel.builder().modelFile(model).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
+		});
+		
+		itemModels().getBuilder(prefix("item/" + fanName)).parent(offModel);
 	}
 
 	private void sensorModel(Block b) {
@@ -42,13 +80,14 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		String sensorLoc = prefix("block/sensors/" + sensorName);
 		ModelFile undetectedModel = models().getBuilder(sensorLoc).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("side", sensorLoc + "_side").texture("front", sensorLoc + "_off");
 		ModelFile detectedModel = models().getBuilder(sensorLoc + "_detected").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("side", sensorLoc + "_side").texture("front", sensorLoc + "_on");
+		ModelFile inventoryModel = models().getBuilder(sensorLoc + "_inventory").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("side", sensorLoc + "_side").texture("front", sensorLoc + "_off").texture("top", sensorLoc + "_side");
 
 		getVariantBuilder(b).forAllStates(state -> {
 			Direction dir = state.getValue(BlockStateProperties.FACING);
 			return ConfiguredModel.builder().modelFile(state.getValue(SensorBlock.DETECTED) ? detectedModel : undetectedModel).rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
 		});
 
-		itemModels().getBuilder(prefix("item/" + sensorName)).parent(undetectedModel);
+		itemModels().getBuilder(prefix("item/" + sensorName)).parent(inventoryModel);
 	}
 
 	private void spikeModel(Block b) {

@@ -1,0 +1,44 @@
+{
+  "advancements": [
+    {
+      "conditions": [
+        {
+          "part": "spikes",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "assortedtech:lead_spike"
+          ]
+        },
+        "criteria": {
+          "has_material": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "tag": "forge:ingots/lead"
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "assortedtech:lead_spike"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_material",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    }
+  ]
+}

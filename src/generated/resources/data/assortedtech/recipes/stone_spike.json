@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "part": "spikes",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "X X",
+          " X ",
+          "XXX"
+        ],
+        "key": {
+          "X": {
+            "tag": "minecraft:stone_tool_materials"
+          }
+        },
+        "result": {
+          "item": "assortedtech:stone_spike",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

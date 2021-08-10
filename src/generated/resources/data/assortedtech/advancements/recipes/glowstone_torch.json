@@ -1,0 +1,44 @@
+{
+  "advancements": [
+    {
+      "conditions": [
+        {
+          "part": "torches",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "assortedtech:glowstone_torch"
+          ]
+        },
+        "criteria": {
+          "has_redstone": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "tag": "forge:dusts/redstone"
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "assortedtech:glowstone_torch"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_redstone",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    }
+  ]
+}

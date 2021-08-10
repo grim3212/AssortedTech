@@ -16,6 +16,7 @@ public class EnabledCondition implements ICondition {
 	public static final String TORCHES_CONDITION = "torches";
 	public static final String SPIKES_CONDITION = "spikes";
 	public static final String SENSORS_CONDITION = "sensors";
+	public static final String FAN_CONDITION = "fan";
 
 	public EnabledCondition(String part) {
 		this.part = part;
@@ -35,6 +36,8 @@ public class EnabledCondition implements ICondition {
 				return TechConfig.COMMON.spikesEnabled.get();
 			case SENSORS_CONDITION:
 				return TechConfig.COMMON.sensorsEnabled.get();
+			case FAN_CONDITION:
+				return TechConfig.COMMON.fanEnabled.get();
 			default:
 				return false;
 		}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/orientable_vertical",
+  "textures": {
+    "side": "assortedtech:block/sensors/prismarine_sensor_side",
+    "front": "assortedtech:block/sensors/prismarine_sensor_on"
+  }
+}

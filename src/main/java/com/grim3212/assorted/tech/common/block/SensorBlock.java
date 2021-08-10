@@ -47,6 +47,10 @@ public class SensorBlock extends Block implements EntityBlock {
 		this.sensorType = sensorType;
 	}
 
+	public SensorType getSensorType() {
+		return sensorType;
+	}
+
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(DETECTED, FACING);
@@ -80,11 +84,6 @@ public class SensorBlock extends Block implements EntityBlock {
 	@Override
 	public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction dir) {
 		return state.getValue(DETECTED) ? 15 : 0;
-	}
-
-	@Override
-	public int getDirectSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction dir) {
-		return state.getSignal(getter, pos, dir);
 	}
 
 	@Override

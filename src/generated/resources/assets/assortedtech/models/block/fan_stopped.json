@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "assortedtech:block/fan_stopped",
+    "top": "minecraft:block/note_block",
+    "side": "minecraft:block/note_block"
+  }
+}

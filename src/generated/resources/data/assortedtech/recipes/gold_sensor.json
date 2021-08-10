@@ -1,0 +1,38 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "part": "sensors",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XGX",
+          "MRM",
+          "XMX"
+        ],
+        "key": {
+          "X": {
+            "tag": "forge:ingots/iron"
+          },
+          "R": {
+            "tag": "forge:dusts/redstone"
+          },
+          "G": {
+            "tag": "forge:glass"
+          },
+          "M": {
+            "tag": "forge:storage_blocks/gold"
+          }
+        },
+        "result": {
+          "item": "assortedtech:gold_sensor"
+        }
+      }
+    }
+  ]
+}

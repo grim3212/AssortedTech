@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.grim3212.assorted.tech.client.data.TechBlockstateProvider;
 import com.grim3212.assorted.tech.client.data.TechItemModelProvider;
+import com.grim3212.assorted.tech.client.particle.TechParticleTypes;
 import com.grim3212.assorted.tech.client.proxy.ClientProxy;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
@@ -12,8 +13,11 @@ import com.grim3212.assorted.tech.common.data.TechBlockTagProvider;
 import com.grim3212.assorted.tech.common.data.TechEntityTagProvider;
 import com.grim3212.assorted.tech.common.data.TechItemTagProvider;
 import com.grim3212.assorted.tech.common.data.TechLootProvider;
+import com.grim3212.assorted.tech.common.data.TechRecipes;
+import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.item.TechItems;
+import com.grim3212.assorted.tech.common.network.PacketHandler;
 import com.grim3212.assorted.tech.common.proxy.IProxy;
 import com.grim3212.assorted.tech.common.util.TechSounds;
 
@@ -22,12 +26,14 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
@@ -55,14 +61,23 @@ public class AssortedTech {
 
 		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+		modBus.addListener(this::setup);
 		modBus.addListener(this::gatherData);
 
 		TechBlocks.BLOCKS.register(modBus);
 		TechItems.ITEMS.register(modBus);
 		TechBlockEntityTypes.BLOCK_ENTITIES.register(modBus);
 		TechSounds.SOUNDS.register(modBus);
+		TechParticleTypes.PARTICLE_TYPES.register(modBus);
 
+		ModLoadingContext.get().registerConfig(Type.CLIENT, TechConfig.CLIENT_SPEC);
 		ModLoadingContext.get().registerConfig(Type.COMMON, TechConfig.COMMON_SPEC);
+
+		CraftingHelper.register(EnabledCondition.Serializer.INSTANCE);
+	}
+
+	private void setup(final FMLCommonSetupEvent event) {
+		PacketHandler.init();
 	}
 
 	private void gatherData(GatherDataEvent event) {
@@ -70,6 +85,7 @@ public class AssortedTech {
 		ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
+			datagenerator.addProvider(new TechRecipes(datagenerator));
 			TechBlockTagProvider blockTagProvider = new TechBlockTagProvider(datagenerator, fileHelper);
 			datagenerator.addProvider(blockTagProvider);
 			datagenerator.addProvider(new TechItemTagProvider(datagenerator, blockTagProvider, fileHelper));

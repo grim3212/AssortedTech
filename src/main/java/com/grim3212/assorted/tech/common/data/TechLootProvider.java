@@ -37,6 +37,7 @@ public class TechLootProvider implements DataProvider {
 
 		this.blocks.add(TechBlocks.FLIP_FLOP_TORCH.get());
 		this.blocks.add(TechBlocks.GLOWSTONE_TORCH.get());
+		this.blocks.add(TechBlocks.FAN.get());
 
 		TechBlocks.SPIKES.forEach((spike) -> this.blocks.add(spike.get()));
 		TechBlocks.SENSORS.forEach((sensor) -> this.blocks.add(sensor.get()));

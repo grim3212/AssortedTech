@@ -1,3 +1,3 @@
 {
-  "parent": "assortedtech:block/stone_sensor"
+  "parent": "assortedtech:block/sensors/stone_sensor_inventory"
 }
