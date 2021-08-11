@@ -47,14 +47,15 @@ public class FanUpdatePacket {
 				BlockState state = player.level.getBlockState(this.pos);
 				TileEntity te = player.level.getBlockEntity(this.pos);
 
-				if (te instanceof FanBlockEntity fan) {
+				if (te instanceof FanBlockEntity) {
+					FanBlockEntity fan = (FanBlockEntity) te;
 					fan.setOldMode(this.mode);
 					fan.setRange(this.range);
 					if (fan.getMode() != FanMode.OFF) {
 						fan.setMode(this.mode);
 						player.level.setBlock(pos, state.setValue(FanBlock.MODE, mode), 3);
 					}
-						
+
 				}
 			});
 			ctx.get().setPacketHandled(true);

@@ -68,7 +68,8 @@ public class FanBlock extends Block {
 		boolean isPowered = level.hasNeighborSignal(pos);
 		TileEntity ent = level.getBlockEntity(pos);
 
-		if (ent instanceof FanBlockEntity fan) {
+		if (ent instanceof FanBlockEntity) {
+			FanBlockEntity fan = (FanBlockEntity) ent;
 			if (isPowered && state.getValue(MODE) != FanMode.OFF) {
 				if (fan.getMode() != FanMode.OFF) {
 					fan.setOldMode(fan.getMode());

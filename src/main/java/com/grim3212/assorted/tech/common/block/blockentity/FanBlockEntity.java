@@ -76,12 +76,24 @@ public class FanBlockEntity extends TileEntity implements ITickableTileEntity {
 
 					Vector3d mot = entity.getDeltaMovement();
 					switch (dir) {
-						case DOWN -> entity.setDeltaMovement(mot.x, mot.y - speed, mot.z);
-						case UP -> entity.setDeltaMovement(mot.x, mot.y + speed, mot.z);
-						case NORTH -> entity.setDeltaMovement(mot.x, mot.y, mot.z - speed);
-						case SOUTH -> entity.setDeltaMovement(mot.x, mot.y, mot.z + speed);
-						case WEST -> entity.setDeltaMovement(mot.x - speed, mot.y, mot.z);
-						case EAST -> entity.setDeltaMovement(mot.x + speed, mot.y, mot.z);
+						case DOWN:
+							entity.setDeltaMovement(mot.x, mot.y - speed, mot.z);
+							break;
+						case UP:
+							entity.setDeltaMovement(mot.x, mot.y + speed, mot.z);
+							break;
+						case NORTH:
+							entity.setDeltaMovement(mot.x, mot.y, mot.z - speed);
+							break;
+						case SOUTH:
+							entity.setDeltaMovement(mot.x, mot.y, mot.z + speed);
+							break;
+						case WEST:
+							entity.setDeltaMovement(mot.x - speed, mot.y, mot.z);
+							break;
+						case EAST:
+							entity.setDeltaMovement(mot.x + speed, mot.y, mot.z);
+							break;
 					}
 				}
 			}));

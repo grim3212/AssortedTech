@@ -120,7 +120,7 @@ public class SpikeBlock extends Block implements IWaterLoggable {
 		if (stateIn.getValue(WATERLOGGED)) {
 			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		
+
 		return facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
 	}
 
@@ -178,11 +178,12 @@ public class SpikeBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public void entityInside(BlockState state, World level, BlockPos pos, Entity entity) {
-		if (state.getValue(POWERED) && entity instanceof LivingEntity e) {
-			e.hurt(TechDamageSources.SPIKE, this.spikeType.getDamage());
+		if (state.getValue(POWERED) && entity instanceof LivingEntity) {
+			LivingEntity livingEnt = (LivingEntity) entity;
+			livingEnt.hurt(TechDamageSources.SPIKE, this.spikeType.getDamage());
 		}
 	}
-	
+
 	@Override
 	public FluidState getFluidState(BlockState state) {
 		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);

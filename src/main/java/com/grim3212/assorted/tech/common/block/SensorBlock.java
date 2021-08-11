@@ -92,7 +92,8 @@ public class SensorBlock extends Block {
 	public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hitResult) {
 		ItemStack inHand = player.getItemInHand(hand);
 		TileEntity entity = level.getBlockEntity(pos);
-		if (entity instanceof SensorBlockEntity sensor) {
+		if (entity instanceof SensorBlockEntity) {
+			SensorBlockEntity sensor = (SensorBlockEntity) entity;
 			if (inHand.getItem() == Items.REDSTONE_TORCH) {
 				sensor.toggleShowRange();
 				return ActionResultType.SUCCESS;

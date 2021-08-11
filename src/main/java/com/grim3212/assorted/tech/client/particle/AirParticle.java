@@ -72,36 +72,36 @@ public class AirParticle extends SpriteTexturedParticle {
 		double speed = (fanSpeed / this.distanceModifier) + (isSucking ? -baseSpeed : baseSpeed);
 
 		switch (direction) {
-			case UP -> {
+			case UP:
 				if (isSucking ? yd > 0 : yd < 0)
 					this.remove();
 				this.setVelocity(xd, yd + speed, zd);
-			}
-			case DOWN -> {
+				break;
+			case DOWN:
 				if (isSucking ? yd < 0 : yd > 0)
 					this.remove();
 				this.setVelocity(xd, yd - speed, zd);
-			}
-			case EAST -> {
+				break;
+			case EAST:
 				if (isSucking ? xd > 0 : xd < 0)
 					this.remove();
 				this.setVelocity(xd + speed, yd, zd);
-			}
-			case WEST -> {
+				break;
+			case WEST:
 				if (isSucking ? xd < 0 : xd > 0)
 					this.remove();
 				this.setVelocity(xd - speed, yd, zd);
-			}
-			case SOUTH -> {
+				break;
+			case SOUTH:
 				if (isSucking ? zd > 0 : zd < 0)
 					this.remove();
 				this.setVelocity(xd, yd, zd + speed);
-			}
-			case NORTH -> {
+				break;
+			case NORTH:
 				if (isSucking ? zd < 0 : zd > 0)
 					this.remove();
 				this.setVelocity(xd, yd, zd - speed);
-			}
+				break;
 		}
 	}
 
