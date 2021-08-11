@@ -6,35 +6,32 @@ import com.grim3212.assorted.tech.client.particle.AirParticleData;
 import com.grim3212.assorted.tech.common.block.FanBlock;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.util.FanMode;
+import com.grim3212.assorted.tech.common.util.TechUtil;
 
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
-public class FanBlockEntity extends BlockEntity {
+public class FanBlockEntity extends TileEntity implements ITickableTileEntity {
 
 	private int range = 1;
 	private FanMode mode = FanMode.BLOW;
 	private FanMode oldMode = FanMode.BLOW;
 
-	public FanBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
-		super(tileEntityTypeIn, pos, state);
-	}
-
-	public FanBlockEntity(BlockPos pos, BlockState state) {
-		super(TechBlockEntityTypes.FAN.get(), pos, state);
+	public FanBlockEntity() {
+		super(TechBlockEntityTypes.FAN.get());
 	}
 
 	public void tick() {
@@ -59,8 +56,8 @@ public class FanBlockEntity extends BlockEntity {
 			}
 
 			int distance = obstructed ? traverse : maxLength;
-			Vec3i fanPos = dir.getNormal().multiply(distance);
-			AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(fanPos.getX(), fanPos.getY(), fanPos.getZ()).deflate(1D);
+			Vector3i fanPos = TechUtil.multiply(dir.getNormal(), distance);
+			AxisAlignedBB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(fanPos.getX(), fanPos.getY(), fanPos.getZ()).deflate(1D);
 
 			List<? extends Entity> list = level.getEntities((Entity) null, aabb);
 
@@ -77,7 +74,7 @@ public class FanBlockEntity extends BlockEntity {
 						entity.fallDistance = 0F;
 					}
 
-					Vec3 mot = entity.getDeltaMovement();
+					Vector3d mot = entity.getDeltaMovement();
 					switch (dir) {
 						case DOWN -> entity.setDeltaMovement(mot.x, mot.y - speed, mot.z);
 						case UP -> entity.setDeltaMovement(mot.x, mot.y + speed, mot.z);
@@ -109,47 +106,47 @@ public class FanBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	public void load(BlockState state, CompoundNBT nbt) {
+		super.load(state, nbt);
 		this.readPacketNBT(nbt);
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		super.save(compound);
 		this.writePacketNBT(compound);
 		return compound;
 	}
 
-	public void writePacketNBT(CompoundTag cmp) {
+	public void writePacketNBT(CompoundNBT cmp) {
 		cmp.putInt("Mode", mode.ordinal());
 		cmp.putInt("OldMode", oldMode.ordinal());
 		cmp.putInt("Range", range);
 	}
 
-	public void readPacketNBT(CompoundTag cmp) {
+	public void readPacketNBT(CompoundNBT cmp) {
 		this.mode = FanMode.VALUES[cmp.getInt("Mode")];
 		this.oldMode = FanMode.VALUES[cmp.getInt("OldMode")];
 		this.range = cmp.getInt("Range");
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return save(new CompoundTag());
+	public CompoundNBT getUpdateTag() {
+		return save(new CompoundNBT());
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag nbtTagCompound = new CompoundTag();
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writePacketNBT(nbtTagCompound);
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 1, nbtTagCompound);
+		return new SUpdateTileEntityPacket(this.worldPosition, 1, nbtTagCompound);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		super.onDataPacket(net, pkt);
 		this.readPacketNBT(pkt.getTag());
-		if (level instanceof ClientLevel) {
+		if (level instanceof ClientWorld) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
 	}

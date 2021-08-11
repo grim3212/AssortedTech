@@ -4,38 +4,43 @@ import java.util.List;
 
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.util.SensorType;
+import com.grim3212.assorted.tech.common.util.TechUtil;
 
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 
-public class SensorBlockEntity extends BlockEntity {
+public class SensorBlockEntity extends TileEntity implements ITickableTileEntity {
 
 	private static final int MAX_RANGE = 15;
 
 	private boolean showRange = false;
 	private int range = 1;
+	private SensorType sensorType;
 
-	public SensorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
-		super(tileEntityTypeIn, pos, state);
+	public SensorBlockEntity() {
+		super(TechBlockEntityTypes.SENSOR.get());
+		this.sensorType = SensorType.WOOD;
 	}
 
-	public SensorBlockEntity(BlockPos pos, BlockState state) {
-		super(TechBlockEntityTypes.SENSOR.get(), pos, state);
+	public SensorBlockEntity(final SensorType sensorType) {
+		super(TechBlockEntityTypes.SENSOR.get());
+		this.sensorType = sensorType;
 	}
 
-	public void tick(SensorType type) {
+	@Override
+	public void tick() {
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 
@@ -55,11 +60,10 @@ public class SensorBlockEntity extends BlockEntity {
 			}
 		}
 
-		Vec3i sensorPos = dir.getNormal().multiply(obstructed ? traverse : maxLength);
+		Vector3i sensorPos = TechUtil.multiply(dir.getNormal(), obstructed ? traverse : maxLength);
+		AxisAlignedBB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(sensorPos.getX(), sensorPos.getY(), sensorPos.getZ()).deflate(1D);
 
-		AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(sensorPos.getX(), sensorPos.getY(), sensorPos.getZ()).deflate(1D);
-
-		List<? extends Entity> list = level.getEntities((Entity) null, aabb, type.getTrigger());
+		List<? extends Entity> list = level.getEntities((Entity) null, aabb, this.sensorType.getTrigger());
 
 		if (list.isEmpty() && state.getValue(SensorBlock.DETECTED)) {
 			level.setBlock(pos, state.setValue(SensorBlock.DETECTED, false), 3);
@@ -97,46 +101,49 @@ public class SensorBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	public void load(BlockState state, CompoundNBT nbt) {
+		super.load(state, nbt);
 		this.readPacketNBT(nbt);
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		super.save(compound);
 		this.writePacketNBT(compound);
 		return compound;
 	}
 
-	public void writePacketNBT(CompoundTag cmp) {
+	public void writePacketNBT(CompoundNBT cmp) {
 		cmp.putBoolean("ShowRange", showRange);
 		cmp.putInt("Range", range);
+		cmp.putInt("SensorType", sensorType.ordinal());
 	}
 
-	public void readPacketNBT(CompoundTag cmp) {
+	public void readPacketNBT(CompoundNBT cmp) {
 		this.showRange = cmp.getBoolean("ShowRange");
 		this.range = cmp.getInt("Range");
+		this.sensorType = SensorType.values()[cmp.getInt("SensorType")];
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return save(new CompoundTag());
+	public CompoundNBT getUpdateTag() {
+		return save(new CompoundNBT());
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag nbtTagCompound = new CompoundTag();
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		CompoundNBT nbtTagCompound = new CompoundNBT();
 		writePacketNBT(nbtTagCompound);
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 1, nbtTagCompound);
+		return new SUpdateTileEntityPacket(this.worldPosition, 1, nbtTagCompound);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		super.onDataPacket(net, pkt);
 		this.readPacketNBT(pkt.getTag());
-		if (level instanceof ClientLevel) {
+		if (level instanceof ClientWorld) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
 		}
 	}
+
 }

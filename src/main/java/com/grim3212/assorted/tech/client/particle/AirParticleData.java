@@ -7,13 +7,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 
-public class AirParticleData implements ParticleOptions {
+public class AirParticleData implements IParticleData {
 
 	public static final Codec<AirParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(BlockPos.CODEC.fieldOf("pos").forGetter(d -> d.pos)).apply(instance, AirParticleData::new));
 
@@ -29,7 +29,7 @@ public class AirParticleData implements ParticleOptions {
 	}
 
 	@Override
-	public void writeToNetwork(FriendlyByteBuf buf) {
+	public void writeToNetwork(PacketBuffer buf) {
 		buf.writeBlockPos(pos);
 	}
 
@@ -41,7 +41,7 @@ public class AirParticleData implements ParticleOptions {
 		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), d0, d1, d2);
 	}
 
-	public static final Deserializer<AirParticleData> DESERIALIZER = new ParticleOptions.Deserializer<AirParticleData>() {
+	public static final IDeserializer<AirParticleData> DESERIALIZER = new IParticleData.IDeserializer<AirParticleData>() {
 		@Override
 		public AirParticleData fromCommand(ParticleType<AirParticleData> type, StringReader reader) throws CommandSyntaxException {
 			reader.expect(' ');
@@ -55,7 +55,7 @@ public class AirParticleData implements ParticleOptions {
 		}
 
 		@Override
-		public AirParticleData fromNetwork(ParticleType<AirParticleData> type, FriendlyByteBuf buf) {
+		public AirParticleData fromNetwork(ParticleType<AirParticleData> type, PacketBuffer buf) {
 			return new AirParticleData(buf.readBlockPos());
 		}
 	};

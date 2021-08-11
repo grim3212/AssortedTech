@@ -22,8 +22,8 @@ import com.grim3212.assorted.tech.common.proxy.IProxy;
 import com.grim3212.assorted.tech.common.util.TechSounds;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -34,8 +34,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @Mod(AssortedTech.MODID)
 public class AssortedTech {
@@ -47,7 +47,7 @@ public class AssortedTech {
 	public static IProxy proxy = new IProxy() {
 	};
 
-	public static final CreativeModeTab ASSORTED_TECH_ITEM_GROUP = (new CreativeModeTab(AssortedTech.MODID) {
+	public static final ItemGroup ASSORTED_TECH_ITEM_GROUP = (new ItemGroup(AssortedTech.MODID) {
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public ItemStack makeIcon() {

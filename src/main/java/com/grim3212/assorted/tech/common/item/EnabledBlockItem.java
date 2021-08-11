@@ -3,9 +3,9 @@ package com.grim3212.assorted.tech.common.item;
 import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemGroup;
 
 public class EnabledBlockItem extends BlockItem {
 
@@ -17,7 +17,7 @@ public class EnabledBlockItem extends BlockItem {
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab tab) {
+	protected boolean allowdedIn(ItemGroup tab) {
 		switch (this.enabled) {
 			case EnabledCondition.TORCHES_CONDITION:
 				return TechConfig.COMMON.torchesEnabled.get() ? super.allowdedIn(tab) : false;

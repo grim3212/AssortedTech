@@ -6,13 +6,13 @@ import com.grim3212.assorted.tech.common.block.FanBlock;
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class FanUpdatePacket {
 
@@ -26,7 +26,7 @@ public class FanUpdatePacket {
 		this.range = range;
 	}
 
-	public static FanUpdatePacket decode(FriendlyByteBuf buf) {
+	public static FanUpdatePacket decode(PacketBuffer buf) {
 		BlockPos pos = buf.readBlockPos();
 		FanMode mode = buf.readEnum(FanMode.class);
 		int range = buf.readInt();
@@ -34,7 +34,7 @@ public class FanUpdatePacket {
 		return new FanUpdatePacket(pos, mode, range);
 	}
 
-	public void encode(FriendlyByteBuf buf) {
+	public void encode(PacketBuffer buf) {
 		buf.writeBlockPos(this.pos);
 		buf.writeEnum(this.mode);
 		buf.writeInt(this.range);
@@ -43,9 +43,9 @@ public class FanUpdatePacket {
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		if (ctx.get().getDirection().getReceptionSide() == LogicalSide.SERVER) {
 			ctx.get().enqueueWork(() -> {
-				Player player = ctx.get().getSender();
+				PlayerEntity player = ctx.get().getSender();
 				BlockState state = player.level.getBlockState(this.pos);
-				BlockEntity te = player.level.getBlockEntity(this.pos);
+				TileEntity te = player.level.getBlockEntity(this.pos);
 
 				if (te instanceof FanBlockEntity fan) {
 					fan.setOldMode(this.mode);

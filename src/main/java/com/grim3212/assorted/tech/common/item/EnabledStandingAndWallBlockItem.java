@@ -3,11 +3,11 @@ package com.grim3212.assorted.tech.common.item;
 import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.StandingAndWallBlockItem;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.WallOrFloorItem;
 
-public class EnabledStandingAndWallBlockItem extends StandingAndWallBlockItem {
+public class EnabledStandingAndWallBlockItem extends WallOrFloorItem {
 
 	private final String enabledCondition;
 
@@ -17,7 +17,7 @@ public class EnabledStandingAndWallBlockItem extends StandingAndWallBlockItem {
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab tab) {
+	protected boolean allowdedIn(ItemGroup tab) {
 		switch (this.enabledCondition) {
 			case EnabledCondition.TORCHES_CONDITION:
 				return TechConfig.COMMON.torchesEnabled.get() ? super.allowdedIn(tab) : false;

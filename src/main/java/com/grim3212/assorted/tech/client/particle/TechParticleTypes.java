@@ -2,8 +2,8 @@ package com.grim3212.assorted.tech.client.particle;
 
 import com.grim3212.assorted.tech.AssortedTech;
 
-import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraft.particles.ParticleType;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

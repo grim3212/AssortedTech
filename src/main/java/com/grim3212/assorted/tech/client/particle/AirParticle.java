@@ -1,30 +1,31 @@
 package com.grim3212.assorted.tech.client.particle;
 
+import org.lwjgl.opengl.GL11;
+
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.util.FanMode;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 
-public class AirParticle extends TextureSheetParticle {
+public class AirParticle extends SpriteTexturedParticle {
 
 	private final FanBlockEntity fan;
 	private final BlockPos startPos;
 	private final Direction direction;
 	private final double distanceModifier;
 
-	protected AirParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, BlockPos pos) {
+	protected AirParticle(ClientWorld level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, BlockPos pos) {
 		super(level, x, y, z, xSpeed, ySpeed, zSpeed);
 		this.fan = (FanBlockEntity) level.getBlockEntity(pos);
 		this.direction = fan.getBlockState().getValue(BlockStateProperties.FACING);
@@ -40,7 +41,7 @@ public class AirParticle extends TextureSheetParticle {
 	}
 
 	@Override
-	public ParticleRenderType getRenderType() {
+	public IParticleRenderType getRenderType() {
 		return NORMAL_RENDER;
 	}
 
@@ -117,7 +118,7 @@ public class AirParticle extends TextureSheetParticle {
 		this.zd = z;
 	}
 
-	private static final ParticleRenderType NORMAL_RENDER = new ParticleRenderType() {
+	private static final IParticleRenderType NORMAL_RENDER = new IParticleRenderType() {
 
 		@Override
 		public String toString() {
@@ -128,11 +129,11 @@ public class AirParticle extends TextureSheetParticle {
 		public void begin(BufferBuilder builder, TextureManager textureManager) {
 			RenderSystem.disableBlend();
 			RenderSystem.depthMask(true);
-			builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+			builder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
 		}
 
 		@Override
-		public void end(Tesselator tessellator) {
+		public void end(Tessellator tessellator) {
 			tessellator.end();
 		}
 	};

@@ -3,8 +3,8 @@ package com.grim3212.assorted.tech.common.handler;
 import com.google.gson.JsonObject;
 import com.grim3212.assorted.tech.AssortedTech;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 
@@ -53,7 +53,7 @@ public class EnabledCondition implements ICondition {
 
 		@Override
 		public EnabledCondition read(JsonObject json) {
-			return new EnabledCondition(GsonHelper.getAsString(json, "part"));
+			return new EnabledCondition(JSONUtils.getAsString(json, "part"));
 		}
 
 		@Override

@@ -1,8 +1,8 @@
 package com.grim3212.assorted.tech.common.util;
 
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.IStringSerializable;
 
-public enum FanMode implements StringRepresentable {
+public enum FanMode implements IStringSerializable {
 	BLOW,
 	SUCK,
 	OFF;

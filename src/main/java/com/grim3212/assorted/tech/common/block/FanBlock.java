@@ -4,28 +4,26 @@ import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
-public class FanBlock extends Block implements EntityBlock {
+public class FanBlock extends Block {
 
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final EnumProperty<FanMode> MODE = EnumProperty.create("mode", FanMode.class);
@@ -41,12 +39,7 @@ public class FanBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new FanBlockEntity(pos, state);
-	}
-
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
 	}
 
@@ -61,19 +54,19 @@ public class FanBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		if (worldIn.isClientSide) {
 			AssortedTech.proxy.openFanScreen((FanBlockEntity) worldIn.getBlockEntity(pos));
-			return InteractionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		} else {
-			return InteractionResult.SUCCESS;
+			return ActionResultType.SUCCESS;
 		}
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighbor, boolean flag) {
+	public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighbor, boolean flag) {
 		boolean isPowered = level.hasNeighborSignal(pos);
-		BlockEntity ent = level.getBlockEntity(pos);
+		TileEntity ent = level.getBlockEntity(pos);
 
 		if (ent instanceof FanBlockEntity fan) {
 			if (isPowered && state.getValue(MODE) != FanMode.OFF) {
@@ -90,11 +83,12 @@ public class FanBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return (level1, blockPos, blockState, t) -> {
-			if (t instanceof FanBlockEntity fan) {
-				fan.tick();
-			}
-		};
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+		return new FanBlockEntity();
 	}
 }

@@ -10,11 +10,11 @@ import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
 import com.grim3212.assorted.tech.common.proxy.IProxy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -32,14 +32,14 @@ public class ClientProxy implements IProxy {
 	}
 
 	private void setupClient(final FMLClientSetupEvent event) {
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.FLIP_FLOP_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.FLIP_FLOP_WALL_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.GLOWSTONE_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.GLOWSTONE_WALL_TORCH.get(), RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(TechBlocks.FLIP_FLOP_TORCH.get(), RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(TechBlocks.FLIP_FLOP_WALL_TORCH.get(), RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(TechBlocks.GLOWSTONE_TORCH.get(), RenderType.cutout());
+		RenderTypeLookup.setRenderLayer(TechBlocks.GLOWSTONE_WALL_TORCH.get(), RenderType.cutout());
 
-		TechBlocks.SPIKES.forEach((spike) -> ItemBlockRenderTypes.setRenderLayer(spike.get(), RenderType.cutout()));
+		TechBlocks.SPIKES.forEach((spike) -> RenderTypeLookup.setRenderLayer(spike.get(), RenderType.cutout()));
 
-		BlockEntityRenderers.register(TechBlockEntityTypes.SENSOR.get(), SensorBlockEntityRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(TechBlockEntityTypes.SENSOR.get(), SensorBlockEntityRenderer::new);
 	}
 
 	@Override

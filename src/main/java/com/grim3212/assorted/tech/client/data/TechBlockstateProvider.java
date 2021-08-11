@@ -7,13 +7,12 @@ import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
-import net.minecraft.core.Direction;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -38,7 +37,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
 
 		TechBlocks.SENSORS.forEach((sensor) -> this.sensorModel(sensor.get()));
 		TechBlocks.SPIKES.forEach((spike) -> this.spikeModel(spike.get()));
-		
+
 		this.fanModel();
 	}
 
@@ -71,7 +70,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
 
 			return ConfiguredModel.builder().modelFile(model).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
 		});
-		
+
 		itemModels().getBuilder(prefix("item/" + fanName)).parent(offModel);
 	}
 
@@ -98,10 +97,10 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		ModelFile spikeModel = models().getBuilder(spikeUnpowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikeUnpowered);
 		ModelFile spikePoweredModel = models().getBuilder(spikePowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikePowered);
 
-		getVariantBuilder(b).forAllStates(state -> {
+		getVariantBuilder(b).forAllStatesExcept(state -> {
 			Direction dir = state.getValue(BlockStateProperties.FACING);
 			return ConfiguredModel.builder().modelFile(state.getValue(BlockStateProperties.POWERED) ? spikePoweredModel : spikeModel).rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
-		});
+		}, BlockStateProperties.WATERLOGGED);
 
 		itemModels().withExistingParent(spikeName, "item/generated").texture("layer0", spikePowered);
 	}

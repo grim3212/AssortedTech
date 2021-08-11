@@ -1,31 +1,33 @@
 package com.grim3212.assorted.tech.client.blockentity;
 
 import com.grim3212.assorted.tech.common.block.blockentity.SensorBlockEntity;
+import com.grim3212.assorted.tech.common.util.TechUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3i;
 
-public class SensorBlockEntityRenderer implements BlockEntityRenderer<SensorBlockEntity> {
+public class SensorBlockEntityRenderer extends TileEntityRenderer<SensorBlockEntity> {
 
-	public SensorBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+	public SensorBlockEntityRenderer(TileEntityRendererDispatcher dispatcher) {
+		super(dispatcher);
 	}
 
 	@Override
-	public void render(SensorBlockEntity entity, float partialTicks, PoseStack stack, MultiBufferSource bufferSource, int destroyStage, int alpha) {
+	public void render(SensorBlockEntity entity, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferSource, int destroyStage, int alpha) {
 		if (entity.shouldShowRange()) {
 			stack.pushPose();
 			RenderSystem.enableBlend();
@@ -34,7 +36,7 @@ public class SensorBlockEntityRenderer implements BlockEntityRenderer<SensorBloc
 			RenderSystem.disableTexture();
 			RenderSystem.depthMask(false);
 
-			VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.lines());
+			IVertexBuilder vertexconsumer = bufferSource.getBuffer(RenderType.lines());
 			Direction dir = entity.getBlockState().getValue(BlockStateProperties.FACING);
 
 			// The plus 1 is because we deflate by 1 so we don't include the block itself
@@ -52,11 +54,11 @@ public class SensorBlockEntityRenderer implements BlockEntityRenderer<SensorBloc
 				}
 			}
 
-			Vec3i position = dir.getNormal().multiply(obstructed ? traverse : maxLength);
-			AABB aabb = entity.getBlockState().getCollisionShape(entity.getLevel(), entity.getBlockPos()).bounds().expandTowards(position.getX(), position.getY(), position.getZ()).deflate(1D).inflate(0.0020000000949949026D);
+			Vector3i position = TechUtil.multiply(dir.getNormal(), obstructed ? traverse : maxLength);
+			AxisAlignedBB aabb = entity.getBlockState().getCollisionShape(entity.getLevel(), entity.getBlockPos()).bounds().expandTowards(position.getX(), position.getY(), position.getZ()).deflate(1D).inflate(0.0020000000949949026D);
 			VoxelShape shape = Block.box(aabb.minX * 16D, aabb.minY * 16D, aabb.minZ * 16D, aabb.maxX * 16D, aabb.maxY * 16D, aabb.maxZ * 16D);
 
-			LevelRenderer.renderShape(stack, vertexconsumer, shape, 0.0D, 0.0D, 0.0D, obstructed ? 1.0F : 255.0F, obstructed ? 255.0F : 1.0F, obstructed ? 255.0F : 255.0F, 1.0F);
+			WorldRenderer.renderShape(stack, vertexconsumer, shape, 0.0D, 0.0D, 0.0D, obstructed ? 1.0F : 255.0F, obstructed ? 255.0F : 1.0F, obstructed ? 255.0F : 255.0F, 1.0F);
 
 			RenderSystem.depthMask(true);
 			RenderSystem.enableTexture();

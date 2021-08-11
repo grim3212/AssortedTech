@@ -3,10 +3,10 @@ package com.grim3212.assorted.tech.client.data;
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.item.TechItems;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;

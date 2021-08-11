@@ -7,36 +7,39 @@ import com.grim3212.assorted.tech.common.util.SpikeType;
 import com.grim3212.assorted.tech.common.util.TechDamageSources;
 import com.grim3212.assorted.tech.common.util.TechSounds;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
-public class SpikeBlock extends Block {
+public class SpikeBlock extends Block implements IWaterLoggable {
 
 	private static final VoxelShape UP_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
 	private static final VoxelShape DOWN_SHAPE = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
@@ -47,12 +50,13 @@ public class SpikeBlock extends Block {
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	private final SpikeType spikeType;
 
 	public SpikeBlock(Properties props, SpikeType spikeType) {
 		super(props);
-		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
 		this.spikeType = spikeType;
 	}
 
@@ -61,17 +65,17 @@ public class SpikeBlock extends Block {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent("tooltip.spike.damage", new TranslatableComponent(String.valueOf(this.spikeType.getDamage())).withStyle(ChatFormatting.AQUA)).withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, IBlockReader level, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		tooltip.add(new TranslationTextComponent("tooltip.spike.damage", new TranslationTextComponent(String.valueOf(this.spikeType.getDamage())).withStyle(TextFormatting.AQUA)).withStyle(TextFormatting.GRAY));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-		builder.add(POWERED, FACING);
+		builder.add(POWERED, FACING, WATERLOGGED);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext collisionContext) {
+	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext collisionContext) {
 		if (!state.getValue(POWERED)) {
 			switch (state.getValue(FACING)) {
 				case DOWN:
@@ -89,21 +93,22 @@ public class SpikeBlock extends Block {
 			}
 		}
 
-		return Shapes.block();
+		return VoxelShapes.block();
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		BlockState blockstate = this.defaultBlockState();
-		LevelReader iworldreader = context.getLevel();
+		World iworldreader = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 		Direction[] adirection = context.getNearestLookingDirections();
+		FluidState fluidstate = context.getLevel().getFluidState(blockpos);
 
 		for (Direction direction : adirection) {
 			Direction direction1 = direction.getOpposite();
 			blockstate = blockstate.setValue(FACING, direction1);
 			if (blockstate.canSurvive(iworldreader, blockpos)) {
-				return blockstate;
+				return blockstate.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
 			}
 		}
 
@@ -111,12 +116,16 @@ public class SpikeBlock extends Block {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState state2, LevelAccessor level, BlockPos currentPos, BlockPos pos2) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState state2, IWorld level, BlockPos currentPos, BlockPos pos2) {
+		if (stateIn.getValue(WATERLOGGED)) {
+			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+		}
+		
 		return facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
 	}
 
 	@Override
-	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
 		Direction direction = state.getValue(FACING);
 		BlockPos blockpos = pos.relative(direction.getOpposite());
 		BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -134,14 +143,14 @@ public class SpikeBlock extends Block {
 	}
 
 	@Override
-	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState state2, boolean flag) {
+	public void onPlace(BlockState state, World level, BlockPos pos, BlockState state2, boolean flag) {
 		for (Direction direction : Direction.values()) {
 			level.updateNeighborsAt(pos.relative(direction), this);
 		}
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState state2, boolean flag) {
+	public void onRemove(BlockState state, World level, BlockPos pos, BlockState state2, boolean flag) {
 		if (!flag) {
 			for (Direction direction : Direction.values()) {
 				level.updateNeighborsAt(pos.relative(direction), this);
@@ -150,27 +159,32 @@ public class SpikeBlock extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+	public void neighborChanged(BlockState state, World level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
 		level.getBlockTicks().scheduleTick(pos, this, 2);
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerWorld level, BlockPos pos, Random rand) {
 		Direction dir = state.getValue(FACING);
 		BlockPos poweredPos = pos.offset(dir.getOpposite().getNormal());
 		if (!state.getValue(POWERED) && level.hasNeighborSignal(poweredPos)) {
-			level.playSound(null, pos, TechSounds.SPIKE_DEPLOY.get(), SoundSource.BLOCKS, 0.3F, 0.6F);
+			level.playSound(null, pos, TechSounds.SPIKE_DEPLOY.get(), SoundCategory.BLOCKS, 0.3F, 0.6F);
 			level.setBlock(pos, state.setValue(POWERED, true), 3);
 		} else if (state.getValue(POWERED) && !level.hasNeighborSignal(poweredPos)) {
-			level.playSound(null, pos, TechSounds.SPIKE_CLOSE.get(), SoundSource.BLOCKS, 0.3F, 0.6F);
+			level.playSound(null, pos, TechSounds.SPIKE_CLOSE.get(), SoundCategory.BLOCKS, 0.3F, 0.6F);
 			level.setBlock(pos, state.setValue(POWERED, false), 3);
 		}
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+	public void entityInside(BlockState state, World level, BlockPos pos, Entity entity) {
 		if (state.getValue(POWERED) && entity instanceof LivingEntity e) {
 			e.hurt(TechDamageSources.SPIKE, this.spikeType.getDamage());
 		}
+	}
+	
+	@Override
+	public FluidState getFluidState(BlockState state) {
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 }

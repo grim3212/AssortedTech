@@ -5,36 +5,33 @@ import java.util.List;
 import com.grim3212.assorted.tech.common.block.blockentity.SensorBlockEntity;
 import com.grim3212.assorted.tech.common.util.SensorType;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.PushReaction;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 
-public class SensorBlock extends Block implements EntityBlock {
+public class SensorBlock extends Block {
 
 	public static final BooleanProperty DETECTED = BooleanProperty.create("detected");
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -57,13 +54,13 @@ public class SensorBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite()).setValue(DETECTED, false);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent("tooltip.sensor.detects." + this.sensorType.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+	public void appendHoverText(ItemStack stack, IBlockReader level, List<ITextComponent> tooltip, ITooltipFlag flag) {
+		tooltip.add(new TranslationTextComponent("tooltip.sensor.detects." + this.sensorType.name().toLowerCase()).withStyle(TextFormatting.GRAY));
 	}
 
 	@Override
@@ -82,7 +79,7 @@ public class SensorBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction dir) {
+	public int getSignal(BlockState state, IBlockReader getter, BlockPos pos, Direction dir) {
 		return state.getValue(DETECTED) ? 15 : 0;
 	}
 
@@ -92,38 +89,34 @@ public class SensorBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new SensorBlockEntity(pos, state);
-	}
-
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hitResult) {
 		ItemStack inHand = player.getItemInHand(hand);
-		BlockEntity entity = level.getBlockEntity(pos);
+		TileEntity entity = level.getBlockEntity(pos);
 		if (entity instanceof SensorBlockEntity sensor) {
 			if (inHand.getItem() == Items.REDSTONE_TORCH) {
 				sensor.toggleShowRange();
-				return InteractionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			} else {
 				if (player.isShiftKeyDown()) {
 					int newRange = sensor.reverseCycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(new TranslationTextComponent("message.sensor.range", newRange), true);
 				} else {
 					int newRange = sensor.cycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(new TranslationTextComponent("message.sensor.range", newRange), true);
 				}
-				return InteractionResult.SUCCESS;
+				return ActionResultType.SUCCESS;
 			}
 		}
 		return super.use(state, level, pos, player, hand, hitResult);
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return (level1, blockPos, blockState, t) -> {
-			if (t instanceof SensorBlockEntity sensor) {
-				sensor.tick(this.sensorType);
-			}
-		};
+	public boolean hasTileEntity(BlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+		return new SensorBlockEntity(this.sensorType);
 	}
 }
