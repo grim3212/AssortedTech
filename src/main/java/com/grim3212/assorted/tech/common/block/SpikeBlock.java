@@ -27,16 +27,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class SpikeBlock extends Block {
+public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
 	private static final VoxelShape UP_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
 	private static final VoxelShape DOWN_SHAPE = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
@@ -45,6 +49,7 @@ public class SpikeBlock extends Block {
 	private static final VoxelShape WEST_SHAPE = Block.box(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 	private static final VoxelShape EAST_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D);
 
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
@@ -52,7 +57,7 @@ public class SpikeBlock extends Block {
 
 	public SpikeBlock(Properties props, SpikeType spikeType) {
 		super(props);
-		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
 		this.spikeType = spikeType;
 	}
 
@@ -67,7 +72,7 @@ public class SpikeBlock extends Block {
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-		builder.add(POWERED, FACING);
+		builder.add(POWERED, FACING, WATERLOGGED);
 	}
 
 	@Override
@@ -98,12 +103,13 @@ public class SpikeBlock extends Block {
 		LevelReader iworldreader = context.getLevel();
 		BlockPos blockpos = context.getClickedPos();
 		Direction[] adirection = context.getNearestLookingDirections();
+		FluidState fluidstate = context.getLevel().getFluidState(blockpos);
 
 		for (Direction direction : adirection) {
 			Direction direction1 = direction.getOpposite();
 			blockstate = blockstate.setValue(FACING, direction1);
 			if (blockstate.canSurvive(iworldreader, blockpos)) {
-				return blockstate;
+				return blockstate.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
 			}
 		}
 
@@ -112,6 +118,10 @@ public class SpikeBlock extends Block {
 
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState state2, LevelAccessor level, BlockPos currentPos, BlockPos pos2) {
+		if (stateIn.getValue(WATERLOGGED)) {
+			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+		}
+
 		return facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
 	}
 
@@ -172,5 +182,20 @@ public class SpikeBlock extends Block {
 		if (state.getValue(POWERED) && entity instanceof LivingEntity e) {
 			e.hurt(TechDamageSources.SPIKE, this.spikeType.getDamage());
 		}
+	}
+
+	@Override
+	public FluidState getFluidState(BlockState state) {
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+	}
+
+	@Override
+	public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluid) {
+		return SimpleWaterloggedBlock.super.placeLiquid(level, pos, state, fluid);
+	}
+
+	@Override
+	public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+		return SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
 	}
 }
