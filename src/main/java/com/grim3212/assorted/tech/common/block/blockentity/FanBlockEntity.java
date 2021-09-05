@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.grim3212.assorted.tech.client.particle.AirParticleData;
 import com.grim3212.assorted.tech.common.block.FanBlock;
+import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
@@ -41,7 +42,7 @@ public class FanBlockEntity extends BlockEntity {
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 
-		if (mode != FanMode.OFF) {
+		if (mode != FanMode.OFF && state.getBlock() == TechBlocks.FAN.get()) {
 			Direction dir = state.getValue(FanBlock.FACING);
 
 			int maxLength = this.range + 1;

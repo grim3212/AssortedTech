@@ -39,32 +39,34 @@ public class SensorBlockEntity extends BlockEntity {
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 
-		Direction dir = state.getValue(BlockStateProperties.FACING);
+		if (state.getBlock() instanceof SensorBlock) {
+			Direction dir = state.getValue(BlockStateProperties.FACING);
 
-		int maxLength = this.range + 1;
+			int maxLength = this.range + 1;
 
-		boolean obstructed = false;
-		int traverse = 1;
-		while (traverse < maxLength && !obstructed) {
-			BlockPos checkPos = pos.relative(dir, traverse);
-			BlockState checkState = level.getBlockState(checkPos);
-			if (Block.isFaceFull(checkState.getCollisionShape(level, checkPos), dir.getOpposite())) {
-				obstructed = true;
-			} else {
-				traverse++;
+			boolean obstructed = false;
+			int traverse = 1;
+			while (traverse < maxLength && !obstructed) {
+				BlockPos checkPos = pos.relative(dir, traverse);
+				BlockState checkState = level.getBlockState(checkPos);
+				if (Block.isFaceFull(checkState.getCollisionShape(level, checkPos), dir.getOpposite())) {
+					obstructed = true;
+				} else {
+					traverse++;
+				}
 			}
-		}
 
-		Vec3i sensorPos = dir.getNormal().multiply(obstructed ? traverse : maxLength);
+			Vec3i sensorPos = dir.getNormal().multiply(obstructed ? traverse : maxLength);
 
-		AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(sensorPos.getX(), sensorPos.getY(), sensorPos.getZ()).deflate(1D);
+			AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(sensorPos.getX(), sensorPos.getY(), sensorPos.getZ()).deflate(1D);
 
-		List<? extends Entity> list = level.getEntities((Entity) null, aabb, type.getTrigger());
+			List<? extends Entity> list = level.getEntities((Entity) null, aabb, type.getTrigger());
 
-		if (list.isEmpty() && state.getValue(SensorBlock.DETECTED)) {
-			level.setBlock(pos, state.setValue(SensorBlock.DETECTED, false), 3);
-		} else if (!list.isEmpty() && !state.getValue(SensorBlock.DETECTED)) {
-			level.setBlock(pos, state.setValue(SensorBlock.DETECTED, true), 3);
+			if (list.isEmpty() && state.getValue(SensorBlock.DETECTED)) {
+				level.setBlock(pos, state.setValue(SensorBlock.DETECTED, false), 3);
+			} else if (!list.isEmpty() && !state.getValue(SensorBlock.DETECTED)) {
+				level.setBlock(pos, state.setValue(SensorBlock.DETECTED, true), 3);
+			}
 		}
 	}
 
