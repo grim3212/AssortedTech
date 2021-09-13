@@ -10,6 +10,7 @@ import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
 import com.grim3212.assorted.tech.common.proxy.IProxy;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -27,8 +28,9 @@ public class ClientProxy implements IProxy {
 		modBus.addListener(this::registerParticleFactories);
 	}
 
-	private void registerParticleFactories(final ParticleFactoryRegisterEvent event) {
-		Minecraft.getInstance().particleEngine.register(TechParticleTypes.AIR.get(), AirParticleType.Provider::new);
+	public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
+		ParticleEngine manager = Minecraft.getInstance().particleEngine;
+		manager.register(TechParticleTypes.AIR.get(), AirParticleType.Provider::new);
 	}
 
 	private void setupClient(final FMLClientSetupEvent event) {
