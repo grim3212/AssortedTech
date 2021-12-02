@@ -8,12 +8,10 @@ import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -112,47 +110,32 @@ public class FanBlockEntity extends BlockEntity {
 	@Override
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
-		this.readPacketNBT(nbt);
+		this.mode = FanMode.VALUES[nbt.getInt("Mode")];
+		this.oldMode = FanMode.VALUES[nbt.getInt("OldMode")];
+		this.range = nbt.getInt("Range");
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
-		super.save(compound);
-		this.writePacketNBT(compound);
-		return compound;
-	}
-
-	public void writePacketNBT(CompoundTag cmp) {
+	protected void saveAdditional(CompoundTag cmp) {
+		super.saveAdditional(cmp);
 		cmp.putInt("Mode", mode.ordinal());
 		cmp.putInt("OldMode", oldMode.ordinal());
 		cmp.putInt("Range", range);
 	}
 
-	public void readPacketNBT(CompoundTag cmp) {
-		this.mode = FanMode.VALUES[cmp.getInt("Mode")];
-		this.oldMode = FanMode.VALUES[cmp.getInt("OldMode")];
-		this.range = cmp.getInt("Range");
-	}
-
 	@Override
 	public CompoundTag getUpdateTag() {
-		return save(new CompoundTag());
+		return this.saveWithoutMetadata();
 	}
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag nbtTagCompound = new CompoundTag();
-		writePacketNBT(nbtTagCompound);
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 1, nbtTagCompound);
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		super.onDataPacket(net, pkt);
-		this.readPacketNBT(pkt.getTag());
-		if (level instanceof ClientLevel) {
-			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
-		}
+	private void markUpdated() {
+		this.setChanged();
+		this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 	}
 
 	public int getRange() {
@@ -161,6 +144,7 @@ public class FanBlockEntity extends BlockEntity {
 
 	public void setRange(int range) {
 		this.range = range;
+		this.markUpdated();
 	}
 
 	public FanMode getMode() {
@@ -169,6 +153,7 @@ public class FanBlockEntity extends BlockEntity {
 
 	public void setMode(FanMode mode) {
 		this.mode = mode;
+		this.markUpdated();
 	}
 
 	public FanMode getOldMode() {
@@ -177,5 +162,6 @@ public class FanBlockEntity extends BlockEntity {
 
 	public void setOldMode(FanMode oldMode) {
 		this.oldMode = oldMode;
+		this.markUpdated();
 	}
 }

@@ -118,7 +118,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 	@Override
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState state2, LevelAccessor level, BlockPos currentPos, BlockPos pos2) {
 		if (stateIn.getValue(WATERLOGGED)) {
-			level.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+			level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
 
 		return facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
@@ -160,7 +160,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
-		level.getBlockTicks().scheduleTick(pos, this, 2);
+		level.scheduleTick(pos, this, 2);
 	}
 
 	@Override

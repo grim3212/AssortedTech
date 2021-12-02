@@ -49,7 +49,7 @@ public class FlipFlopTorchBlock extends TorchBlock {
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
-		level.getBlockTicks().scheduleTick(pos, this, 2);
+		level.scheduleTick(pos, this, 2);
 	}
 
 	@Override

@@ -5,12 +5,10 @@ import java.util.List;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.util.SensorType;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
@@ -76,6 +74,7 @@ public class SensorBlockEntity extends BlockEntity {
 
 	public void toggleShowRange() {
 		this.showRange = !this.showRange;
+		this.markUpdated();
 	}
 
 	public int getRange() {
@@ -85,60 +84,49 @@ public class SensorBlockEntity extends BlockEntity {
 	public int cycleRange() {
 		int newRange = this.range + 1;
 		if (newRange > MAX_RANGE)
-			return this.range = 1;
+			this.range = 1;
 		else
-			return this.range = newRange;
+			this.range = newRange;
+		this.markUpdated();
+		return this.range;
 	}
 
 	public int reverseCycleRange() {
 		int newRange = this.range - 1;
 		if (newRange < 1)
-			return this.range = MAX_RANGE;
+			this.range = MAX_RANGE;
 		else
-			return this.range = newRange;
+			this.range = newRange;
+		this.markUpdated();
+		return this.range;
 	}
 
 	@Override
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
-		this.readPacketNBT(nbt);
+		this.showRange = nbt.getBoolean("ShowRange");
+		this.range = nbt.getInt("Range");
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
-		super.save(compound);
-		this.writePacketNBT(compound);
-		return compound;
-	}
-
-	public void writePacketNBT(CompoundTag cmp) {
+	protected void saveAdditional(CompoundTag cmp) {
+		super.saveAdditional(cmp);
 		cmp.putBoolean("ShowRange", showRange);
 		cmp.putInt("Range", range);
 	}
 
-	public void readPacketNBT(CompoundTag cmp) {
-		this.showRange = cmp.getBoolean("ShowRange");
-		this.range = cmp.getInt("Range");
-	}
-
 	@Override
 	public CompoundTag getUpdateTag() {
-		return save(new CompoundTag());
+		return this.saveWithoutMetadata();
 	}
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag nbtTagCompound = new CompoundTag();
-		writePacketNBT(nbtTagCompound);
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 1, nbtTagCompound);
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		super.onDataPacket(net, pkt);
-		this.readPacketNBT(pkt.getTag());
-		if (level instanceof ClientLevel) {
-			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
-		}
+	private void markUpdated() {
+		this.setChanged();
+		this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
 	}
 }

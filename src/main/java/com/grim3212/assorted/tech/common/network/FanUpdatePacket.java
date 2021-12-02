@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class FanUpdatePacket {
 
@@ -54,7 +54,7 @@ public class FanUpdatePacket {
 						fan.setMode(this.mode);
 						player.level.setBlock(pos, state.setValue(FanBlock.MODE, mode), 3);
 					}
-						
+
 				}
 			});
 			ctx.get().setPacketHandled(true);
