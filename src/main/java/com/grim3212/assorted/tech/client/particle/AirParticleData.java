@@ -18,9 +18,17 @@ public class AirParticleData implements ParticleOptions {
 	public static final Codec<AirParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(BlockPos.CODEC.fieldOf("pos").forGetter(d -> d.pos)).apply(instance, AirParticleData::new));
 
 	public final BlockPos pos;
+	
+	public AirParticleData() {
+		this(BlockPos.ZERO);
+	}
 
 	public AirParticleData(BlockPos pos) {
 		this.pos = pos;
+	}
+	
+	public static Codec<AirParticleData> getCodec() {
+		return CODEC;
 	}
 
 	@Override

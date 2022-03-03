@@ -13,7 +13,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
@@ -39,7 +39,7 @@ public class TechRecipes extends RecipeProvider {
 		}
 
 		for (RegistryObject<SpikeBlock> b : TechBlocks.SPIKES) {
-			Tag<Item> mat = b.get().getSpikeType().getMaterial();
+			TagKey<Item> mat = b.get().getSpikeType().getMaterial();
 			ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.SPIKES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(b.get(), 6).define('X', mat).pattern("X X").pattern(" X ").pattern("XXX").unlockedBy("has_material", has(mat))::save).generateAdvancement().build(consumer, b.get().getRegistryName());
 		}
 	}

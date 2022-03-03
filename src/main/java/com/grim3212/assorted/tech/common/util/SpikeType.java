@@ -3,7 +3,7 @@ package com.grim3212.assorted.tech.common.util;
 import java.util.function.Supplier;
 
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
@@ -35,10 +35,10 @@ public enum SpikeType {
 	TOPAZ(() -> TechTags.Items.GEMS_TOPAZ, 6.5f),
 	PERIDOT(() -> TechTags.Items.GEMS_PERIDOT, 7f);
 
-	private final Supplier<Tag<Item>> material;
+	private final Supplier<TagKey<Item>> material;
 	private final float damage;
 
-	private SpikeType(Supplier<Tag<Item>> material, float damage) {
+	private SpikeType(Supplier<TagKey<Item>> material, float damage) {
 		this.material = material;
 		this.damage = damage;
 	}
@@ -47,7 +47,7 @@ public enum SpikeType {
 		return damage;
 	}
 
-	public Tag<Item> getMaterial() {
+	public TagKey<Item> getMaterial() {
 		return material.get();
 	}
 
