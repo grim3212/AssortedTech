@@ -8,17 +8,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class AirParticleData implements ParticleOptions {
 
 	public static final Codec<AirParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(BlockPos.CODEC.fieldOf("pos").forGetter(d -> d.pos)).apply(instance, AirParticleData::new));
 
 	public final BlockPos pos;
-	
+
 	public AirParticleData() {
 		this(BlockPos.ZERO);
 	}
@@ -26,7 +26,7 @@ public class AirParticleData implements ParticleOptions {
 	public AirParticleData(BlockPos pos) {
 		this.pos = pos;
 	}
-	
+
 	public static Codec<AirParticleData> getCodec() {
 		return CODEC;
 	}
@@ -46,7 +46,7 @@ public class AirParticleData implements ParticleOptions {
 		double d0 = (double) pos.getX();
 		double d1 = (double) pos.getY();
 		double d2 = (double) pos.getZ();
-		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), d0, d1, d2);
+		return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()), d0, d1, d2);
 	}
 
 	public static final Deserializer<AirParticleData> DESERIALIZER = new ParticleOptions.Deserializer<AirParticleData>() {

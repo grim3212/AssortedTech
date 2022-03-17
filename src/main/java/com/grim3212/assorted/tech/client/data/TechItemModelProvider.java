@@ -3,11 +3,8 @@ package com.grim3212.assorted.tech.client.data;
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.item.TechItems;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -24,20 +21,8 @@ public class TechItemModelProvider extends ItemModelProvider {
 
 	@Override
 	protected void registerModels() {
-		withExistingParent(name(TechItems.FLIP_FLOP_TORCH.get()), "item/generated").texture("layer0", prefix("block/flip_flop_torch_off"));
-		withExistingParent(name(TechItems.GLOWSTONE_TORCH.get()), "item/generated").texture("layer0", prefix("block/glowstone_torch_off"));
-	}
-
-	private ItemModelBuilder generatedItem(String name) {
-		return withExistingParent(name, "item/generated").texture("layer0", prefix("item/" + name));
-	}
-
-	private ItemModelBuilder generatedItem(Item i) {
-		return generatedItem(name(i));
-	}
-
-	private static String name(Item i) {
-		return Registry.ITEM.getKey(i).getPath();
+		withExistingParent(TechItems.FLIP_FLOP_TORCH.getId().getPath(), "item/generated").texture("layer0", prefix("block/flip_flop_torch_off"));
+		withExistingParent(TechItems.GLOWSTONE_TORCH.getId().getPath(), "item/generated").texture("layer0", prefix("block/glowstone_torch_off"));
 	}
 
 	private ResourceLocation prefix(String name) {

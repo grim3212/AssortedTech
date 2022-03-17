@@ -64,9 +64,9 @@ public class FlipFlopWallTorchBlock extends FlipFlopTorchBlock {
 		if (state.getValue(LIT)) {
 			Direction direction = state.getValue(FACING).getOpposite();
 			double d0 = 0.27D;
-			double d1 = (double) pos.getX() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + 0.27D * (double) direction.getStepX();
+			double d1 = (double) pos.getX() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + d0 * (double) direction.getStepX();
 			double d2 = (double) pos.getY() + 0.7D + (rand.nextDouble() - 0.5D) * 0.2D + 0.22D;
-			double d3 = (double) pos.getZ() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + 0.27D * (double) direction.getStepZ();
+			double d3 = (double) pos.getZ() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + d0 * (double) direction.getStepZ();
 			level.addParticle(this.flameParticle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
 		}
 	}
