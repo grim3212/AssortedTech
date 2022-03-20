@@ -20,10 +20,14 @@ public final class TechConfig {
 		public final ForgeConfigSpec.BooleanValue spikesEnabled;
 		public final ForgeConfigSpec.BooleanValue sensorsEnabled;
 		public final ForgeConfigSpec.BooleanValue fanEnabled;
-		
+		public final ForgeConfigSpec.BooleanValue alarmEnabled;
+		public final ForgeConfigSpec.BooleanValue bridgesEnabled;
+
 		public final ForgeConfigSpec.DoubleValue fanSpeed;
 		public final ForgeConfigSpec.DoubleValue fanModSpeed;
 		public final ForgeConfigSpec.IntValue fanMaxRange;
+		
+		public final ForgeConfigSpec.IntValue bridgeMaxLength;
 
 		public Common(ForgeConfigSpec.Builder builder) {
 			builder.push("Parts");
@@ -31,12 +35,18 @@ public final class TechConfig {
 			spikesEnabled = builder.comment("Set this to true if you would like spikes to be craftable and found in the creative tab.").define("spikesEnabled", true);
 			sensorsEnabled = builder.comment("Set this to true if you would like sensors to be craftable and found in the creative tab.").define("sensorsEnabled", true);
 			fanEnabled = builder.comment("Set this to true if you would like the fan to be craftable and found in the creative tab.").define("fanEnabled", true);
+			alarmEnabled = builder.comment("Set this to true if you would like the alarm to be craftable and found in the creative tab.").define("alarmEnabled", true);
+			bridgesEnabled = builder.comment("Set this to true if you would like the bridges to be craftable and found in the creative tab.").define("bridgesEnabled", true);
 			builder.pop();
-			
+
 			builder.push("Fans");
 			fanSpeed = builder.comment("The base speed at which the fan blows or sucks entities.").defineInRange("fanSpeed", 0.13D, 0.001D, 1000D);
 			fanModSpeed = builder.comment("The modifier speed at which the fan blows or sucks entities will be added onto the base speed divided by the maxRange-fanRange.").defineInRange("fanModSpeed", 0.065D, 0.001D, 1000D);
 			fanMaxRange = builder.comment("The maximum distance at which the range for fans can be set.").defineInRange("fanMaxRange", 32, 1, 1000);
+			builder.pop();
+			
+			builder.push("Fans");
+			bridgeMaxLength = builder.comment("The maximum length that bridges will extend out to in blocks.").defineInRange("bridgeMaxLength", 128, 1, 1000);
 			builder.pop();
 		}
 	}

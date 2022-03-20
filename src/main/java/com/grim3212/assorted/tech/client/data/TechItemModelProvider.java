@@ -23,6 +23,7 @@ public class TechItemModelProvider extends ItemModelProvider {
 	protected void registerModels() {
 		withExistingParent(TechItems.FLIP_FLOP_TORCH.getId().getPath(), "item/generated").texture("layer0", prefix("block/flip_flop_torch_off"));
 		withExistingParent(TechItems.GLOWSTONE_TORCH.getId().getPath(), "item/generated").texture("layer0", prefix("block/glowstone_torch_off"));
+		withExistingParent(TechItems.GRAVITY_BOOTS.getId().getPath(), "item/generated").texture("layer0", prefix("item/gravity_boots"));
 	}
 
 	private ResourceLocation prefix(String name) {

@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "part": "bridges",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "III",
+          "IRI",
+          "III"
+        ],
+        "key": {
+          "R": {
+            "tag": "forge:slimeballs"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          }
+        },
+        "result": {
+          "item": "assortedtech:bridge_control_laser"
+        }
+      }
+    }
+  ]
+}

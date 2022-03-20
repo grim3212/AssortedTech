@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "assortedtech:block/alarm",
+      "x": 180
+    },
+    "facing=up": {
+      "model": "assortedtech:block/alarm"
+    },
+    "facing=north": {
+      "model": "assortedtech:block/alarm_wall"
+    },
+    "facing=south": {
+      "model": "assortedtech:block/alarm_wall",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "assortedtech:block/alarm_wall",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "assortedtech:block/alarm_wall",
+      "y": 90
+    }
+  }
+}

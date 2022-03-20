@@ -21,6 +21,7 @@ public final class PacketHandler {
 	public static void init() {
 		int id = 0;
 		HANDLER.registerMessage(id++, FanUpdatePacket.class, FanUpdatePacket::encode, FanUpdatePacket::decode, FanUpdatePacket::handle);
+		HANDLER.registerMessage(id++, AlarmUpdatePacket.class, AlarmUpdatePacket::encode, AlarmUpdatePacket::decode, AlarmUpdatePacket::handle);
 	}
 
 	/**

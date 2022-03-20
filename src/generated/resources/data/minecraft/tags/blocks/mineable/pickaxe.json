@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "assortedtech:fan",
+    "assortedtech:alarm",
     "assortedtech:wood_spike",
     "assortedtech:stone_spike",
     "assortedtech:iron_spike",

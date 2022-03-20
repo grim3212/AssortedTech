@@ -4,8 +4,12 @@
 	"death.attack.assortedtech.spike": "%1$s was pierced by spikes",
 	"death.attack.assortedtech.spike.player": "%1$s walked into a spike whilst trying to escape %2$s",
 	
+	"death.attack.assortedtech.laser": "%1$s played with lasers",
+	"death.attack.assortedtech.laser.player": "%1$s got zapped by a laser whilst trying to escape %2$s",
+	
 	"assortedtech.subtitle.spike_deploy": "Spike deployed",
 	"assortedtech.subtitle.spike_close": "Spike closed",
+	"assortedtech.subtitle.alarm": "Alarm going off",
 	
 	"tooltip.spike.damage": "Damage: %s",
 	"tooltip.sensor.detects.wood": "Detects all entities",
@@ -23,11 +27,14 @@
 	
 	"message.sensor.range": "Sensor range update to: %s",
 	
+	"item.assortedtech.gravity_boots": "Gravity Boots",
+	
 	"block.assortedtech.flip_flop_torch": "Flip Flop Torch",
 	"block.assortedtech.flip_flop_wall_torch": "Flip Flop Torch",
 	"block.assortedtech.glowstone_torch": "Glowstone Torch",
 	"block.assortedtech.glowstone_wall_torch": "Glowstone Torch",
 	"block.assortedtech.fan": "Fan",
+	"block.assortedtech.alarm": "Alarm Box",
 	"block.assortedtech.wood_sensor": "Wood Sensor",
 	"block.assortedtech.stone_sensor": "Stone Sensor",
 	"block.assortedtech.iron_sensor": "Iron Sensor",
@@ -40,6 +47,12 @@
 	"block.assortedtech.end_stone_sensor": "End Stone Sensor",
 	"block.assortedtech.hay_bale_sensor": "Hay Bale Sensor",
 	"block.assortedtech.feather_sensor": "Feather Sensor",
+	"block.assortedtech.bridge": "Bridge Piece",
+	"block.assortedtech.bridge_control_laser": "Laser Bridge Control",
+	"block.assortedtech.bridge_control_accel": "Accel Bridge Control",
+	"block.assortedtech.bridge_control_death": "Death Bridge Control",
+	"block.assortedtech.bridge_control_trick": "Trick Bridge Control",
+	"block.assortedtech.bridge_control_gravity": "Gravity Lift Control",
 	
 	"block.assortedtech.wood_spike": "Wood Spikes",
 	"block.assortedtech.stone_spike": "Stone Spikes",
@@ -80,5 +93,11 @@
 	"fan.screen.add_one": "+1",
 	"fan.screen.add_five": "+5",
 	"fan.screen.minus_one": "-1",
-	"fan.screen.minus_five": "-5"
+	"fan.screen.minus_five": "-5",
+	
+	"alarm.screen": "Alarm Box",
+	"alarm.screen.done": "Done",
+	"alarm.screen.description": "Press the button below to cycle through the different types of alarms available. When you've found the one you want, click the 'Done' button at the bottom. Supply a redstone pulse (on/off signal) to any side of the box to sound the alarm.",
+	"alarm.screen.name": "Alarm %s",
+	"alarm.screen.test": "Test"
 }

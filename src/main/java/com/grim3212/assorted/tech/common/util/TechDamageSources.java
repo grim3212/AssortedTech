@@ -5,5 +5,6 @@ import net.minecraft.world.damagesource.DamageSource;
 public class TechDamageSources {
 
 	public static final DamageSource SPIKE = new DamageSource("assortedtech.spike");
+	public static final DamageSource LASER = new DamageSource("assortedtech.laser");
 
 }

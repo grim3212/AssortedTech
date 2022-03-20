@@ -1,0 +1,46 @@
+{
+  "advancements": [
+    {
+      "conditions": [
+        {
+          "part": "bridges",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "assortedtech:bridge_control_death"
+          ]
+        },
+        "criteria": {
+          "has_laser_bridge": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "assortedtech:bridge_control_laser"
+                  ]
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "assortedtech:bridge_control_death"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_laser_bridge",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    }
+  ]
+}

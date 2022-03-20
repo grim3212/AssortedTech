@@ -16,6 +16,8 @@ public class TechTags {
 	public static class Blocks {
 		public static final TagKey<Block> SPIKES = techTag("spikes");
 		public static final TagKey<Block> SENSORS = techTag("sensors");
+		
+		public static final TagKey<Block> LASER_BREAKABLES = techTag("laser_breakables");
 
 		public static TagKey<Block> techTag(String name) {
 			return BlockTags.create(new ResourceLocation(AssortedTech.MODID, name));

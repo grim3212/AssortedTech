@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:water",
+    "minecraft:lava",
+    "minecraft:ice",
+    "minecraft:sugar_cane",
+    "minecraft:snow",
+    "minecraft:powder_snow",
+    "minecraft:wheat",
+    "minecraft:potatoes",
+    "minecraft:carrots",
+    "minecraft:beetroots"
+  ]
+}

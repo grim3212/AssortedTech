@@ -9,6 +9,7 @@ import com.grim3212.assorted.tech.common.util.TechTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -20,7 +21,7 @@ public class TechBlockTagProvider extends BlockTagsProvider {
 
 	@Override
 	protected void addTags() {
-		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.FAN.get());
+		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.FAN.get(), TechBlocks.ALARM.get());
 
 		for (RegistryObject<SpikeBlock> b : TechBlocks.SPIKES) {
 			this.tag(TechTags.Blocks.SPIKES).add(b.get());
@@ -32,6 +33,7 @@ public class TechBlockTagProvider extends BlockTagsProvider {
 			this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(b.get());
 		}
 
+		this.tag(TechTags.Blocks.LASER_BREAKABLES).add(Blocks.WATER, Blocks.LAVA, Blocks.ICE, Blocks.SUGAR_CANE, Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.WHEAT, Blocks.POTATOES, Blocks.CARROTS, Blocks.BEETROOTS);
 	}
 
 	@Override

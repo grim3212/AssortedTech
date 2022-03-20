@@ -3,6 +3,7 @@ package com.grim3212.assorted.tech;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.grim3212.assorted.tech.client.data.BridgeModelProvider;
 import com.grim3212.assorted.tech.client.data.TechBlockstateProvider;
 import com.grim3212.assorted.tech.client.data.TechItemModelProvider;
 import com.grim3212.assorted.tech.client.particle.TechParticleTypes;
@@ -94,7 +95,9 @@ public class AssortedTech {
 		}
 
 		if (event.includeClient()) {
-			datagenerator.addProvider(new TechBlockstateProvider(datagenerator, fileHelper));
+			BridgeModelProvider loadedModels = new BridgeModelProvider(datagenerator, fileHelper);
+			datagenerator.addProvider(new TechBlockstateProvider(datagenerator, fileHelper, loadedModels));
+			datagenerator.addProvider(loadedModels);
 			datagenerator.addProvider(new TechItemModelProvider(datagenerator, fileHelper));
 		}
 	}

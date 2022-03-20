@@ -11,6 +11,7 @@ import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.item.EnabledBlockItem;
 import com.grim3212.assorted.tech.common.item.TechItems;
+import com.grim3212.assorted.tech.common.util.BridgeType;
 import com.grim3212.assorted.tech.common.util.SensorType;
 import com.grim3212.assorted.tech.common.util.SpikeType;
 
@@ -37,6 +38,14 @@ public class TechBlocks {
 	public static final RegistryObject<GlowstoneWallTorchBlock> GLOWSTONE_WALL_TORCH = registerNoItem("glowstone_wall_torch", () -> new GlowstoneWallTorchBlock(Properties.of(Material.DECORATION).noCollission().instabreak().sound(SoundType.WOOD)));
 
 	public static final RegistryObject<FanBlock> FAN = register("fan", EnabledCondition.FAN_CONDITION, () -> new FanBlock(Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5F, 10F)));
+	public static final RegistryObject<AlarmBlock> ALARM = register("alarm", EnabledCondition.ALARM_CONDITION, () -> new AlarmBlock(Properties.of(Material.METAL).sound(SoundType.METAL).lightLevel((b) -> 4).strength(2.0F, 1.0F).requiresCorrectToolForDrops()));
+
+	public static final RegistryObject<BridgeBlock> BRIDGE = register("bridge", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeBlock(Properties.of(Material.METAL).sound(SoundType.METAL).strength(-1.0F, 3600000.0F).dynamicShape().noOcclusion().noDrops().isValidSpawn((s, g, p, e) -> false)));
+	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_LASER = register("bridge_control_laser", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.LASER, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_ACCEL = register("bridge_control_accel", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.ACCEL, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_TRICK = register("bridge_control_trick", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.TRICK, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_DEATH = register("bridge_control_death", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.DEATH, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_GRAVITY = register("bridge_control_gravity", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.GRAVITY, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
 
 	public static final List<RegistryObject<SpikeBlock>> SPIKES = Lists.newArrayList();
 	public static final List<RegistryObject<SensorBlock>> SENSORS = Lists.newArrayList();

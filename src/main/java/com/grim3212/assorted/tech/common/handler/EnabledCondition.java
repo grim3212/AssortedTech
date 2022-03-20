@@ -17,6 +17,8 @@ public class EnabledCondition implements ICondition {
 	public static final String SPIKES_CONDITION = "spikes";
 	public static final String SENSORS_CONDITION = "sensors";
 	public static final String FAN_CONDITION = "fan";
+	public static final String ALARM_CONDITION = "alarm";
+	public static final String BRIDGES_CONDITION = "bridges";
 
 	public EnabledCondition(String part) {
 		this.part = part;
@@ -38,6 +40,10 @@ public class EnabledCondition implements ICondition {
 				return TechConfig.COMMON.sensorsEnabled.get();
 			case FAN_CONDITION:
 				return TechConfig.COMMON.fanEnabled.get();
+			case ALARM_CONDITION:
+				return TechConfig.COMMON.alarmEnabled.get();
+			case BRIDGES_CONDITION:
+				return TechConfig.COMMON.bridgesEnabled.get();
 			default:
 				return false;
 		}
