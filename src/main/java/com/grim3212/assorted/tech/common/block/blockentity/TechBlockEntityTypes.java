@@ -19,4 +19,7 @@ public class TechBlockEntityTypes {
 
 	public static final RegistryObject<BlockEntityType<BridgeBlockEntity>> BRIDGE = BLOCK_ENTITIES.register("bridge", () -> new BlockEntityType<>(BridgeBlockEntity::new, Sets.newHashSet(TechBlocks.BRIDGE.get()), null));
 	public static final RegistryObject<BlockEntityType<BridgeControlBlockEntity>> BRIDGE_CONTROL = BLOCK_ENTITIES.register("bridge_control", () -> new BlockEntityType<>(BridgeControlBlockEntity::new, Sets.newHashSet(TechBlocks.BRIDGE_CONTROL_LASER.get(), TechBlocks.BRIDGE_CONTROL_ACCEL.get(), TechBlocks.BRIDGE_CONTROL_TRICK.get(), TechBlocks.BRIDGE_CONTROL_DEATH.get(), TechBlocks.BRIDGE_CONTROL_GRAVITY.get()), null));
+	public static final RegistryObject<BlockEntityType<GravityBlockEntity>> GRAVITY = BLOCK_ENTITIES.register("gravity", () -> new BlockEntityType<>(GravityBlockEntity::new, Sets.newHashSet(TechBlocks.ATTRACTOR.get(), TechBlocks.REPULSOR.get(), TechBlocks.GRAVITOR.get()), null));
+	public static final RegistryObject<BlockEntityType<GravityDirectionalBlockEntity>> GRAVITY_DIRECTIONAL = BLOCK_ENTITIES.register("gravity_directional", () -> new BlockEntityType<>(GravityDirectionalBlockEntity::new, Sets.newHashSet(TechBlocks.ATTRACTOR_DIRECTIONAL.get(), TechBlocks.REPULSOR_DIRECTIONAL.get(), TechBlocks.GRAVITOR_DIRECTIONAL.get()), null));
+
 }

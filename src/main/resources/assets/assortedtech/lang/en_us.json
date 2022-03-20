@@ -29,6 +29,12 @@
 	
 	"item.assortedtech.gravity_boots": "Gravity Boots",
 	
+	"block.assortedtech.attractor": "Attractor",
+	"block.assortedtech.repulsor": "Repulsor",
+	"block.assortedtech.gravitor": "Gravitor",
+	"block.assortedtech.attractor_directional": "Directional Attractor",
+	"block.assortedtech.repulsor_directional": "Directional Repulsor",
+	"block.assortedtech.gravitor_directional": "Directional Gravitor",
 	"block.assortedtech.flip_flop_torch": "Flip Flop Torch",
 	"block.assortedtech.flip_flop_wall_torch": "Flip Flop Torch",
 	"block.assortedtech.glowstone_torch": "Glowstone Torch",

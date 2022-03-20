@@ -34,6 +34,9 @@ public class TechBlockTagProvider extends BlockTagsProvider {
 		}
 
 		this.tag(TechTags.Blocks.LASER_BREAKABLES).add(Blocks.WATER, Blocks.LAVA, Blocks.ICE, Blocks.SUGAR_CANE, Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.WHEAT, Blocks.POTATOES, Blocks.CARROTS, Blocks.BEETROOTS);
+
+		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.ATTRACTOR.get(), TechBlocks.GRAVITOR.get(), TechBlocks.REPULSOR.get(), TechBlocks.ATTRACTOR_DIRECTIONAL.get(), TechBlocks.REPULSOR_DIRECTIONAL.get(), TechBlocks.GRAVITOR_DIRECTIONAL.get());
+		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.BRIDGE_CONTROL_ACCEL.get(), TechBlocks.BRIDGE_CONTROL_DEATH.get(), TechBlocks.BRIDGE_CONTROL_GRAVITY.get(), TechBlocks.BRIDGE_CONTROL_LASER.get(), TechBlocks.BRIDGE_CONTROL_TRICK.get());
 	}
 
 	@Override

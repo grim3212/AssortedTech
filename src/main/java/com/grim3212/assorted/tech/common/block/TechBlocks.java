@@ -12,6 +12,7 @@ import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.item.EnabledBlockItem;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import com.grim3212.assorted.tech.common.util.BridgeType;
+import com.grim3212.assorted.tech.common.util.GravityType;
 import com.grim3212.assorted.tech.common.util.SensorType;
 import com.grim3212.assorted.tech.common.util.SpikeType;
 
@@ -46,6 +47,14 @@ public class TechBlocks {
 	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_TRICK = register("bridge_control_trick", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.TRICK, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_DEATH = register("bridge_control_death", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.DEATH, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<BridgeControlBlock> BRIDGE_CONTROL_GRAVITY = register("bridge_control_gravity", EnabledCondition.BRIDGES_CONDITION, () -> new BridgeControlBlock(BridgeType.GRAVITY, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(1.0F, 1.0F).requiresCorrectToolForDrops()));
+
+	public static final RegistryObject<GravityBlock> ATTRACTOR = register("attractor", EnabledCondition.GRAVITY_CONDITION, () -> new GravityBlock(GravityType.ATTRACT, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<GravityBlock> REPULSOR = register("repulsor", EnabledCondition.GRAVITY_CONDITION, () -> new GravityBlock(GravityType.REPULSE, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<GravityBlock> GRAVITOR = register("gravitor", EnabledCondition.GRAVITY_CONDITION, () -> new GravityBlock(GravityType.GRAVITATE, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
+
+	public static final RegistryObject<GravityDirectionalBlock> ATTRACTOR_DIRECTIONAL = register("attractor_directional", EnabledCondition.GRAVITY_CONDITION, () -> new GravityDirectionalBlock(GravityType.ATTRACT, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<GravityDirectionalBlock> REPULSOR_DIRECTIONAL = register("repulsor_directional", EnabledCondition.GRAVITY_CONDITION, () -> new GravityDirectionalBlock(GravityType.REPULSE, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<GravityDirectionalBlock> GRAVITOR_DIRECTIONAL = register("gravitor_directional", EnabledCondition.GRAVITY_CONDITION, () -> new GravityDirectionalBlock(GravityType.GRAVITATE, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
 
 	public static final List<RegistryObject<SpikeBlock>> SPIKES = Lists.newArrayList();
 	public static final List<RegistryObject<SensorBlock>> SENSORS = Lists.newArrayList();

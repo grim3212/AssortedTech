@@ -1,5 +1,7 @@
 package com.grim3212.assorted.tech.client.proxy;
 
+import com.grim3212.assorted.tech.client.blockentity.GravityBlockEntityRenderer;
+import com.grim3212.assorted.tech.client.blockentity.GravityDirectionalBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.blockentity.SensorBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.model.BridgeModel;
 import com.grim3212.assorted.tech.client.screen.AlarmScreen;
@@ -58,6 +60,8 @@ public class ClientProxy implements IProxy {
 		TechBlocks.SPIKES.forEach((spike) -> ItemBlockRenderTypes.setRenderLayer(spike.get(), RenderType.cutout()));
 
 		BlockEntityRenderers.register(TechBlockEntityTypes.SENSOR.get(), SensorBlockEntityRenderer::new);
+		BlockEntityRenderers.register(TechBlockEntityTypes.GRAVITY.get(), GravityBlockEntityRenderer::new);
+		BlockEntityRenderers.register(TechBlockEntityTypes.GRAVITY_DIRECTIONAL.get(), GravityDirectionalBlockEntityRenderer::new);
 	}
 
 	@Override

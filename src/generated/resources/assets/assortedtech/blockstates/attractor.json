@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "assortedtech:block/attractor_off"
+    },
+    "powered=true": {
+      "model": "assortedtech:block/attractor"
+    }
+  }
+}

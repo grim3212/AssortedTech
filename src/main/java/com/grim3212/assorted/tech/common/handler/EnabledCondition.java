@@ -19,6 +19,7 @@ public class EnabledCondition implements ICondition {
 	public static final String FAN_CONDITION = "fan";
 	public static final String ALARM_CONDITION = "alarm";
 	public static final String BRIDGES_CONDITION = "bridges";
+	public static final String GRAVITY_CONDITION = "gravity";
 
 	public EnabledCondition(String part) {
 		this.part = part;
@@ -44,6 +45,8 @@ public class EnabledCondition implements ICondition {
 				return TechConfig.COMMON.alarmEnabled.get();
 			case BRIDGES_CONDITION:
 				return TechConfig.COMMON.bridgesEnabled.get();
+			case GRAVITY_CONDITION:
+				return TechConfig.COMMON.gravityEnabled.get();
 			default:
 				return false;
 		}

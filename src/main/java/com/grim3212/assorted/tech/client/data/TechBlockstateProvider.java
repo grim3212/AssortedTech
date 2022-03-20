@@ -8,6 +8,8 @@ import com.grim3212.assorted.tech.common.block.AlarmBlock;
 import com.grim3212.assorted.tech.common.block.BridgeControlBlock;
 import com.grim3212.assorted.tech.common.block.FanBlock;
 import com.grim3212.assorted.tech.common.block.FlipFlopTorchBlock;
+import com.grim3212.assorted.tech.common.block.GravityBlock;
+import com.grim3212.assorted.tech.common.block.GravityDirectionalBlock;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.util.FanMode;
@@ -47,6 +49,14 @@ public class TechBlockstateProvider extends BlockStateProvider {
 	protected void registerStatesAndModels() {
 		this.extraModels();
 
+		genericGravity(TechBlocks.ATTRACTOR.get());
+		genericGravity(TechBlocks.REPULSOR.get());
+		genericGravity(TechBlocks.GRAVITOR.get());
+
+		gravityDirectionalModel(TechBlocks.ATTRACTOR_DIRECTIONAL.get(), resource("block/attractor_on"), resource("block/attractor_off"));
+		gravityDirectionalModel(TechBlocks.REPULSOR_DIRECTIONAL.get(), resource("block/repulsor_on"), resource("block/repulsor_off"));
+		gravityDirectionalModel(TechBlocks.GRAVITOR_DIRECTIONAL.get(), resource("block/gravitor_on"), resource("block/gravitor_off"));
+
 		this.torchModel(TechBlocks.FLIP_FLOP_TORCH.get(), TechBlocks.FLIP_FLOP_WALL_TORCH.get(), FlipFlopTorchBlock.PREV_LIT);
 		this.torchModel(TechBlocks.GLOWSTONE_TORCH.get(), TechBlocks.GLOWSTONE_WALL_TORCH.get());
 
@@ -76,6 +86,17 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		customLoaderState(b, bridgeModel);
 
 		itemModels().getBuilder(name).parent(bridgeModel.model);
+	}
+
+	private void genericGravity(Block b) {
+		String name = name(b);
+		ModelFile onModel = models().cubeAll(name, resource("block/" + name + "_on"));
+		ModelFile offModel = models().cubeAll(name + "_off", resource("block/" + name + "_off"));
+		getVariantBuilder(b).forAllStates(state -> {
+			return ConfiguredModel.builder().modelFile(state.getValue(GravityBlock.POWERED) ? onModel : offModel).build();
+		});
+
+		itemModels().withExistingParent(name, prefix("block/" + name));
 	}
 
 	private void customLoaderState(Block block, ConfiguredModel model) {
@@ -110,18 +131,39 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		String bridgeName = name(b);
 		ResourceLocation bridgeLocation = resource("block/" + bridgeName);
 		ModelFile regularModel = models().orientableWithBottom(bridgeLocation.toString(), resource("block/bridge_control_side"), bridgeLocation, resource("block/bridge_control_top"), resource("block/bridge_control_top"));
-		ModelFile verticalModel = models().orientableWithBottom(bridgeLocation.toString(), resource("block/bridge_control_side"), resource("block/bridge_control_side"), resource("block/bridge_control_top"), bridgeLocation);
-
-		Function<BlockState, ModelFile> modelFunc = (state) -> {
-			return state.getValue(BridgeControlBlock.FACING).getAxis().isVertical() ? regularModel : verticalModel;
-		};
+		ModelFile verticalModel = models().orientableWithBottom(bridgeLocation.toString() + "_vertical", resource("block/bridge_control_side"), resource("block/bridge_control_side"), resource("block/bridge_control_top"), bridgeLocation);
 
 		getVariantBuilder(b).forAllStatesExcept(state -> {
 			Direction dir = state.getValue(BlockStateProperties.FACING);
-			return ConfiguredModel.builder().modelFile(modelFunc.apply(state)).rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
+			return ConfiguredModel.builder().modelFile(verticalModel).rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
 		}, BridgeControlBlock.POWERED);
 
 		itemModels().getBuilder(bridgeName).parent(regularModel);
+	}
+
+	private void gravityDirectionalModel(GravityDirectionalBlock b, ResourceLocation on, ResourceLocation off) {
+		String name = name(b);
+		String location = prefix("block/" + name);
+		ModelFile offModel = models().getBuilder(location + "_off").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("front", off).texture("top", resource("block/gravity_side")).texture("side", resource("block/gravity_side"));
+		ModelFile onModel = models().getBuilder(location + "_on").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable"))).texture("front", on).texture("top", resource("block/gravity_side")).texture("side", resource("block/gravity_side"));
+
+		ModelFile offModelVertical = models().getBuilder(location + "_off_vertical").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("front", off).texture("top", resource("block/gravity_side")).texture("side", resource("block/gravity_side"));
+		ModelFile onModelVertical = models().getBuilder(location + "_on_vertical").parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/orientable_vertical"))).texture("front", on).texture("top", resource("block/gravity_side")).texture("side", resource("block/gravity_side"));
+
+		getVariantBuilder(b).forAllStates(state -> {
+			Direction dir = state.getValue(BlockStateProperties.FACING);
+			boolean powered = state.getValue(GravityDirectionalBlock.POWERED);
+			ModelFile model = null;
+			if (powered) {
+				model = dir.getAxis().isVertical() ? onModelVertical : onModel;
+			} else {
+				model = dir.getAxis().isVertical() ? offModelVertical : offModel;
+			}
+
+			return ConfiguredModel.builder().modelFile(model).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
+		});
+
+		itemModels().getBuilder(prefix("item/" + name)).parent(onModel);
 	}
 
 	private void fanModel() {

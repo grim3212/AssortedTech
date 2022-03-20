@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "assortedtech:block/repulsor_off"
+    },
+    "powered=true": {
+      "model": "assortedtech:block/repulsor"
+    }
+  }
+}

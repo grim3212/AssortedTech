@@ -22,12 +22,19 @@ public final class TechConfig {
 		public final ForgeConfigSpec.BooleanValue fanEnabled;
 		public final ForgeConfigSpec.BooleanValue alarmEnabled;
 		public final ForgeConfigSpec.BooleanValue bridgesEnabled;
+		public final ForgeConfigSpec.BooleanValue gravityEnabled;
 
 		public final ForgeConfigSpec.DoubleValue fanSpeed;
 		public final ForgeConfigSpec.DoubleValue fanModSpeed;
 		public final ForgeConfigSpec.IntValue fanMaxRange;
-		
+
 		public final ForgeConfigSpec.IntValue bridgeMaxLength;
+
+		public final ForgeConfigSpec.DoubleValue attractRepulseSpeed;
+		public final ForgeConfigSpec.DoubleValue attractRepulseModSpeed;
+		public final ForgeConfigSpec.DoubleValue gravitorSpeed;
+
+		public final ForgeConfigSpec.IntValue gravityMaxRange;
 
 		public Common(ForgeConfigSpec.Builder builder) {
 			builder.push("Parts");
@@ -37,6 +44,7 @@ public final class TechConfig {
 			fanEnabled = builder.comment("Set this to true if you would like the fan to be craftable and found in the creative tab.").define("fanEnabled", true);
 			alarmEnabled = builder.comment("Set this to true if you would like the alarm to be craftable and found in the creative tab.").define("alarmEnabled", true);
 			bridgesEnabled = builder.comment("Set this to true if you would like the bridges to be craftable and found in the creative tab.").define("bridgesEnabled", true);
+			gravityEnabled = builder.comment("Set this to true if you would like the gravity blocks and items to be craftable and found in the creative tab.").define("gravityEnabled", true);
 			builder.pop();
 
 			builder.push("Fans");
@@ -44,9 +52,16 @@ public final class TechConfig {
 			fanModSpeed = builder.comment("The modifier speed at which the fan blows or sucks entities will be added onto the base speed divided by the maxRange-fanRange.").defineInRange("fanModSpeed", 0.065D, 0.001D, 1000D);
 			fanMaxRange = builder.comment("The maximum distance at which the range for fans can be set.").defineInRange("fanMaxRange", 32, 1, 1000);
 			builder.pop();
-			
-			builder.push("Fans");
+
+			builder.push("Bridges");
 			bridgeMaxLength = builder.comment("The maximum length that bridges will extend out to in blocks.").defineInRange("bridgeMaxLength", 128, 1, 1000);
+			builder.pop();
+
+			builder.push("Gravity");
+			gravityMaxRange = builder.comment("The maximum distance at which the range for gravity blocks can be set.").defineInRange("gravityMaxRange", 15, 1, 1000);
+			attractRepulseSpeed = builder.comment("The base speed at which the attractor and repulsor moves entities.").defineInRange("attractRepulseSpeed", 0.13D, 0.001D, 1000D);
+			attractRepulseModSpeed = builder.comment("The modifier speed at which the attractor and repulsor moves entities will be added onto the base speed divided by the maxRange-fanRange.").defineInRange("attractRepulseModSpeed", 0.065D, 0.001D, 1000D);
+			gravitorSpeed = builder.comment("The speed at which the gravitor blocks will move entities up.").defineInRange("gravitorSpeed", 0.1D, 0.001D, 10D);
 			builder.pop();
 		}
 	}

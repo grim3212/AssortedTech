@@ -1,28 +1,28 @@
 {
   "variants": {
     "facing=down": {
-      "model": "assortedtech:block/bridge_control_trick",
+      "model": "assortedtech:block/bridge_control_trick_vertical",
       "x": 180
     },
     "facing=up": {
-      "model": "assortedtech:block/bridge_control_trick"
+      "model": "assortedtech:block/bridge_control_trick_vertical"
     },
     "facing=north": {
-      "model": "assortedtech:block/bridge_control_trick",
+      "model": "assortedtech:block/bridge_control_trick_vertical",
       "x": 90
     },
     "facing=south": {
-      "model": "assortedtech:block/bridge_control_trick",
+      "model": "assortedtech:block/bridge_control_trick_vertical",
       "x": 90,
       "y": 180
     },
     "facing=west": {
-      "model": "assortedtech:block/bridge_control_trick",
+      "model": "assortedtech:block/bridge_control_trick_vertical",
       "x": 90,
       "y": 270
     },
     "facing=east": {
-      "model": "assortedtech:block/bridge_control_trick",
+      "model": "assortedtech:block/bridge_control_trick_vertical",
       "x": 90,
       "y": 90
     }

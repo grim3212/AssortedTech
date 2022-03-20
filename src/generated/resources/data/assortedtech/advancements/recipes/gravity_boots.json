@@ -1,0 +1,46 @@
+{
+  "advancements": [
+    {
+      "conditions": [
+        {
+          "part": "gravity",
+          "type": "assortedtech:part_enabled"
+        }
+      ],
+      "advancement": {
+        "parent": "minecraft:recipes/root",
+        "rewards": {
+          "recipes": [
+            "assortedtech:gravity_boots"
+          ]
+        },
+        "criteria": {
+          "has_attractor": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+              "items": [
+                {
+                  "items": [
+                    "assortedtech:attractor"
+                  ]
+                }
+              ]
+            }
+          },
+          "has_the_recipe": {
+            "trigger": "minecraft:recipe_unlocked",
+            "conditions": {
+              "recipe": "assortedtech:gravity_boots"
+            }
+          }
+        },
+        "requirements": [
+          [
+            "has_attractor",
+            "has_the_recipe"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -31,6 +31,8 @@ public class EnabledBlockItem extends BlockItem {
 				return TechConfig.COMMON.alarmEnabled.get() ? super.allowdedIn(tab) : false;
 			case EnabledCondition.BRIDGES_CONDITION:
 				return TechConfig.COMMON.bridgesEnabled.get() ? super.allowdedIn(tab) : false;
+			case EnabledCondition.GRAVITY_CONDITION:
+				return TechConfig.COMMON.gravityEnabled.get() ? super.allowdedIn(tab) : false;
 			default:
 				return super.allowdedIn(tab);
 		}
