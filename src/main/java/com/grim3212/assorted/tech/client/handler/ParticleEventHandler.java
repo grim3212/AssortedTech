@@ -6,12 +6,13 @@ import com.grim3212.assorted.tech.client.particle.TechParticleTypes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid = AssortedTech.MODID, bus = Bus.MOD)
+@EventBusSubscriber(modid = AssortedTech.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class ParticleEventHandler {
 
 	@SubscribeEvent
