@@ -4,24 +4,24 @@
     {
       "conditions": [
         {
-          "part": "gravity",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "gravity"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "A": {
+            "item": "assortedtech:attractor"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          }
+        },
         "pattern": [
           "I I",
           "A A"
         ],
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "A": {
-            "item": "assortedtech:attractor"
-          }
-        },
         "result": {
           "item": "assortedtech:gravity_boots"
         }

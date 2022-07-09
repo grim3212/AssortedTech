@@ -31,24 +31,24 @@ public class EnabledCondition implements ICondition {
 	}
 
 	@Override
-	public boolean test() {
+	public boolean test(IContext context) {
 		switch (part) {
-			case TORCHES_CONDITION:
-				return TechConfig.COMMON.torchesEnabled.get();
-			case SPIKES_CONDITION:
-				return TechConfig.COMMON.spikesEnabled.get();
-			case SENSORS_CONDITION:
-				return TechConfig.COMMON.sensorsEnabled.get();
-			case FAN_CONDITION:
-				return TechConfig.COMMON.fanEnabled.get();
-			case ALARM_CONDITION:
-				return TechConfig.COMMON.alarmEnabled.get();
-			case BRIDGES_CONDITION:
-				return TechConfig.COMMON.bridgesEnabled.get();
-			case GRAVITY_CONDITION:
-				return TechConfig.COMMON.gravityEnabled.get();
-			default:
-				return false;
+		case TORCHES_CONDITION:
+			return TechConfig.COMMON.torchesEnabled.get();
+		case SPIKES_CONDITION:
+			return TechConfig.COMMON.spikesEnabled.get();
+		case SENSORS_CONDITION:
+			return TechConfig.COMMON.sensorsEnabled.get();
+		case FAN_CONDITION:
+			return TechConfig.COMMON.fanEnabled.get();
+		case ALARM_CONDITION:
+			return TechConfig.COMMON.alarmEnabled.get();
+		case BRIDGES_CONDITION:
+			return TechConfig.COMMON.bridgesEnabled.get();
+		case GRAVITY_CONDITION:
+			return TechConfig.COMMON.gravityEnabled.get();
+		default:
+			return false;
 		}
 	}
 

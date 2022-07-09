@@ -17,12 +17,12 @@ public class EnabledStandingAndWallBlockItem extends StandingAndWallBlockItem {
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab tab) {
+	protected boolean allowedIn(CreativeModeTab tab) {
 		switch (this.enabledCondition) {
-			case EnabledCondition.TORCHES_CONDITION:
-				return TechConfig.COMMON.torchesEnabled.get() ? super.allowdedIn(tab) : false;
-			default:
-				return super.allowdedIn(tab);
+		case EnabledCondition.TORCHES_CONDITION:
+			return TechConfig.COMMON.torchesEnabled.get() ? super.allowedIn(tab) : false;
+		default:
+			return super.allowedIn(tab);
 		}
 	}
 }

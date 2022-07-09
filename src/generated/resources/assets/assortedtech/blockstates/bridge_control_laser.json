@@ -4,8 +4,10 @@
       "model": "assortedtech:block/bridge_control_laser_vertical",
       "x": 180
     },
-    "facing=up": {
-      "model": "assortedtech:block/bridge_control_laser_vertical"
+    "facing=east": {
+      "model": "assortedtech:block/bridge_control_laser_vertical",
+      "x": 90,
+      "y": 90
     },
     "facing=north": {
       "model": "assortedtech:block/bridge_control_laser_vertical",
@@ -16,15 +18,13 @@
       "x": 90,
       "y": 180
     },
+    "facing=up": {
+      "model": "assortedtech:block/bridge_control_laser_vertical"
+    },
     "facing=west": {
       "model": "assortedtech:block/bridge_control_laser_vertical",
       "x": 90,
       "y": 270
-    },
-    "facing=east": {
-      "model": "assortedtech:block/bridge_control_laser_vertical",
-      "x": 90,
-      "y": 90
     }
   }
 }

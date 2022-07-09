@@ -4,28 +4,28 @@
     {
       "conditions": [
         {
-          "part": "torches",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "torches"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "P": {
+            "tag": "forge:dusts/glowstone"
+          },
+          "R": {
+            "tag": "forge:dusts/redstone"
+          },
+          "X": {
+            "tag": "forge:rods/wooden"
+          }
+        },
         "pattern": [
           "P",
           "X",
           "R"
         ],
-        "key": {
-          "X": {
-            "tag": "forge:rods/wooden"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          },
-          "P": {
-            "tag": "forge:dusts/glowstone"
-          }
-        },
         "result": {
           "item": "assortedtech:glowstone_torch"
         }

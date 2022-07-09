@@ -1,7 +1,5 @@
 package com.grim3212.assorted.tech.common.block;
 
-import java.util.Random;
-
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeControlBlockEntity;
 import com.grim3212.assorted.tech.common.util.BridgeType;
 
@@ -9,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -71,7 +70,7 @@ public class BridgeControlBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
 		if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
 			level.setBlock(pos, state.cycle(POWERED), 2);
 		}
@@ -117,7 +116,7 @@ public class BridgeControlBlock extends Block implements EntityBlock {
 
 		if (blockEntity instanceof BridgeControlBlockEntity bridgeControl) {
 			if (!heldItem.isEmpty() && !player.isShiftKeyDown()) {
-				if (heldItem.getItem()instanceof BlockItem block) {
+				if (heldItem.getItem() instanceof BlockItem block) {
 					if (block != null && block.getBlock() != null) {
 						BlockState currentState = bridgeControl.getStoredBlockState();
 						BlockState tryToSetState = block.getBlock().defaultBlockState();

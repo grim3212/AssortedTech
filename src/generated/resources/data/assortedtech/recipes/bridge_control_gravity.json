@@ -4,28 +4,28 @@
     {
       "conditions": [
         {
-          "part": "bridges",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "bridges"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "III",
-          "ILI",
-          "IRI"
-        ],
         "key": {
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
           "L": {
             "item": "assortedtech:bridge_control_laser"
           },
           "R": {
             "tag": "forge:ender_pearls"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
           }
         },
+        "pattern": [
+          "III",
+          "ILI",
+          "IRI"
+        ],
         "result": {
           "item": "assortedtech:bridge_control_gravity"
         }

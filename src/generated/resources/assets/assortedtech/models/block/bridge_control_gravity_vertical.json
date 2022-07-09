@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "side": "assortedtech:block/bridge_control_side",
-    "front": "assortedtech:block/bridge_control_side",
     "bottom": "assortedtech:block/bridge_control_top",
+    "front": "assortedtech:block/bridge_control_side",
+    "side": "assortedtech:block/bridge_control_side",
     "top": "assortedtech:block/bridge_control_gravity"
   }
 }

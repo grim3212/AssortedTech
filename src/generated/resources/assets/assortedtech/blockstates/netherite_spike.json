@@ -4,11 +4,26 @@
       "model": "assortedtech:block/spikes/netherite_spike",
       "x": 180
     },
-    "facing=up,powered=false": {
-      "model": "assortedtech:block/spikes/netherite_spike"
+    "facing=down,powered=true": {
+      "model": "assortedtech:block/spikes/netherite_spike_powered",
+      "x": 180
+    },
+    "facing=east,powered=false": {
+      "model": "assortedtech:block/spikes/netherite_spike",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "assortedtech:block/spikes/netherite_spike_powered",
+      "x": 90,
+      "y": 90
     },
     "facing=north,powered=false": {
       "model": "assortedtech:block/spikes/netherite_spike",
+      "x": 90
+    },
+    "facing=north,powered=true": {
+      "model": "assortedtech:block/spikes/netherite_spike_powered",
       "x": 90
     },
     "facing=south,powered=false": {
@@ -16,41 +31,26 @@
       "x": 90,
       "y": 180
     },
-    "facing=west,powered=false": {
-      "model": "assortedtech:block/spikes/netherite_spike",
-      "x": 90,
-      "y": 270
-    },
-    "facing=east,powered=false": {
-      "model": "assortedtech:block/spikes/netherite_spike",
-      "x": 90,
-      "y": 90
-    },
-    "facing=down,powered=true": {
-      "model": "assortedtech:block/spikes/netherite_spike_powered",
-      "x": 180
-    },
-    "facing=up,powered=true": {
-      "model": "assortedtech:block/spikes/netherite_spike_powered"
-    },
-    "facing=north,powered=true": {
-      "model": "assortedtech:block/spikes/netherite_spike_powered",
-      "x": 90
-    },
     "facing=south,powered=true": {
       "model": "assortedtech:block/spikes/netherite_spike_powered",
       "x": 90,
       "y": 180
     },
+    "facing=up,powered=false": {
+      "model": "assortedtech:block/spikes/netherite_spike"
+    },
+    "facing=up,powered=true": {
+      "model": "assortedtech:block/spikes/netherite_spike_powered"
+    },
+    "facing=west,powered=false": {
+      "model": "assortedtech:block/spikes/netherite_spike",
+      "x": 90,
+      "y": 270
+    },
     "facing=west,powered=true": {
       "model": "assortedtech:block/spikes/netherite_spike_powered",
       "x": 90,
       "y": 270
-    },
-    "facing=east,powered=true": {
-      "model": "assortedtech:block/spikes/netherite_spike_powered",
-      "x": 90,
-      "y": 90
     }
   }
 }

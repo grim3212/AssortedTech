@@ -3,7 +3,6 @@ package com.grim3212.assorted.tech.client.data;
 import java.util.function.Function;
 
 import com.grim3212.assorted.tech.AssortedTech;
-import com.grim3212.assorted.tech.client.model.BridgeModel;
 import com.grim3212.assorted.tech.common.block.AlarmBlock;
 import com.grim3212.assorted.tech.common.block.BridgeControlBlock;
 import com.grim3212.assorted.tech.common.block.FanBlock;
@@ -14,6 +13,7 @@ import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.util.FanMode;
 
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -26,14 +26,15 @@ import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder.FaceRotation;
-import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TechBlockstateProvider extends BlockStateProvider {
 
 	private final BridgeModelProvider loaderModels;
+	private static final ResourceLocation CUTOUT_RENDER_TYPE = new ResourceLocation("minecraft:cutout");
 
 	public TechBlockstateProvider(DataGenerator generator, ExistingFileHelper exFileHelper, BridgeModelProvider loader) {
 		super(generator, AssortedTech.MODID, exFileHelper);
@@ -80,7 +81,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
 	private void bridge(Block b, ResourceLocation model) {
 		String name = name(b);
 
-		BridgeModelBuilder bridgeParent = this.loaderModels.getBuilder(name).loader(BridgeModel.Loader.LOCATION).bridge(model).texture("particle", new ResourceLocation(AssortedTech.MODID, "block/bridge")).addTexture("stored", new ResourceLocation(AssortedTech.MODID, "block/bridge_gravity"));
+		BridgeModelBuilder bridgeParent = this.loaderModels.getBuilder(name).loader(new ResourceLocation(AssortedTech.MODID, "bridge")).bridge(model).texture("particle", new ResourceLocation(AssortedTech.MODID, "block/bridge")).addTexture("stored", new ResourceLocation(AssortedTech.MODID, "block/bridge_gravity"));
 
 		ConfiguredModel bridgeModel = new ConfiguredModel(bridgeParent);
 		customLoaderState(b, bridgeModel);
@@ -123,8 +124,8 @@ public class TechBlockstateProvider extends BlockStateProvider {
 	}
 
 	private void defaultPerspective(ModelBuilder<?> model) {
-		model.transforms().transform(Perspective.GUI).rotation(30, 225, 0).translation(0, 0, 0).scale(0.625f).end().transform(Perspective.GROUND).rotation(0, 0, 0).translation(0, 3, 0).scale(0.25f).end().transform(Perspective.FIXED).rotation(0, 0, 0).translation(0, 0, 0).scale(0.5f).end().transform(Perspective.THIRDPERSON_RIGHT).rotation(75, 45, 0).translation(0, 2.5f, 0).scale(0.375f).end().transform(Perspective.FIRSTPERSON_RIGHT).rotation(0, 45, 0).translation(0, 0, 0).scale(0.40f).end()
-				.transform(Perspective.FIRSTPERSON_LEFT).rotation(0, 225, 0).translation(0, 0, 0).scale(0.40f).end();
+		model.transforms().transform(TransformType.GUI).rotation(30, 225, 0).translation(0, 0, 0).scale(0.625f).end().transform(TransformType.GROUND).rotation(0, 0, 0).translation(0, 3, 0).scale(0.25f).end().transform(TransformType.FIXED).rotation(0, 0, 0).translation(0, 0, 0).scale(0.5f).end().transform(TransformType.THIRD_PERSON_RIGHT_HAND).rotation(75, 45, 0).translation(0, 2.5f, 0).scale(0.375f).end().transform(TransformType.FIRST_PERSON_RIGHT_HAND).rotation(0, 45, 0).translation(0, 0, 0)
+				.scale(0.40f).end().transform(TransformType.FIRST_PERSON_LEFT_HAND).rotation(0, 225, 0).translation(0, 0, 0).scale(0.40f).end();
 	}
 
 	private void bridgeControlModel(Block b) {
@@ -182,15 +183,15 @@ public class TechBlockstateProvider extends BlockStateProvider {
 			FanMode mode = state.getValue(FanBlock.MODE);
 			ModelFile model = null;
 			switch (mode) {
-				case BLOW:
-					model = dir.getAxis().isVertical() ? blowModelVertical : blowModel;
-					break;
-				case OFF:
-					model = dir.getAxis().isVertical() ? offModelVertical : offModel;
-					break;
-				case SUCK:
-					model = dir.getAxis().isVertical() ? suckModelVertical : suckModel;
-					break;
+			case BLOW:
+				model = dir.getAxis().isVertical() ? blowModelVertical : blowModel;
+				break;
+			case OFF:
+				model = dir.getAxis().isVertical() ? offModelVertical : offModel;
+				break;
+			case SUCK:
+				model = dir.getAxis().isVertical() ? suckModelVertical : suckModel;
+				break;
 			}
 
 			return ConfiguredModel.builder().modelFile(model).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
@@ -200,47 +201,47 @@ public class TechBlockstateProvider extends BlockStateProvider {
 	}
 
 	private void alarmBoxModel() {
-		BlockModelBuilder alarmModel = this.models().getBuilder(prefix("block/alarm")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top"));
+		BlockModelBuilder alarmModel = this.models().getBuilder(prefix("block/alarm")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top")).renderType(CUTOUT_RENDER_TYPE);
 		alarmModel.element().from(3, 0, 3).to(13, 4, 13).allFaces((dir, face) -> {
 			switch (dir) {
-				case EAST:
-				case NORTH:
-				case SOUTH:
-				case WEST:
-					face.texture("#side").uvs(2, 11, 14, 16);
-					break;
-				case DOWN:
-					face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.DOWN);
-					break;
-				case UP:
-				default:
-					face.texture("#top").uvs(3, 3, 13, 13);
-					break;
+			case EAST:
+			case NORTH:
+			case SOUTH:
+			case WEST:
+				face.texture("#side").uvs(2, 11, 14, 16);
+				break;
+			case DOWN:
+				face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.DOWN);
+				break;
+			case UP:
+			default:
+				face.texture("#top").uvs(3, 3, 13, 13);
+				break;
 			}
 		});
 
-		BlockModelBuilder alarmWallModel = this.models().getBuilder(prefix("block/alarm_wall")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top"));
+		BlockModelBuilder alarmWallModel = this.models().getBuilder(prefix("block/alarm_wall")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top")).renderType(CUTOUT_RENDER_TYPE);
 		alarmWallModel.element().from(3, 3, 12).to(13, 13, 16).allFaces((dir, face) -> {
 			switch (dir) {
-				case EAST:
-					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.CLOCKWISE_90);
-					break;
-				case NORTH:
-					face.texture("#top").uvs(3, 3, 13, 13);
-					break;
-				case SOUTH:
-					face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.SOUTH);
-					break;
-				case WEST:
-					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.COUNTERCLOCKWISE_90);
-					break;
-				case DOWN:
-					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.UPSIDE_DOWN);
-					break;
-				case UP:
-				default:
-					face.texture("#side").uvs(2, 11, 14, 16);
-					break;
+			case EAST:
+				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.CLOCKWISE_90);
+				break;
+			case NORTH:
+				face.texture("#top").uvs(3, 3, 13, 13);
+				break;
+			case SOUTH:
+				face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.SOUTH);
+				break;
+			case WEST:
+				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.COUNTERCLOCKWISE_90);
+				break;
+			case DOWN:
+				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.UPSIDE_DOWN);
+				break;
+			case UP:
+			default:
+				face.texture("#side").uvs(2, 11, 14, 16);
+				break;
 			}
 		});
 
@@ -253,7 +254,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
 			return ConfiguredModel.builder().modelFile(modelFunc.apply(state)).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
 		}, BlockStateProperties.WATERLOGGED, AlarmBlock.POWERED);
 
-		itemModels().getBuilder(name(TechBlocks.ALARM.get())).parent(alarmWallModel);
+		itemModels().getBuilder(name(TechBlocks.ALARM.get())).parent(alarmWallModel).renderType(CUTOUT_RENDER_TYPE);
 	}
 
 	private void sensorModel(Block b) {
@@ -276,36 +277,36 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		String spikeUnpowered = prefix("block/spikes/" + spikeName);
 		String spikePowered = prefix("block/spikes/" + spikeName + "_powered");
 
-		ModelFile spikeModel = models().getBuilder(spikeUnpowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikeUnpowered);
-		ModelFile spikePoweredModel = models().getBuilder(spikePowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikePowered);
+		ModelFile spikeModel = models().getBuilder(spikeUnpowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikeUnpowered).renderType(CUTOUT_RENDER_TYPE);
+		ModelFile spikePoweredModel = models().getBuilder(spikePowered).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/cross"))).texture("cross", spikePowered).renderType(CUTOUT_RENDER_TYPE);
 
 		getVariantBuilder(b).forAllStatesExcept(state -> {
 			Direction dir = state.getValue(BlockStateProperties.FACING);
 			return ConfiguredModel.builder().modelFile(state.getValue(BlockStateProperties.POWERED) ? spikePoweredModel : spikeModel).rotationX(dir == Direction.DOWN ? 180 : dir == Direction.UP ? 0 : 90).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
 		}, BlockStateProperties.WATERLOGGED);
 
-		itemModels().withExistingParent(spikeName, "item/generated").texture("layer0", spikePowered);
+		itemModels().withExistingParent(spikeName, "item/generated").texture("layer0", spikePowered).renderType(CUTOUT_RENDER_TYPE);
 	}
 
 	private void torchModel(Block torch, Block wallTorch, Property<?>... ignored) {
 		String torchName = name(torch);
 		String wallTorchName = name(wallTorch);
 
-		ModelFile litTorchModel = models().getBuilder(prefix("block/" + torchName)).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch"))).texture("torch", prefix("block/" + torchName));
-		ModelFile unlitTorchModel = models().getBuilder(prefix("block/" + torchName + "_off")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch"))).texture("torch", prefix("block/" + torchName + "_off"));
+		ModelFile litTorchModel = models().getBuilder(prefix("block/" + torchName)).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch"))).texture("torch", prefix("block/" + torchName)).renderType(CUTOUT_RENDER_TYPE);
+		ModelFile unlitTorchModel = models().getBuilder(prefix("block/" + torchName + "_off")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch"))).texture("torch", prefix("block/" + torchName + "_off")).renderType(CUTOUT_RENDER_TYPE);
 		getVariantBuilder(torch).forAllStatesExcept(state -> {
 			return ConfiguredModel.builder().modelFile(state.getValue(BlockStateProperties.LIT) ? litTorchModel : unlitTorchModel).build();
 		}, ignored);
 
-		ModelFile litWallTorchModel = models().getBuilder(prefix("block/" + wallTorchName)).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch_wall"))).texture("torch", prefix("block/" + torchName));
-		ModelFile unlitWallTorchModel = models().getBuilder(prefix("block/" + wallTorchName + "_off")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch_wall"))).texture("torch", prefix("block/" + torchName + "_off"));
+		ModelFile litWallTorchModel = models().getBuilder(prefix("block/" + wallTorchName)).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch_wall"))).texture("torch", prefix("block/" + torchName)).renderType(CUTOUT_RENDER_TYPE);
+		ModelFile unlitWallTorchModel = models().getBuilder(prefix("block/" + wallTorchName + "_off")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/template_torch_wall"))).texture("torch", prefix("block/" + torchName + "_off")).renderType(CUTOUT_RENDER_TYPE);
 		getVariantBuilder(wallTorch).forAllStatesExcept(state -> {
 			return ConfiguredModel.builder().modelFile(state.getValue(BlockStateProperties.LIT) ? litWallTorchModel : unlitWallTorchModel).rotationY((((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()) + 90) % 360).build();
 		}, ignored);
 	}
 
 	private String name(Block b) {
-		return b.getRegistryName().getPath();
+		return ForgeRegistries.BLOCKS.getKey(b).getPath();
 	}
 
 	private String prefix(String name) {

@@ -4,28 +4,28 @@
     {
       "conditions": [
         {
-          "part": "fan",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "fan"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "key": {
+          "I": {
+            "tag": "forge:ingots/iron"
+          },
+          "R": {
+            "tag": "forge:dusts/redstone"
+          },
+          "X": {
+            "tag": "minecraft:planks"
+          }
+        },
         "pattern": [
           "XIX",
           "XRX",
           "XXX"
         ],
-        "key": {
-          "X": {
-            "tag": "minecraft:planks"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
-          }
-        },
         "result": {
           "item": "assortedtech:fan"
         }

@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "side": "assortedtech:block/sensors/end_stone_sensor_side",
     "front": "assortedtech:block/sensors/end_stone_sensor_off",
+    "side": "assortedtech:block/sensors/end_stone_sensor_side",
     "top": "assortedtech:block/sensors/end_stone_sensor_side"
   }
 }

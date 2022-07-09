@@ -1,12 +1,12 @@
 {
-  "textures": {
-    "particle": "assortedtech:block/bridge"
-  },
-  "loader": "assortedtech:models/bridge",
   "bridge": {
     "parent": "assortedtech:block/tinted_cube",
     "textures": {
       "stored": "assortedtech:block/bridge_gravity"
     }
+  },
+  "loader": "assortedtech:bridge",
+  "textures": {
+    "particle": "assortedtech:block/bridge"
   }
 }

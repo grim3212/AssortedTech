@@ -85,20 +85,16 @@ public class AssortedTech {
 		DataGenerator datagenerator = event.getGenerator();
 		ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-		if (event.includeServer()) {
-			datagenerator.addProvider(new TechRecipes(datagenerator));
-			TechBlockTagProvider blockTagProvider = new TechBlockTagProvider(datagenerator, fileHelper);
-			datagenerator.addProvider(blockTagProvider);
-			datagenerator.addProvider(new TechItemTagProvider(datagenerator, blockTagProvider, fileHelper));
-			datagenerator.addProvider(new TechEntityTagProvider(datagenerator, fileHelper));
-			datagenerator.addProvider(new TechLootProvider(datagenerator));
-		}
+		datagenerator.addProvider(event.includeServer(), new TechRecipes(datagenerator));
+		TechBlockTagProvider blockTagProvider = new TechBlockTagProvider(datagenerator, fileHelper);
+		datagenerator.addProvider(event.includeServer(), blockTagProvider);
+		datagenerator.addProvider(event.includeServer(), new TechItemTagProvider(datagenerator, blockTagProvider, fileHelper));
+		datagenerator.addProvider(event.includeServer(), new TechEntityTagProvider(datagenerator, fileHelper));
+		datagenerator.addProvider(event.includeServer(), new TechLootProvider(datagenerator));
 
-		if (event.includeClient()) {
-			BridgeModelProvider loadedModels = new BridgeModelProvider(datagenerator, fileHelper);
-			datagenerator.addProvider(new TechBlockstateProvider(datagenerator, fileHelper, loadedModels));
-			datagenerator.addProvider(loadedModels);
-			datagenerator.addProvider(new TechItemModelProvider(datagenerator, fileHelper));
-		}
+		BridgeModelProvider loadedModels = new BridgeModelProvider(datagenerator, fileHelper);
+		datagenerator.addProvider(event.includeClient(), new TechBlockstateProvider(datagenerator, fileHelper, loadedModels));
+		datagenerator.addProvider(event.includeClient(), loadedModels);
+		datagenerator.addProvider(event.includeClient(), new TechItemModelProvider(datagenerator, fileHelper));
 	}
 }

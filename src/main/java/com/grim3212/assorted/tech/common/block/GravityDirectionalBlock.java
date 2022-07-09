@@ -1,14 +1,13 @@
 package com.grim3212.assorted.tech.common.block;
 
-import java.util.Random;
-
 import com.grim3212.assorted.tech.common.block.blockentity.GravityDirectionalBlockEntity;
 import com.grim3212.assorted.tech.common.util.GravityType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -84,7 +83,7 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
 		if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
 			level.setBlock(pos, state.cycle(POWERED), 2);
 		}
@@ -110,10 +109,10 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
 			} else {
 				if (player.isShiftKeyDown()) {
 					int newRange = gravity.reverseCycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
 				} else {
 					int newRange = gravity.cycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
 				}
 				return InteractionResult.SUCCESS;
 			}

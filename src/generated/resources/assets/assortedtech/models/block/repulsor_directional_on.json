@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "front": "assortedtech:block/repulsor_on",
-    "top": "assortedtech:block/gravity_side",
-    "side": "assortedtech:block/gravity_side"
+    "side": "assortedtech:block/gravity_side",
+    "top": "assortedtech:block/gravity_side"
   }
 }

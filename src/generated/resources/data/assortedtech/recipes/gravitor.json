@@ -4,31 +4,31 @@
     {
       "conditions": [
         {
-          "part": "gravity",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "gravity"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "IRI",
-          " C ",
-          "IEI"
-        ],
         "key": {
           "C": {
             "item": "minecraft:compass"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
           },
           "E": {
             "tag": "forge:ender_pearls"
           },
           "I": {
             "tag": "forge:ingots/iron"
+          },
+          "R": {
+            "tag": "forge:dusts/redstone"
           }
         },
+        "pattern": [
+          "IRI",
+          " C ",
+          "IEI"
+        ],
         "result": {
           "item": "assortedtech:gravitor"
         }

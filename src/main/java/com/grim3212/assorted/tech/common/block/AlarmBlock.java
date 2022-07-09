@@ -1,7 +1,5 @@
 package com.grim3212.assorted.tech.common.block;
 
-import java.util.Random;
-
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.block.blockentity.AlarmBlockEntity;
 
@@ -9,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -66,19 +65,19 @@ public class AlarmBlock extends Block implements EntityBlock {
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
-			case EAST:
-				return EAST_BOUNDS;
-			case NORTH:
-				return NORTH_BOUNDS;
-			case SOUTH:
-				return SOUTH_BOUNDS;
-			case UP:
-				return UP_BOUNDS;
-			case WEST:
-				return WEST_BOUNDS;
-			case DOWN:
-			default:
-				return DOWN_BOUNDS;
+		case EAST:
+			return EAST_BOUNDS;
+		case NORTH:
+			return NORTH_BOUNDS;
+		case SOUTH:
+			return SOUTH_BOUNDS;
+		case UP:
+			return UP_BOUNDS;
+		case WEST:
+			return WEST_BOUNDS;
+		case DOWN:
+		default:
+			return DOWN_BOUNDS;
 		}
 	}
 
@@ -145,7 +144,7 @@ public class AlarmBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
 		Direction dir = state.getValue(FACING);
 		BlockPos poweredPos = pos.offset(dir.getOpposite().getNormal());
 		if (!state.getValue(POWERED) && level.hasNeighborSignal(poweredPos)) {

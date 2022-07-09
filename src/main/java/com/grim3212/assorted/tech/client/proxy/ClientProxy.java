@@ -20,8 +20,6 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtUtils;
@@ -30,7 +28,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -43,22 +41,14 @@ public class ClientProxy implements IProxy {
 		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::setupClient);
 		modBus.addListener(this::loadComplete);
+		modBus.addListener(this::registerLoaders);
+	}
 
-		if (Minecraft.getInstance() != null) {
-			ModelLoaderRegistry.registerLoader(BridgeModel.Loader.LOCATION, BridgeModel.Loader.INSTANCE);
-		}
+	private void registerLoaders(final ModelEvent.RegisterGeometryLoaders event) {
+		event.register("bridge", BridgeModel.Loader.INSTANCE);
 	}
 
 	private void setupClient(final FMLClientSetupEvent event) {
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.FLIP_FLOP_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.FLIP_FLOP_WALL_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.GLOWSTONE_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.GLOWSTONE_WALL_TORCH.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.ALARM.get(), RenderType.cutout());
-		ItemBlockRenderTypes.setRenderLayer(TechBlocks.BRIDGE.get(), RenderType.translucent());
-
-		TechBlocks.SPIKES.forEach((spike) -> ItemBlockRenderTypes.setRenderLayer(spike.get(), RenderType.cutout()));
-
 		BlockEntityRenderers.register(TechBlockEntityTypes.SENSOR.get(), SensorBlockEntityRenderer::new);
 		BlockEntityRenderers.register(TechBlockEntityTypes.GRAVITY.get(), GravityBlockEntityRenderer::new);
 		BlockEntityRenderers.register(TechBlockEntityTypes.GRAVITY_DIRECTIONAL.get(), GravityDirectionalBlockEntityRenderer::new);

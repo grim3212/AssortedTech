@@ -4,8 +4,9 @@
       "model": "assortedtech:block/alarm",
       "x": 180
     },
-    "facing=up": {
-      "model": "assortedtech:block/alarm"
+    "facing=east": {
+      "model": "assortedtech:block/alarm_wall",
+      "y": 90
     },
     "facing=north": {
       "model": "assortedtech:block/alarm_wall"
@@ -14,13 +15,12 @@
       "model": "assortedtech:block/alarm_wall",
       "y": 180
     },
+    "facing=up": {
+      "model": "assortedtech:block/alarm"
+    },
     "facing=west": {
       "model": "assortedtech:block/alarm_wall",
       "y": 270
-    },
-    "facing=east": {
-      "model": "assortedtech:block/alarm_wall",
-      "y": 90
     }
   }
 }

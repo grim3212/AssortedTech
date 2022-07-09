@@ -12,8 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -41,7 +40,7 @@ public class BridgeBlockEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(CompoundTag cmp) {
 		super.saveAdditional(cmp);
-		if (this.blockState.getBlock().getRegistryName() != null)
+		if (ForgeRegistries.BLOCKS.getKey(this.blockState.getBlock()) != null)
 			cmp.put("stored_state", NbtUtils.writeBlockState(this.blockState));
 		else
 			cmp.put("stored_state", NbtUtils.writeBlockState(Blocks.AIR.defaultBlockState()));
@@ -68,8 +67,8 @@ public class BridgeBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public IModelData getModelData() {
-		return new ModelDataMap.Builder().withInitial(BLOCK_STATE, blockState).build();
+	public ModelData getModelData() {
+		return ModelData.builder().with(BLOCK_STATE, blockState).build();
 	}
 
 	public Direction getFacing() {

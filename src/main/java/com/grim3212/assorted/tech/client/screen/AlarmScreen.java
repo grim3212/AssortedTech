@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class AlarmScreen extends Screen {
@@ -21,7 +21,7 @@ public class AlarmScreen extends Screen {
 	private int alarmType = 0;
 
 	public AlarmScreen(AlarmBlockEntity alarmEntity) {
-		super(new TranslatableComponent("alarm.screen"));
+		super(Component.translatable("alarm.screen"));
 		this.alarmBlockEntity = alarmEntity;
 		this.alarmType = alarmEntity.getAlarmType();
 	}
@@ -33,20 +33,20 @@ public class AlarmScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.addRenderableWidget(new Button(this.width / 2 - 25, 210, 50, 20, new TranslatableComponent("alarm.screen.done"), btn -> {
+		this.addRenderableWidget(new Button(this.width / 2 - 25, 210, 50, 20, Component.translatable("alarm.screen.done"), btn -> {
 			this.alarmBlockEntity.setAlarmType(alarmType);
 			PacketHandler.sendToServer(new AlarmUpdatePacket(this.alarmBlockEntity.getBlockPos(), this.alarmType));
 			this.close();
 		}));
-		this.addRenderableWidget(new Button(this.width / 2 - 50, 100, 100, 20, new TranslatableComponent("alarm.screen.name", (char) (65 + this.alarmType)), btn -> {
+		this.addRenderableWidget(new Button(this.width / 2 - 50, 100, 100, 20, Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)), btn -> {
 			this.alarmType += 1;
 			if (this.alarmType > 13) {
 				this.alarmType = 0;
 			}
 
-			btn.setMessage(new TranslatableComponent("alarm.screen.name", (char) (65 + this.alarmType)));
+			btn.setMessage(Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)));
 		}));
-		this.addRenderableWidget(new Button(this.width / 2 - 25, 120, 50, 20, new TranslatableComponent("alarm.screen.test"), btn -> {
+		this.addRenderableWidget(new Button(this.width / 2 - 25, 120, 50, 20, Component.translatable("alarm.screen.test"), btn -> {
 			Minecraft.getInstance().player.playSound(AlarmBlockEntity.getSound(this.alarmType).get(), 1.0F, 1.0F);
 		}));
 	}
@@ -71,10 +71,10 @@ public class AlarmScreen extends Screen {
 		stack.pushPose();
 		super.render(stack, mouseX, mouseY, partialTicks);
 		stack.popPose();
-		AlarmScreen.drawCenteredString(stack, font, new TranslatableComponent("alarm.screen"), width / 2, 10, 0xFF1010);
+		AlarmScreen.drawCenteredString(stack, font, Component.translatable("alarm.screen"), width / 2, 10, 0xFF1010);
 
 		int textBorder = 5;
-		font.drawWordWrap(new TranslatableComponent("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
+		font.drawWordWrap(Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
 
 	}
 }

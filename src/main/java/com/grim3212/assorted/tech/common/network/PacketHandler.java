@@ -44,7 +44,7 @@ public final class PacketHandler {
 	}
 
 	public static void sendNonLocal(ServerPlayer playerMP, Object toSend) {
-		if (playerMP.server.isDedicatedServer() || !playerMP.getGameProfile().getName().equals(playerMP.server.getSingleplayerName())) {
+		if (playerMP.server.isDedicatedServer() || !playerMP.getGameProfile().getId().equals(playerMP.server.getSingleplayerProfile().getId())) {
 			sendTo(playerMP, toSend);
 		}
 	}

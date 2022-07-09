@@ -1,11 +1,10 @@
 package com.grim3212.assorted.tech.common.block;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -60,7 +59,7 @@ public class FlipFlopWallTorchBlock extends FlipFlopTorchBlock {
 	}
 
 	@Override
-	public void animateTick(BlockState state, Level level, BlockPos pos, Random rand) {
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
 		if (state.getValue(LIT)) {
 			Direction direction = state.getValue(FACING).getOpposite();
 			double d0 = 0.27D;

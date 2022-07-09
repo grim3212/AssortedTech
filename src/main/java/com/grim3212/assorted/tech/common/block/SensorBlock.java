@@ -9,7 +9,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +62,7 @@ public class SensorBlock extends Block implements EntityBlock {
 
 	@Override
 	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent("tooltip.sensor.detects." + this.sensorType.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable("tooltip.sensor.detects." + this.sensorType.name().toLowerCase()).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
@@ -107,10 +106,10 @@ public class SensorBlock extends Block implements EntityBlock {
 			} else {
 				if (player.isShiftKeyDown()) {
 					int newRange = sensor.reverseCycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
 				} else {
 					int newRange = sensor.cycleRange();
-					player.displayClientMessage(new TranslatableComponent("message.sensor.range", newRange), true);
+					player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
 				}
 				return InteractionResult.SUCCESS;
 			}

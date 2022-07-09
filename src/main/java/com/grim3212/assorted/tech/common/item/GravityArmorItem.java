@@ -17,8 +17,8 @@ public class GravityArmorItem extends ArmorItem {
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab group) {
-		return TechConfig.COMMON.bridgesEnabled.get() ? super.allowdedIn(group) : false;
+	protected boolean allowedIn(CreativeModeTab group) {
+		return TechConfig.COMMON.bridgesEnabled.get() ? super.allowedIn(group) : false;
 	}
 
 	@Override

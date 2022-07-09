@@ -1,29 +1,20 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "assortedtech:block/alarm_side",
-    "side": "assortedtech:block/alarm_side",
-    "top": "assortedtech:block/alarm_top"
-  },
   "elements": [
     {
-      "from": [
-        3,
-        0,
-        3
-      ],
-      "to": [
-        13,
-        4,
-        13
-      ],
       "faces": {
         "down": {
-          "texture": "#top",
-          "cullface": "down"
-        },
-        "up": {
+          "cullface": "down",
           "texture": "#top"
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            2.0,
+            11.0,
+            14.0,
+            16.0
+          ]
         },
         "north": {
           "texture": "#side",
@@ -43,6 +34,9 @@
             16.0
           ]
         },
+        "up": {
+          "texture": "#top"
+        },
         "west": {
           "texture": "#side",
           "uv": [
@@ -51,17 +45,24 @@
             14.0,
             16.0
           ]
-        },
-        "east": {
-          "texture": "#side",
-          "uv": [
-            2.0,
-            11.0,
-            14.0,
-            16.0
-          ]
         }
-      }
+      },
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        4,
+        13
+      ]
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "assortedtech:block/alarm_side",
+    "side": "assortedtech:block/alarm_side",
+    "top": "assortedtech:block/alarm_top"
+  }
 }

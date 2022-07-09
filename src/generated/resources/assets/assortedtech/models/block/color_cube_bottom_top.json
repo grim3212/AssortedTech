@@ -1,12 +1,12 @@
 {
   "parent": "assortedtech:block/color_cube",
   "textures": {
-    "particle": "#side",
     "down": "#bottom",
-    "up": "#top",
+    "east": "#side",
     "north": "#side",
+    "particle": "#side",
     "south": "#side",
-    "west": "#side",
-    "east": "#side"
+    "up": "#top",
+    "west": "#side"
   }
 }

@@ -4,25 +4,25 @@
     {
       "conditions": [
         {
-          "part": "spikes",
-          "type": "assortedtech:part_enabled"
+          "type": "assortedtech:part_enabled",
+          "part": "spikes"
         }
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
-        "pattern": [
-          "X X",
-          " X ",
-          "XXX"
-        ],
         "key": {
           "X": {
             "tag": "forge:gems/peridot"
           }
         },
+        "pattern": [
+          "X X",
+          " X ",
+          "XXX"
+        ],
         "result": {
-          "item": "assortedtech:peridot_spike",
-          "count": 6
+          "count": 6,
+          "item": "assortedtech:peridot_spike"
         }
       }
     }

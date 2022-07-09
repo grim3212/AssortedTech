@@ -4,67 +4,67 @@
       "model": "assortedtech:block/fan_blow_vertical",
       "x": 180
     },
-    "facing=up,mode=blow": {
-      "model": "assortedtech:block/fan_blow_vertical"
-    },
-    "facing=north,mode=blow": {
-      "model": "assortedtech:block/fan_blow"
-    },
-    "facing=south,mode=blow": {
-      "model": "assortedtech:block/fan_blow",
-      "y": 180
-    },
-    "facing=west,mode=blow": {
-      "model": "assortedtech:block/fan_blow",
-      "y": 270
-    },
-    "facing=east,mode=blow": {
-      "model": "assortedtech:block/fan_blow",
-      "y": 90
+    "facing=down,mode=off": {
+      "model": "assortedtech:block/fan_stopped_vertical",
+      "x": 180
     },
     "facing=down,mode=suck": {
       "model": "assortedtech:block/fan_suck_vertical",
       "x": 180
     },
-    "facing=up,mode=suck": {
-      "model": "assortedtech:block/fan_suck_vertical"
+    "facing=east,mode=blow": {
+      "model": "assortedtech:block/fan_blow",
+      "y": 90
     },
-    "facing=north,mode=suck": {
-      "model": "assortedtech:block/fan_suck"
-    },
-    "facing=south,mode=suck": {
-      "model": "assortedtech:block/fan_suck",
-      "y": 180
-    },
-    "facing=west,mode=suck": {
-      "model": "assortedtech:block/fan_suck",
-      "y": 270
+    "facing=east,mode=off": {
+      "model": "assortedtech:block/fan_stopped",
+      "y": 90
     },
     "facing=east,mode=suck": {
       "model": "assortedtech:block/fan_suck",
       "y": 90
     },
-    "facing=down,mode=off": {
-      "model": "assortedtech:block/fan_stopped_vertical",
-      "x": 180
-    },
-    "facing=up,mode=off": {
-      "model": "assortedtech:block/fan_stopped_vertical"
+    "facing=north,mode=blow": {
+      "model": "assortedtech:block/fan_blow"
     },
     "facing=north,mode=off": {
       "model": "assortedtech:block/fan_stopped"
+    },
+    "facing=north,mode=suck": {
+      "model": "assortedtech:block/fan_suck"
+    },
+    "facing=south,mode=blow": {
+      "model": "assortedtech:block/fan_blow",
+      "y": 180
     },
     "facing=south,mode=off": {
       "model": "assortedtech:block/fan_stopped",
       "y": 180
     },
+    "facing=south,mode=suck": {
+      "model": "assortedtech:block/fan_suck",
+      "y": 180
+    },
+    "facing=up,mode=blow": {
+      "model": "assortedtech:block/fan_blow_vertical"
+    },
+    "facing=up,mode=off": {
+      "model": "assortedtech:block/fan_stopped_vertical"
+    },
+    "facing=up,mode=suck": {
+      "model": "assortedtech:block/fan_suck_vertical"
+    },
+    "facing=west,mode=blow": {
+      "model": "assortedtech:block/fan_blow",
+      "y": 270
+    },
     "facing=west,mode=off": {
       "model": "assortedtech:block/fan_stopped",
       "y": 270
     },
-    "facing=east,mode=off": {
-      "model": "assortedtech:block/fan_stopped",
-      "y": 90
+    "facing=west,mode=suck": {
+      "model": "assortedtech:block/fan_suck",
+      "y": 270
     }
   }
 }

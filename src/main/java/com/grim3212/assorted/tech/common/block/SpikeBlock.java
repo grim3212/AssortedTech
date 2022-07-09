@@ -1,7 +1,6 @@
 package com.grim3212.assorted.tech.common.block;
 
 import java.util.List;
-import java.util.Random;
 
 import com.grim3212.assorted.tech.common.util.SpikeType;
 import com.grim3212.assorted.tech.common.util.TechDamageSources;
@@ -11,9 +10,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +65,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		tooltip.add(new TranslatableComponent("tooltip.spike.damage", new TranslatableComponent(String.valueOf(this.spikeType.getDamage())).withStyle(ChatFormatting.AQUA)).withStyle(ChatFormatting.GRAY));
+		tooltip.add(Component.translatable("tooltip.spike.damage", Component.translatable(String.valueOf(this.spikeType.getDamage())).withStyle(ChatFormatting.AQUA)).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
@@ -164,7 +163,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
 		Direction dir = state.getValue(FACING);
 		BlockPos poweredPos = pos.offset(dir.getOpposite().getNormal());
 		if (!state.getValue(POWERED) && level.hasNeighborSignal(poweredPos)) {

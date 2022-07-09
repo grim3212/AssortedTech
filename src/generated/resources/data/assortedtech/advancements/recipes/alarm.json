@@ -1,35 +1,24 @@
 {
   "advancements": [
     {
-      "conditions": [
-        {
-          "part": "alarm",
-          "type": "assortedtech:part_enabled"
-        }
-      ],
       "advancement": {
         "parent": "minecraft:recipes/root",
-        "rewards": {
-          "recipes": [
-            "assortedtech:alarm"
-          ]
-        },
         "criteria": {
           "has_redstone": {
-            "trigger": "minecraft:inventory_changed",
             "conditions": {
               "items": [
                 {
                   "tag": "forge:dusts/redstone"
                 }
               ]
-            }
+            },
+            "trigger": "minecraft:inventory_changed"
           },
           "has_the_recipe": {
-            "trigger": "minecraft:recipe_unlocked",
             "conditions": {
               "recipe": "assortedtech:alarm"
-            }
+            },
+            "trigger": "minecraft:recipe_unlocked"
           }
         },
         "requirements": [
@@ -37,8 +26,19 @@
             "has_redstone",
             "has_the_recipe"
           ]
-        ]
-      }
+        ],
+        "rewards": {
+          "recipes": [
+            "assortedtech:alarm"
+          ]
+        }
+      },
+      "conditions": [
+        {
+          "type": "assortedtech:part_enabled",
+          "part": "alarm"
+        }
+      ]
     }
   ]
 }

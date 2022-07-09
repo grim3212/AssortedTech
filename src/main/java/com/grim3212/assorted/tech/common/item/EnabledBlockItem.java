@@ -17,24 +17,24 @@ public class EnabledBlockItem extends BlockItem {
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab tab) {
+	protected boolean allowedIn(CreativeModeTab tab) {
 		switch (this.enabled) {
-			case EnabledCondition.TORCHES_CONDITION:
-				return TechConfig.COMMON.torchesEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.SPIKES_CONDITION:
-				return TechConfig.COMMON.spikesEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.SENSORS_CONDITION:
-				return TechConfig.COMMON.sensorsEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.FAN_CONDITION:
-				return TechConfig.COMMON.fanEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.ALARM_CONDITION:
-				return TechConfig.COMMON.alarmEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.BRIDGES_CONDITION:
-				return TechConfig.COMMON.bridgesEnabled.get() ? super.allowdedIn(tab) : false;
-			case EnabledCondition.GRAVITY_CONDITION:
-				return TechConfig.COMMON.gravityEnabled.get() ? super.allowdedIn(tab) : false;
-			default:
-				return super.allowdedIn(tab);
+		case EnabledCondition.TORCHES_CONDITION:
+			return TechConfig.COMMON.torchesEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.SPIKES_CONDITION:
+			return TechConfig.COMMON.spikesEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.SENSORS_CONDITION:
+			return TechConfig.COMMON.sensorsEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.FAN_CONDITION:
+			return TechConfig.COMMON.fanEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.ALARM_CONDITION:
+			return TechConfig.COMMON.alarmEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.BRIDGES_CONDITION:
+			return TechConfig.COMMON.bridgesEnabled.get() ? super.allowedIn(tab) : false;
+		case EnabledCondition.GRAVITY_CONDITION:
+			return TechConfig.COMMON.gravityEnabled.get() ? super.allowedIn(tab) : false;
+		default:
+			return super.allowedIn(tab);
 		}
 	}
 }

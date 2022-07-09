@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.grim3212.assorted.tech.AssortedTech;
+import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -22,12 +22,11 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
-public class BridgeModel implements IModelGeometry<BridgeModel> {
+public class BridgeModel implements IUnbakedGeometry<BridgeModel> {
 	private BlockModel unbakedBridge;
 
 	private BridgeModel(BlockModel unbakedBridge) {
@@ -36,7 +35,7 @@ public class BridgeModel implements IModelGeometry<BridgeModel> {
 
 	@Nonnull
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+	public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
 		Set<Material> ret = new HashSet<>();
 		ret.addAll(this.unbakedBridge.getMaterials(modelGetter, missingTextureErrors));
 		return ret;
@@ -44,24 +43,18 @@ public class BridgeModel implements IModelGeometry<BridgeModel> {
 
 	@Nullable
 	@Override
-	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ItemOverrides overrides, ResourceLocation name) {
+	public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ItemOverrides overrides, ResourceLocation name) {
 		BakedModel bakedBridge = unbakedBridge.bake(bakery, spriteGetter, transform, name);
-		return new BridgeBakedModel(bakedBridge, unbakedBridge, owner, spriteGetter.apply(owner.resolveTexture("particle")), bakery, spriteGetter, transform, overrides, name);
+		return new BridgeBakedModel(bakedBridge, unbakedBridge, owner, spriteGetter.apply(owner.getMaterial("particle")), bakery, spriteGetter, transform, overrides, name);
 	}
 
-	public enum Loader implements IModelLoader<BridgeModel> {
+	public enum Loader implements IGeometryLoader<BridgeModel> {
 		INSTANCE;
-
-		public static final ResourceLocation LOCATION = new ResourceLocation(AssortedTech.MODID, "models/bridge");
-
-		@Override
-		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
-		}
 
 		@Nonnull
 		@Override
-		public BridgeModel read(JsonDeserializationContext ctx, JsonObject model) {
-			BlockModel bridge = ctx.deserialize(model.getAsJsonObject("bridge"), BlockModel.class);
+		public BridgeModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
+			BlockModel bridge = deserializationContext.deserialize(jsonObject.getAsJsonObject("bridge"), BlockModel.class);
 			return new BridgeModel(bridge);
 		}
 	}

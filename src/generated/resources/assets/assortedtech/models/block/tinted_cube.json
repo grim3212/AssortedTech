@@ -1,52 +1,16 @@
 {
   "parent": "minecraft:block/block",
   "display": {
-    "gui": {
+    "firstperson_lefthand": {
       "rotation": [
-        30,
+        0,
         225,
         0
       ],
       "scale": [
-        0.625,
-        0.625,
-        0.625
-      ]
-    },
-    "ground": {
-      "translation": [
-        0,
-        3,
-        0
-      ],
-      "scale": [
-        0.25,
-        0.25,
-        0.25
-      ]
-    },
-    "fixed": {
-      "scale": [
-        0.5,
-        0.5,
-        0.5
-      ]
-    },
-    "thirdperson_righthand": {
-      "rotation": [
-        75,
-        45,
-        0
-      ],
-      "translation": [
-        0,
-        2.5,
-        0
-      ],
-      "scale": [
-        0.375,
-        0.375,
-        0.375
+        0.4,
+        0.4,
+        0.4
       ]
     },
     "firstperson_righthand": {
@@ -61,25 +25,89 @@
         0.4
       ]
     },
-    "firstperson_lefthand": {
-      "rotation": [
+    "fixed": {
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "translation": [
         0,
+        3,
+        0
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
         225,
         0
       ],
       "scale": [
-        0.4,
-        0.4,
-        0.4
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
       ]
     }
   },
-  "textures": {
-    "particle": "assortedtech:block/bridge",
-    "stored": "assortedtech:block/bridge"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#stored",
+          "tintindex": 0
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#stored",
+          "tintindex": 0
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#stored",
+          "tintindex": 0
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#stored",
+          "tintindex": 0
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#stored",
+          "tintindex": 0
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#stored",
+          "tintindex": 0
+        }
+      },
       "from": [
         0,
         0,
@@ -89,39 +117,11 @@
         16,
         16,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#stored",
-          "cullface": "down",
-          "tintindex": 0
-        },
-        "up": {
-          "texture": "#stored",
-          "cullface": "up",
-          "tintindex": 0
-        },
-        "north": {
-          "texture": "#stored",
-          "cullface": "north",
-          "tintindex": 0
-        },
-        "south": {
-          "texture": "#stored",
-          "cullface": "south",
-          "tintindex": 0
-        },
-        "west": {
-          "texture": "#stored",
-          "cullface": "west",
-          "tintindex": 0
-        },
-        "east": {
-          "texture": "#stored",
-          "cullface": "east",
-          "tintindex": 0
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "particle": "assortedtech:block/bridge",
+    "stored": "assortedtech:block/bridge"
+  }
 }
