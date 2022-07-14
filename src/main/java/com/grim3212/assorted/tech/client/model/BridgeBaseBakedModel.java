@@ -8,6 +8,8 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.google.common.collect.ImmutableMap;
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
@@ -35,6 +37,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
@@ -76,6 +79,11 @@ public abstract class BridgeBaseBakedModel extends BakedModelWrapper<BakedModel>
 		BridgeType type = state.getValue(BridgeBlock.TYPE);
 
 		return this.getCachedModel(type, blockState).getQuads(state, side, rand, extraData, RenderType.translucent());
+	}
+	
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
+        return ChunkRenderTypeSet.of(RenderType.translucent());
 	}
 
 	protected final Map<BlockState, BakedModel> cache = new HashMap<BlockState, BakedModel>();
