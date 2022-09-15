@@ -40,6 +40,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
@@ -69,6 +70,10 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
 		if (TechConfig.COMMON.spikesEnabled.get()) {
+			if(TechConfig.COMMON.hideUncraftableItems.get() && ForgeRegistries.ITEMS.tags().getTag(spikeType.getMaterial()).size() <= 0) {
+				return;
+			}
+			
 			super.fillItemCategory(tab, items);
 		}
 	}

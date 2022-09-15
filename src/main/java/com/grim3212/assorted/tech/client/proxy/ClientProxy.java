@@ -29,9 +29,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ClientProxy implements IProxy {
@@ -40,8 +40,9 @@ public class ClientProxy implements IProxy {
 	public void starting() {
 		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modBus.addListener(this::setupClient);
-		modBus.addListener(this::loadComplete);
 		modBus.addListener(this::registerLoaders);
+		modBus.addListener(this::registerItemColorHandles);
+		modBus.addListener(this::registerBlockColorHandles);
 	}
 
 	private void registerLoaders(final ModelEvent.RegisterGeometryLoaders event) {
@@ -64,44 +65,45 @@ public class ClientProxy implements IProxy {
 		Minecraft.getInstance().setScreen(new AlarmScreen(fan));
 	}
 
-	public void loadComplete(final FMLLoadCompleteEvent event) {
-		event.enqueueWork(() -> {
-			ItemColors items = Minecraft.getInstance().getItemColors();
-			BlockColors blocks = Minecraft.getInstance().getBlockColors();
+	private void registerBlockColorHandles(final RegisterColorHandlersEvent.Block event) {
+		BlockColors blocks = event.getBlockColors();
 
-			blocks.register(new BlockColor() {
-				@Override
-				public int getColor(BlockState state, BlockAndTintGetter worldIn, BlockPos pos, int tint) {
-					if (pos != null) {
-						BlockEntity te = worldIn.getBlockEntity(pos);
-						if (te != null && te instanceof BridgeBlockEntity bridge) {
+		event.register(new BlockColor() {
+			@Override
+			public int getColor(BlockState state, BlockAndTintGetter worldIn, BlockPos pos, int tint) {
+				if (pos != null) {
+					BlockEntity te = worldIn.getBlockEntity(pos);
+					if (te != null && te instanceof BridgeBlockEntity bridge) {
 
-							if (bridge.getStoredBlockState() != Blocks.AIR.defaultBlockState()) {
-								return Minecraft.getInstance().getBlockColors().getColor(bridge.getStoredBlockState(), worldIn, pos, tint);
-							}
+						if (bridge.getStoredBlockState() != Blocks.AIR.defaultBlockState()) {
+							return blocks.getColor(bridge.getStoredBlockState(), worldIn, pos, tint);
+						}
 
-							return state.getValue(BridgeBlock.TYPE).getRenderColor();
+						return state.getValue(BridgeBlock.TYPE).getRenderColor();
+					}
+				}
+				return 16777215;
+			}
+		}, TechBlocks.BRIDGE.get());
+	}
+
+	private void registerItemColorHandles(final RegisterColorHandlersEvent.Item event) {
+		ItemColors items = event.getItemColors();
+
+		event.register(new ItemColor() {
+			@Override
+			public int getColor(ItemStack stack, int tint) {
+				if (stack != null && stack.hasTag()) {
+					if (stack.getTag().contains("stored_state")) {
+						BlockState stored = NbtUtils.readBlockState(NBTHelper.getTag(stack, "stored_state"));
+						ItemStack colorStack = new ItemStack(stored.getBlock());
+						if (colorStack.getItem() != null) {
+							return items.getColor(colorStack, tint);
 						}
 					}
-					return 16777215;
 				}
-			}, TechBlocks.BRIDGE.get());
-
-			items.register(new ItemColor() {
-				@Override
-				public int getColor(ItemStack stack, int tint) {
-					if (stack != null && stack.hasTag()) {
-						if (stack.getTag().contains("stored_state")) {
-							BlockState stored = NbtUtils.readBlockState(NBTHelper.getTag(stack, "stored_state"));
-							ItemStack colorStack = new ItemStack(stored.getBlock());
-							if (colorStack.getItem() != null) {
-								return Minecraft.getInstance().getItemColors().getColor(colorStack, tint);
-							}
-						}
-					}
-					return 16777215;
-				}
-			}, TechBlocks.BRIDGE.get());
-		});
+				return 16777215;
+			}
+		}, TechBlocks.BRIDGE.get());
 	}
 }

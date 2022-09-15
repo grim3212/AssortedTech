@@ -24,6 +24,8 @@ public final class TechConfig {
 		public final ForgeConfigSpec.BooleanValue bridgesEnabled;
 		public final ForgeConfigSpec.BooleanValue gravityEnabled;
 
+		public final ForgeConfigSpec.BooleanValue hideUncraftableItems;
+
 		public final ForgeConfigSpec.DoubleValue fanSpeed;
 		public final ForgeConfigSpec.DoubleValue fanModSpeed;
 		public final ForgeConfigSpec.IntValue fanMaxRange;
@@ -45,6 +47,10 @@ public final class TechConfig {
 			alarmEnabled = builder.comment("Set this to true if you would like the alarm to be craftable and found in the creative tab.").define("alarmEnabled", true);
 			bridgesEnabled = builder.comment("Set this to true if you would like the bridges to be craftable and found in the creative tab.").define("bridgesEnabled", true);
 			gravityEnabled = builder.comment("Set this to true if you would like the gravity blocks and items to be craftable and found in the creative tab.").define("gravityEnabled", true);
+			builder.pop();
+
+			builder.push("General");
+			hideUncraftableItems = builder.comment("For any item that is unobtainable (like missing materials from other mods) hide it from the creative menu / JEI.").define("hideUncraftableItems", true);
 			builder.pop();
 
 			builder.push("Fans");
