@@ -19,9 +19,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
-public class TechRecipes extends RecipeProvider {
+public class TechRecipes extends RecipeProvider implements IConditionBuilder {
 
 	public TechRecipes(DataGenerator generatorIn) {
 		super(generatorIn);
@@ -64,7 +65,7 @@ public class TechRecipes extends RecipeProvider {
 
 		for (RegistryObject<SpikeBlock> b : TechBlocks.SPIKES) {
 			TagKey<Item> mat = b.get().getSpikeType().getMaterial();
-			ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.SPIKES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(b.get(), 6).define('X', mat).pattern("X X").pattern(" X ").pattern("XXX").unlockedBy("has_material", has(mat))::save).generateAdvancement().build(consumer, b.getId());
+			ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.SPIKES_CONDITION)).addCondition(not(tagEmpty(mat))).addRecipe(ShapedRecipeBuilder.shaped(b.get(), 6).define('X', mat).pattern("X X").pattern(" X ").pattern("XXX").unlockedBy("has_material", has(mat))::save).generateAdvancement().build(consumer, b.getId());
 		}
 	}
 

@@ -16,7 +16,7 @@ public class TechTags {
 	public static class Blocks {
 		public static final TagKey<Block> SPIKES = techTag("spikes");
 		public static final TagKey<Block> SENSORS = techTag("sensors");
-		
+
 		public static final TagKey<Block> LASER_BREAKABLES = techTag("laser_breakables");
 
 		public static TagKey<Block> techTag(String name) {
@@ -29,7 +29,6 @@ public class TechTags {
 		public static final TagKey<Item> SPIKES = forgeTag("spikes");
 
 		public static final TagKey<Item> INGOTS_TIN = forgeTag("ingots/tin");
-		public static final TagKey<Item> INGOTS_COPPER = forgeTag("ingots/copper");
 		public static final TagKey<Item> INGOTS_SILVER = forgeTag("ingots/silver");
 		public static final TagKey<Item> INGOTS_ALUMINUM = forgeTag("ingots/aluminum");
 		public static final TagKey<Item> INGOTS_NICKEL = forgeTag("ingots/nickel");
@@ -40,7 +39,6 @@ public class TechTags {
 		public static final TagKey<Item> INGOTS_INVAR = forgeTag("ingots/invar");
 		public static final TagKey<Item> INGOTS_STEEL = forgeTag("ingots/steel");
 		public static final TagKey<Item> GEMS_RUBY = forgeTag("gems/ruby");
-		public static final TagKey<Item> GEMS_AMETHYST = forgeTag("gems/amethyst");
 		public static final TagKey<Item> GEMS_SAPPHIRE = forgeTag("gems/sapphire");
 		public static final TagKey<Item> GEMS_TOPAZ = forgeTag("gems/topaz");
 		public static final TagKey<Item> GEMS_PERIDOT = forgeTag("gems/peridot");

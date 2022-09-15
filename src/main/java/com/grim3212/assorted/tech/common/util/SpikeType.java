@@ -12,11 +12,11 @@ public enum SpikeType {
 	WOOD(() -> ItemTags.PLANKS, 2f),
 	STONE(() -> ItemTags.STONE_TOOL_MATERIALS, 5f),
 	IRON(() -> Tags.Items.INGOTS_IRON, 8f),
-	COPPER(() -> TechTags.Items.INGOTS_COPPER, 6.5f),
+	COPPER(() -> Tags.Items.INGOTS_COPPER, 6.5f),
 	DIAMOND(() -> Tags.Items.GEMS_DIAMOND, 10f),
 	GOLD(() -> Tags.Items.INGOTS_GOLD, 6f),
 	NETHERITE(() -> Tags.Items.INGOTS_NETHERITE, 14f),
-	AMETHYST(() -> TechTags.Items.GEMS_AMETHYST, 9f),
+	AMETHYST(() -> Tags.Items.GEMS_AMETHYST, 9f),
 	EMERALD(() -> Tags.Items.GEMS_EMERALD, 11f),
 
 	// Assorted Core added materials
