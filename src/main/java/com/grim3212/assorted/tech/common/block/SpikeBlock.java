@@ -3,6 +3,7 @@ package com.grim3212.assorted.tech.common.block;
 import java.util.List;
 import java.util.Random;
 
+import com.grim3212.assorted.tech.common.handler.TechConfig;
 import com.grim3212.assorted.tech.common.util.SpikeType;
 import com.grim3212.assorted.tech.common.util.TechDamageSources;
 import com.grim3212.assorted.tech.common.util.TechSounds;
@@ -10,12 +11,14 @@ import com.grim3212.assorted.tech.common.util.TechSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,6 +41,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
@@ -63,6 +67,18 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 	public SpikeType getSpikeType() {
 		return spikeType;
 	}
+	
+	@Override
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
+		if (TechConfig.COMMON.spikesEnabled.get()) {
+			if(TechConfig.COMMON.hideUncraftableItems.get() && ForgeRegistries.ITEMS.tags().getTag(spikeType.getMaterial()).size() <= 0) {
+				return;
+			}
+			
+			super.fillItemCategory(tab, items);
+		}
+	}
+
 
 	@Override
 	public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {

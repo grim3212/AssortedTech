@@ -6,6 +6,13 @@
         {
           "part": "spikes",
           "type": "assortedtech:part_enabled"
+        },
+        {
+          "value": {
+            "tag": "forge:gems/sapphire",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
         }
       ],
       "recipe": {

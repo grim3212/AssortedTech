@@ -5,6 +5,13 @@
         {
           "part": "spikes",
           "type": "assortedtech:part_enabled"
+        },
+        {
+          "value": {
+            "tag": "forge:ingots/lead",
+            "type": "forge:tag_empty"
+          },
+          "type": "forge:not"
         }
       ],
       "advancement": {

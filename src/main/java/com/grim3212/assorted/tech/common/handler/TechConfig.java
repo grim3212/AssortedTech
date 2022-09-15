@@ -24,6 +24,8 @@ public final class TechConfig {
 		public final ForgeConfigSpec.BooleanValue bridgesEnabled;
 		public final ForgeConfigSpec.BooleanValue gravityEnabled;
 
+		public final ForgeConfigSpec.BooleanValue hideUncraftableItems;
+		
 		public final ForgeConfigSpec.DoubleValue fanSpeed;
 		public final ForgeConfigSpec.DoubleValue fanModSpeed;
 		public final ForgeConfigSpec.IntValue fanMaxRange;
@@ -47,6 +49,10 @@ public final class TechConfig {
 			gravityEnabled = builder.comment("Set this to true if you would like the gravity blocks and items to be craftable and found in the creative tab.").define("gravityEnabled", true);
 			builder.pop();
 
+			builder.push("General");
+			hideUncraftableItems = builder.comment("For any item that is unobtainable (like missing materials from other mods) hide it from the creative menu / JEI.").define("hideUncraftableItems", true);
+			builder.pop();
+			
 			builder.push("Fans");
 			fanSpeed = builder.comment("The base speed at which the fan blows or sucks entities.").defineInRange("fanSpeed", 0.13D, 0.001D, 1000D);
 			fanModSpeed = builder.comment("The modifier speed at which the fan blows or sucks entities will be added onto the base speed divided by the maxRange-fanRange.").defineInRange("fanModSpeed", 0.065D, 0.001D, 1000D);
