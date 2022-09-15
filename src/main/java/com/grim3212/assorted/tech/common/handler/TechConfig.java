@@ -50,7 +50,7 @@ public final class TechConfig {
 			builder.pop();
 
 			builder.push("General");
-			hideUncraftableItems = builder.comment("For any item that is unobtainable (like missing materials from other mods) hide it from the creative menu / JEI.").define("hideUncraftableItems", true);
+			hideUncraftableItems = builder.comment("For any item that is unobtainable (like missing materials from other mods) hide it from the creative menu / JEI.").define("hideUncraftableItems", false);
 			builder.pop();
 			
 			builder.push("Fans");
