@@ -1,21 +1,25 @@
 package com.grim3212.assorted.tech.common.data;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.util.TechTags;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class TechEntityTagProvider extends EntityTypeTagsProvider {
 
-	public TechEntityTagProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-		super(generator, AssortedTech.MODID, existingFileHelper);
+	public TechEntityTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+		super(output, lookupProvider, AssortedTech.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(Provider provider) {
 		this.tag(TechTags.Entities.SENSORS_NETHER).add(EntityType.BLAZE, EntityType.GHAST, EntityType.HOGLIN, EntityType.MAGMA_CUBE, EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.STRIDER, EntityType.WITHER_SKELETON, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN);
 		this.tag(TechTags.Entities.SENSORS_END).add(EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.ENDER_DRAGON, EntityType.SHULKER);
 		this.tag(TechTags.Entities.SENSORS_ARTHROPODS).add(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.BEE, EntityType.ENDERMITE, EntityType.SILVERFISH);

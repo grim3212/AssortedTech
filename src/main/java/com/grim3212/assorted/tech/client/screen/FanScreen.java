@@ -31,20 +31,20 @@ public class FanScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.addRenderableWidget(new Button(width / 2 - 80, height / 4 + 120, 70, 20, Component.translatable("fan.screen.ok"), btn -> {
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.ok"), btn -> {
 			this.fanBlockEntity.setOldMode(localMode);
 			this.fanBlockEntity.setRange(localRange);
 			PacketHandler.sendToServer(new FanUpdatePacket(this.fanBlockEntity.getBlockPos(), this.localMode, this.localRange));
 			this.close();
-		}));
-		this.addRenderableWidget(new Button(width / 2 + 10, height / 4 + 120, 70, 20, Component.translatable("fan.screen.cancel"), btn -> {
+		}).bounds(width / 2 - 80, height / 4 + 120, 70, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.cancel"), btn -> {
 			this.close();
-		}));
-		this.addRenderableWidget(new Button(width / 2 - 50, height / 4 + 10, 100, 20, Component.translatable("fan.screen.mode." + this.localMode.getSerializedName()), btn -> {
+		}).bounds(width / 2 + 10, height / 4 + 120, 70, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.mode." + this.localMode.getSerializedName()), btn -> {
 			this.localMode = this.localMode.getNext();
 			btn.setMessage(Component.translatable("fan.screen.mode." + this.localMode.getSerializedName()));
-		}));
-		this.addRenderableWidget(new Button(width / 2 + 20, height / 4 + 65, 40, 20, Component.translatable("fan.screen.add_one"), btn -> {
+		}).bounds(width / 2 - 50, height / 4 + 10, 100, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.add_one"), btn -> {
 			int newRange = this.localRange + 1;
 			if (newRange > TechConfig.COMMON.fanMaxRange.get()) {
 				this.localRange = TechConfig.COMMON.fanMaxRange.get();
@@ -52,27 +52,27 @@ public class FanScreen extends Screen {
 				this.localRange = newRange;
 			}
 
-		}));
-		this.addRenderableWidget(new Button(width / 2 + 65, height / 4 + 65, 40, 20, Component.translatable("fan.screen.add_five"), btn -> {
+		}).bounds(width / 2 + 20, height / 4 + 65, 40, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.add_five"), btn -> {
 			int newRange = this.localRange + 5;
 			if (newRange > TechConfig.COMMON.fanMaxRange.get()) {
 				this.localRange = TechConfig.COMMON.fanMaxRange.get();
 			} else {
 				this.localRange = newRange;
 			}
-		}));
-		this.addRenderableWidget(new Button(width / 2 + 110, height / 4 + 65, 40, 20, Component.translatable("fan.screen.max"), btn -> {
+		}).bounds(width / 2 + 65, height / 4 + 65, 40, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.max"), btn -> {
 			this.localRange = TechConfig.COMMON.fanMaxRange.get();
-		}));
-		this.addRenderableWidget(new Button(width / 2 - 60, height / 4 + 65, 40, 20, Component.translatable("fan.screen.minus_one"), btn -> {
+		}).bounds(width / 2 + 110, height / 4 + 65, 40, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.minus_one"), btn -> {
 			int newRange = this.localRange - 1;
 			if (newRange < 1) {
 				this.localRange = 1;
 			} else {
 				this.localRange = newRange;
 			}
-		}));
-		this.addRenderableWidget(new Button(width / 2 - 105, height / 4 + 65, 40, 20, Component.translatable("fan.screen.minus_five"), btn -> {
+		}).bounds(width / 2 - 60, height / 4 + 65, 40, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.minus_five"), btn -> {
 			int newRange = this.localRange - 5;
 			if (newRange < 1) {
 				this.localRange = 1;
@@ -80,10 +80,10 @@ public class FanScreen extends Screen {
 				this.localRange = newRange;
 			}
 
-		}));
-		this.addRenderableWidget(new Button(width / 2 - 150, height / 4 + 65, 40, 20, Component.translatable("fan.screen.min"), btn -> {
+		}).bounds(width / 2 - 105, height / 4 + 65, 40, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("fan.screen.min"), btn -> {
 			this.localRange = 1;
-		}));
+		}).bounds(width / 2 - 150, height / 4 + 65, 40, 20).build());
 	}
 
 	private void close() {

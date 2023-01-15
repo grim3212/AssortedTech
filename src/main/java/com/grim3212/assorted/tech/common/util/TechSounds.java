@@ -32,6 +32,6 @@ public class TechSounds {
 
 	private static RegistryObject<SoundEvent> registerSound(String name) {
 		ResourceLocation loc = new ResourceLocation(AssortedTech.MODID, name);
-		return SOUNDS.register(name, () -> new SoundEvent(loc));
+		return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(loc));
 	}
 }

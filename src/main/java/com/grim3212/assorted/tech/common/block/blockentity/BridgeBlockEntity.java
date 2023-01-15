@@ -3,6 +3,7 @@ package com.grim3212.assorted.tech.common.block.blockentity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
@@ -33,7 +34,7 @@ public class BridgeBlockEntity extends BlockEntity {
 	@Override
 	public void load(CompoundTag nbt) {
 		super.load(nbt);
-		this.blockState = NbtUtils.readBlockState(nbt.getCompound("stored_state"));
+		this.blockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt.getCompound("stored_state"));
 		this.facing = Direction.from3DDataValue(nbt.getInt("facing"));
 	}
 
@@ -93,6 +94,8 @@ public class BridgeBlockEntity extends BlockEntity {
 				level.blockUpdated(worldPosition, getBlockState().getBlock());
 			}
 		}
+
+		this.setChanged();
 	}
 
 	public void setStoredBlockState(String registryName) {

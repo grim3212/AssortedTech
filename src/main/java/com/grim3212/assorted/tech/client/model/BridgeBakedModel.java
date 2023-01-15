@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class BridgeBakedModel extends BridgeBaseBakedModel {
 
 	private final UnbakedModel unbakedModel;
 
-	public BridgeBakedModel(BakedModel bakedColorizer, UnbakedModel unbakedModel, IGeometryBakingContext owner, TextureAtlasSprite baseSprite, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ItemOverrides overrides, ResourceLocation name) {
+	public BridgeBakedModel(BakedModel bakedColorizer, UnbakedModel unbakedModel, IGeometryBakingContext owner, TextureAtlasSprite baseSprite, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform, ItemOverrides overrides, ResourceLocation name) {
 		super(bakedColorizer, owner, baseSprite, bakery, spriteGetter, transform, overrides, name);
 		this.unbakedModel = unbakedModel;
 	}

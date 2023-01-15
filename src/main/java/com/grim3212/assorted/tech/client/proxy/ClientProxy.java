@@ -22,6 +22,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -95,7 +96,7 @@ public class ClientProxy implements IProxy {
 			public int getColor(ItemStack stack, int tint) {
 				if (stack != null && stack.hasTag()) {
 					if (stack.getTag().contains("stored_state")) {
-						BlockState stored = NbtUtils.readBlockState(NBTHelper.getTag(stack, "stored_state"));
+						BlockState stored = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), NBTHelper.getTag(stack, "stored_state"));
 						ItemStack colorStack = new ItemStack(stored.getBlock());
 						if (colorStack.getItem() != null) {
 							return items.getColor(colorStack, tint);

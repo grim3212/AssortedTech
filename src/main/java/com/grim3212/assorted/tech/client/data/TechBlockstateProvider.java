@@ -15,7 +15,7 @@ import com.grim3212.assorted.tech.common.util.FanMode;
 
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,8 +36,8 @@ public class TechBlockstateProvider extends BlockStateProvider {
 	private final BridgeModelProvider loaderModels;
 	private static final ResourceLocation CUTOUT_RENDER_TYPE = new ResourceLocation("minecraft:cutout");
 
-	public TechBlockstateProvider(DataGenerator generator, ExistingFileHelper exFileHelper, BridgeModelProvider loader) {
-		super(generator, AssortedTech.MODID, exFileHelper);
+	public TechBlockstateProvider(PackOutput output, ExistingFileHelper exFileHelper, BridgeModelProvider loader) {
+		super(output, AssortedTech.MODID, exFileHelper);
 		this.loaderModels = loader;
 	}
 
@@ -183,15 +183,15 @@ public class TechBlockstateProvider extends BlockStateProvider {
 			FanMode mode = state.getValue(FanBlock.MODE);
 			ModelFile model = null;
 			switch (mode) {
-			case BLOW:
-				model = dir.getAxis().isVertical() ? blowModelVertical : blowModel;
-				break;
-			case OFF:
-				model = dir.getAxis().isVertical() ? offModelVertical : offModel;
-				break;
-			case SUCK:
-				model = dir.getAxis().isVertical() ? suckModelVertical : suckModel;
-				break;
+				case BLOW:
+					model = dir.getAxis().isVertical() ? blowModelVertical : blowModel;
+					break;
+				case OFF:
+					model = dir.getAxis().isVertical() ? offModelVertical : offModel;
+					break;
+				case SUCK:
+					model = dir.getAxis().isVertical() ? suckModelVertical : suckModel;
+					break;
 			}
 
 			return ConfiguredModel.builder().modelFile(model).rotationX(dir == Direction.DOWN ? 180 : 0).rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360).build();
@@ -204,44 +204,44 @@ public class TechBlockstateProvider extends BlockStateProvider {
 		BlockModelBuilder alarmModel = this.models().getBuilder(prefix("block/alarm")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top")).renderType(CUTOUT_RENDER_TYPE);
 		alarmModel.element().from(3, 0, 3).to(13, 4, 13).allFaces((dir, face) -> {
 			switch (dir) {
-			case EAST:
-			case NORTH:
-			case SOUTH:
-			case WEST:
-				face.texture("#side").uvs(2, 11, 14, 16);
-				break;
-			case DOWN:
-				face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.DOWN);
-				break;
-			case UP:
-			default:
-				face.texture("#top").uvs(3, 3, 13, 13);
-				break;
+				case EAST:
+				case NORTH:
+				case SOUTH:
+				case WEST:
+					face.texture("#side").uvs(2, 11, 14, 16);
+					break;
+				case DOWN:
+					face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.DOWN);
+					break;
+				case UP:
+				default:
+					face.texture("#top").uvs(3, 3, 13, 13);
+					break;
 			}
 		});
 
 		BlockModelBuilder alarmWallModel = this.models().getBuilder(prefix("block/alarm_wall")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", prefix("block/alarm_side")).texture("side", prefix("block/alarm_side")).texture("top", prefix("block/alarm_top")).renderType(CUTOUT_RENDER_TYPE);
 		alarmWallModel.element().from(3, 3, 12).to(13, 13, 16).allFaces((dir, face) -> {
 			switch (dir) {
-			case EAST:
-				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.CLOCKWISE_90);
-				break;
-			case NORTH:
-				face.texture("#top").uvs(3, 3, 13, 13);
-				break;
-			case SOUTH:
-				face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.SOUTH);
-				break;
-			case WEST:
-				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.COUNTERCLOCKWISE_90);
-				break;
-			case DOWN:
-				face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.UPSIDE_DOWN);
-				break;
-			case UP:
-			default:
-				face.texture("#side").uvs(2, 11, 14, 16);
-				break;
+				case EAST:
+					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.CLOCKWISE_90);
+					break;
+				case NORTH:
+					face.texture("#top").uvs(3, 3, 13, 13);
+					break;
+				case SOUTH:
+					face.texture("#top").uvs(3, 3, 13, 13).cullface(Direction.SOUTH);
+					break;
+				case WEST:
+					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.COUNTERCLOCKWISE_90);
+					break;
+				case DOWN:
+					face.texture("#side").uvs(2, 11, 14, 16).rotation(FaceRotation.UPSIDE_DOWN);
+					break;
+				case UP:
+				default:
+					face.texture("#side").uvs(2, 11, 14, 16);
+					break;
 			}
 		});
 

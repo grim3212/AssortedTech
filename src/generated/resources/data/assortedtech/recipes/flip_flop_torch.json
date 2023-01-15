@@ -10,6 +10,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "redstone",
         "key": {
           "P": {
             "tag": "forge:dyes/blue"

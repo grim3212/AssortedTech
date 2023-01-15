@@ -33,22 +33,22 @@ public class AlarmScreen extends Screen {
 
 	@Override
 	protected void init() {
-		this.addRenderableWidget(new Button(this.width / 2 - 25, 210, 50, 20, Component.translatable("alarm.screen.done"), btn -> {
+		this.addRenderableWidget(Button.builder(Component.translatable("alarm.screen.done"), btn -> {
 			this.alarmBlockEntity.setAlarmType(alarmType);
 			PacketHandler.sendToServer(new AlarmUpdatePacket(this.alarmBlockEntity.getBlockPos(), this.alarmType));
 			this.close();
-		}));
-		this.addRenderableWidget(new Button(this.width / 2 - 50, 100, 100, 20, Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)), btn -> {
+		}).bounds(this.width / 2 - 25, 210, 50, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)), btn -> {
 			this.alarmType += 1;
 			if (this.alarmType > 13) {
 				this.alarmType = 0;
 			}
 
 			btn.setMessage(Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)));
-		}));
-		this.addRenderableWidget(new Button(this.width / 2 - 25, 120, 50, 20, Component.translatable("alarm.screen.test"), btn -> {
+		}).bounds(this.width / 2 - 50, 100, 100, 20).build());
+		this.addRenderableWidget(Button.builder(Component.translatable("alarm.screen.test"), btn -> {
 			Minecraft.getInstance().player.playSound(AlarmBlockEntity.getSound(this.alarmType).get(), 1.0F, 1.0F);
-		}));
+		}).bounds(this.width / 2 - 25, 120, 50, 20).build());
 	}
 
 	private void close() {

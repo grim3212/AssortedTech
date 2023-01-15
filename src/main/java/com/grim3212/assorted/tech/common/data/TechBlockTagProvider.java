@@ -1,26 +1,30 @@
 package com.grim3212.assorted.tech.common.data;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.grim3212.assorted.tech.AssortedTech;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.SpikeBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.util.TechTags;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 public class TechBlockTagProvider extends BlockTagsProvider {
 
-	public TechBlockTagProvider(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-		super(generatorIn, AssortedTech.MODID, existingFileHelper);
+	public TechBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+		super(output, lookupProvider, AssortedTech.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags() {
+	protected void addTags(Provider provider) {
 		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.FAN.get(), TechBlocks.ALARM.get());
 
 		for (RegistryObject<SpikeBlock> b : TechBlocks.SPIKES) {

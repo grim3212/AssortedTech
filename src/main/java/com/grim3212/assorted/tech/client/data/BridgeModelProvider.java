@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.grim3212.assorted.tech.AssortedTech;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -14,8 +14,8 @@ public class BridgeModelProvider extends ModelProvider<BridgeModelBuilder> {
 
 	final Map<ResourceLocation, BridgeModelBuilder> previousModels = new HashMap<>();
 
-	public BridgeModelProvider(DataGenerator gen, ExistingFileHelper exHelper) {
-		super(gen, AssortedTech.MODID, "block", BridgeModelBuilder::new, exHelper);
+	public BridgeModelProvider(PackOutput output, ExistingFileHelper exHelper) {
+		super(output, AssortedTech.MODID, "block", BridgeModelBuilder::new, exHelper);
 	}
 
 	@Override

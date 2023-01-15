@@ -17,6 +17,7 @@
       ],
       "recipe": {
         "type": "minecraft:crafting_shaped",
+        "category": "redstone",
         "key": {
           "X": {
             "tag": "forge:ingots/copper"

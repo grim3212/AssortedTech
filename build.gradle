@@ -91,6 +91,10 @@ minecraft {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }
@@ -99,10 +103,10 @@ dependencies {
     minecraft 'net.minecraftforge:forge:' + minecraft_version + '-' + forge_version
 	
 	// compile against the JEI API but do not include it at runtime
-	compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-	compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
 	// at runtime, use the full JEI jar for Forge
-	runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+	// runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 }
 
 jar {
