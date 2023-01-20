@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.SpikeBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
+import com.grim3212.assorted.tech.common.crafting.StoredFluidIngredient;
 import com.grim3212.assorted.tech.common.handler.EnabledCondition;
 import com.grim3212.assorted.tech.common.item.TechItems;
 
@@ -13,12 +14,14 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.registries.RegistryObject;
@@ -37,12 +40,14 @@ public class TechRecipes extends RecipeProvider implements IConditionBuilder {
 		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.ALARM_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.ALARM.get(), 1).define('X', Items.LEVER).define('R', Tags.Items.DUSTS_REDSTONE).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("IRI").pattern("IXI").unlockedBy("has_redstone", has(Tags.Items.DUSTS_REDSTONE))::save).generateAdvancement().build(consumer, TechBlocks.ALARM.getId());
 
 		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_LASER.get(), 1).define('R', Tags.Items.SLIMEBALLS).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("IRI").pattern("III").unlockedBy("has_slime", has(Tags.Items.SLIMEBALLS))::save).generateAdvancement().build(consumer, TechBlocks.BRIDGE_CONTROL_LASER.getId());
-		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_ACCEL.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', Items.WATER_BUCKET).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement().build(consumer,
-				TechBlocks.BRIDGE_CONTROL_ACCEL.getId());
+		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION))
+				.addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_ACCEL.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', CompoundIngredient.of(Ingredient.of(Items.WATER_BUCKET), StoredFluidIngredient.of(null, FluidTags.WATER))).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement()
+				.build(consumer, TechBlocks.BRIDGE_CONTROL_ACCEL.getId());
 		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_TRICK.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', Tags.Items.FEATHERS).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement().build(consumer,
 				TechBlocks.BRIDGE_CONTROL_TRICK.getId());
-		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_DEATH.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', Items.LAVA_BUCKET).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement().build(consumer,
-				TechBlocks.BRIDGE_CONTROL_DEATH.getId());
+		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION))
+				.addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_DEATH.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', CompoundIngredient.of(Ingredient.of(Items.LAVA_BUCKET), StoredFluidIngredient.of(null, FluidTags.LAVA))).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement()
+				.build(consumer, TechBlocks.BRIDGE_CONTROL_DEATH.getId());
 		ConditionalRecipe.builder().addCondition(new EnabledCondition(EnabledCondition.BRIDGES_CONDITION)).addRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TechBlocks.BRIDGE_CONTROL_GRAVITY.get(), 1).define('L', TechBlocks.BRIDGE_CONTROL_LASER.get()).define('R', Tags.Items.ENDER_PEARLS).define('I', Tags.Items.INGOTS_IRON).pattern("III").pattern("ILI").pattern("IRI").unlockedBy("has_laser_bridge", has(TechBlocks.BRIDGE_CONTROL_LASER.get()))::save).generateAdvancement()
 				.build(consumer, TechBlocks.BRIDGE_CONTROL_GRAVITY.getId());
 

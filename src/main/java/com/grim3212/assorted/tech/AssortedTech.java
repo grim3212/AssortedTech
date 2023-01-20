@@ -14,6 +14,7 @@ import com.grim3212.assorted.tech.client.particle.TechParticleTypes;
 import com.grim3212.assorted.tech.client.proxy.ClientProxy;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
+import com.grim3212.assorted.tech.common.crafting.StoredFluidIngredient;
 import com.grim3212.assorted.tech.common.creative.TechCreativeTab;
 import com.grim3212.assorted.tech.common.data.TechBlockTagProvider;
 import com.grim3212.assorted.tech.common.data.TechEntityTagProvider;
@@ -32,6 +33,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -44,6 +46,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod(AssortedTech.MODID)
 public class AssortedTech {
@@ -63,6 +67,7 @@ public class AssortedTech {
 
 		modBus.addListener(this::setup);
 		modBus.addListener(this::gatherData);
+		modBus.addListener(this::registerRecipeSerializers);
 		modBus.addListener(TechCreativeTab::registerTabs);
 
 		TechBlocks.BLOCKS.register(modBus);
@@ -98,5 +103,11 @@ public class AssortedTech {
 		datagenerator.addProvider(event.includeClient(), new TechBlockstateProvider(packOutput, fileHelper, loadedModels));
 		datagenerator.addProvider(event.includeClient(), loadedModels);
 		datagenerator.addProvider(event.includeClient(), new TechItemModelProvider(packOutput, fileHelper));
+	}
+
+	private void registerRecipeSerializers(final RegisterEvent event) {
+		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+			CraftingHelper.register(new ResourceLocation(AssortedTech.MODID, "fluid"), StoredFluidIngredient.Serializer.INSTANCE);
+		}
 	}
 }

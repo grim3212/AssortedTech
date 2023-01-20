@@ -13,6 +13,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,6 +33,8 @@ public class TechItemTagProvider extends ItemTagsProvider {
 		for (RegistryObject<SensorBlock> b : TechBlocks.SENSORS) {
 			this.tag(TechTags.Items.SENSORS).add(b.get().asItem());
 		}
+
+		this.tag(TechTags.Items.FLUID_CONTAINERS).add(Items.BUCKET, Items.WATER_BUCKET, Items.LAVA_BUCKET);
 	}
 
 	@Override

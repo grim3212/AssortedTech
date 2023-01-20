@@ -27,6 +27,8 @@ public class TechTags {
 	public static class Items {
 		public static final TagKey<Item> SENSORS = forgeTag("sensors");
 		public static final TagKey<Item> SPIKES = forgeTag("spikes");
+		
+		public static final TagKey<Item> FLUID_CONTAINERS = forgeTag("containers/fluid");
 
 		public static final TagKey<Item> INGOTS_TIN = forgeTag("ingots/tin");
 		public static final TagKey<Item> INGOTS_SILVER = forgeTag("ingots/silver");

@@ -18,9 +18,16 @@
           "L": {
             "item": "assortedtech:bridge_control_laser"
           },
-          "R": {
-            "item": "minecraft:water_bucket"
-          }
+          "R": [
+            {
+              "type": "assortedtech:fluid",
+              "amount": 1000,
+              "fluid": "minecraft:water"
+            },
+            {
+              "item": "minecraft:water_bucket"
+            }
+          ]
         },
         "pattern": [
           "III",
