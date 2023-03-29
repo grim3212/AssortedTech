@@ -11,7 +11,8 @@ out
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/*
+!.idea/scopes
 
 # gradle
 build
@@ -20,11 +21,11 @@ build
 # other
 eclipse
 run
-
-# Files from Forge MDK
-forge*changelog.txt
+runserver
 
 logs
 
 # Data Generator cache
-/src/generated/resources/.cache/
+forge/src/generated/resources/.cache
+common/src/generated/resources/.cache
+fabric/src/generated/resources/.cache

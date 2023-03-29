@@ -1,0 +1,98 @@
+plugins {
+    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'maven-publish'
+    id 'idea'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
+archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_mc_version}:${parchment_version}@zip")
+    })
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    modImplementation("com.grim3212.assorted.lib:assortedlib-fabric:$assortedlib_version+$minecraft_version")
+
+    implementation project(":common")
+}
+
+loom {
+    mixin.defaultRefmapName = "${mod_id}.refmap.json"
+    accessWidenerPath = file("src/main/resources/${mod_id}_fabric.accesswidener")
+
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        datagenClient {
+            inherit client
+            name "Fabric Datagen"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources/")}"
+            vmArg "-Dfabric-api.datagen.modid=${mod_id}"
+            runDir "build/datagen"
+        }
+    }
+}
+
+sourceSets {
+    main.resources.srcDirs += ['src/generated/resources', '../common/src/generated/resources']
+}
+
+processResources {
+    from project(":common").sourceSets.main.resources
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand 'version': project.version, 'fabric_mc_version_range': project.fabric_mc_version_range, 'license': project.license,
+                'mod_id': project.mod_id, 'mod_author': project.mod_author, 'mod_description': project.mod_description,
+                'mod_name': project.mod_name, 'issue_tracker': project.issue_tracker
+    }
+
+    filesMatching("pack.mcmeta") {
+        expand 'mod_name': project.mod_name
+    }
+
+    filesMatching('*.mixins.json') {
+        expand "refmap_target": "${archivesBaseName}-"
+    }
+
+    // Exclude datagenerator .cache directory
+    exclude '.cache'
+}
+
+tasks.withType(JavaCompile) {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
