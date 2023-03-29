@@ -1,36 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "bridges"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "L": {
-            "item": "assortedtech:bridge_control_laser"
-          },
-          "R": {
-            "tag": "forge:ender_pearls"
-          }
-        },
-        "pattern": [
-          "III",
-          "ILI",
-          "IRI"
-        ],
-        "result": {
-          "item": "assortedtech:bridge_control_gravity"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "bridges"
     }
-  ]
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "L": {
+      "item": "assortedtech:bridge_control_laser"
+    },
+    "R": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "pattern": [
+    "III",
+    "ILI",
+    "IRI"
+  ],
+  "result": {
+    "item": "assortedtech:bridge_control_gravity"
+  }
 }

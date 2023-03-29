@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_laser_bridge": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "assortedtech:bridge_control_laser"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedtech:bridge_control_trick"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "bridges"
+    }
+  ],
+  "requirements": [
+    [
+      "has_laser_bridge",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedtech:bridge_control_trick"
+    ]
+  }
+}

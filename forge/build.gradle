@@ -31,7 +31,7 @@ archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
 
-    config "${mod_id}.mixins.json"
+//    config "${mod_id}.mixins.json"
 }
 
 minecraft {
@@ -134,7 +134,7 @@ processResources {
     exclude('pack.mcmeta')
     // Exclude datagenerator .cache directory
     exclude '.cache'
-    exclude 'assortedlib.accesswidener'
+    exclude "${mod_id}_common.accesswidener"
 
     filesMatching('*.mixins.json') {
         expand "refmap_target": "${mod_id}."

@@ -15,13 +15,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.grim3212.assorted.tools.AssortedTechFabric"
+      "com.grim3212.assorted.tech.AssortedTechFabric"
     ],
     "client": [
-      "com.grim3212.assorted.tools.client.TechClientFabric"
+      "com.grim3212.assorted.tech.client.AssortedTechFabricClient"
     ],
     "fabric-datagen": [
-      "com.grim3212.assorted.tools.common.data.AssortedTechFabricDatagen"
+      "com.grim3212.assorted.tech.common.data.AssortedTechFabricDatagen"
     ]
   },
   "depends": {

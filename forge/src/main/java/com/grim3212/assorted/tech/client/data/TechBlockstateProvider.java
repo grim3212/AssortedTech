@@ -1,6 +1,6 @@
 package com.grim3212.assorted.tech.client.data;
 
-import com.grim3212.assorted.tech.AssortedTech;
+import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.FanMode;
 import com.grim3212.assorted.tech.common.block.*;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -24,7 +24,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
     private static final ResourceLocation CUTOUT_RENDER_TYPE = new ResourceLocation("minecraft:cutout");
 
     public TechBlockstateProvider(PackOutput output, ExistingFileHelper exFileHelper, BridgeModelProvider loader) {
-        super(output, AssortedTech.MODID, exFileHelper);
+        super(output, Constants.MOD_ID, exFileHelper);
         this.loaderModels = loader;
     }
 
@@ -55,7 +55,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
 
         this.alarmBoxModel();
 
-        bridge(TechBlocks.BRIDGE.get(), new ResourceLocation(AssortedTech.MODID, "block/tinted_cube"));
+        bridge(TechBlocks.BRIDGE.get(), new ResourceLocation(Constants.MOD_ID, "block/tinted_cube"));
         bridgeControlModel(TechBlocks.BRIDGE_CONTROL_ACCEL.get());
         bridgeControlModel(TechBlocks.BRIDGE_CONTROL_LASER.get());
         bridgeControlModel(TechBlocks.BRIDGE_CONTROL_GRAVITY.get());
@@ -68,7 +68,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
     private void bridge(Block b, ResourceLocation model) {
         String name = name(b);
 
-        BridgeModelBuilder bridgeParent = this.loaderModels.getBuilder(name).loader(new ResourceLocation(AssortedTech.MODID, "bridge")).bridge(model).texture("particle", new ResourceLocation(AssortedTech.MODID, "block/bridge")).addTexture("stored", new ResourceLocation(AssortedTech.MODID, "block/bridge_gravity"));
+        BridgeModelBuilder bridgeParent = this.loaderModels.getBuilder(name).loader(new ResourceLocation(Constants.MOD_ID, "bridge")).bridge(model).texture("particle", new ResourceLocation(Constants.MOD_ID, "block/bridge")).addTexture("stored", new ResourceLocation(Constants.MOD_ID, "block/bridge_gravity"));
 
         ConfiguredModel bridgeModel = new ConfiguredModel(bridgeParent);
         customLoaderState(b, bridgeModel);
@@ -92,7 +92,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
     }
 
     private void extraModels() {
-        BlockModelBuilder model = this.models().getBuilder(prefix("block/tinted_cube")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", new ResourceLocation(AssortedTech.MODID, "block/bridge")).texture("stored", new ResourceLocation(AssortedTech.MODID, "block/bridge"));
+        BlockModelBuilder model = this.models().getBuilder(prefix("block/tinted_cube")).parent(this.models().getExistingFile(mcLoc(ModelProvider.BLOCK_FOLDER + "/block"))).texture("particle", new ResourceLocation(Constants.MOD_ID, "block/bridge")).texture("stored", new ResourceLocation(Constants.MOD_ID, "block/bridge"));
         model.element().from(0, 0, 0).to(16, 16, 16).allFaces((dir, face) -> {
             face.texture("#stored").cullface(dir).tintindex(0);
         });
@@ -301,6 +301,6 @@ public class TechBlockstateProvider extends BlockStateProvider {
     }
 
     private ResourceLocation resource(String name) {
-        return new ResourceLocation(AssortedTech.MODID, name);
+        return new ResourceLocation(Constants.MOD_ID, name);
     }
 }

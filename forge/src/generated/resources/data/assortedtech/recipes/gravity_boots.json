@@ -1,32 +1,19 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
-    {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "gravity"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "misc",
-        "key": {
-          "A": {
-            "item": "assortedtech:attractor"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
-          }
-        },
-        "pattern": [
-          "I I",
-          "A A"
-        ],
-        "result": {
-          "item": "assortedtech:gravity_boots"
-        }
-      }
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "assortedtech:attractor"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     }
-  ]
+  },
+  "pattern": [
+    "I I",
+    "A A"
+  ],
+  "result": {
+    "item": "assortedtech:gravity_boots"
+  }
 }

@@ -1,36 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "fan"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          },
-          "X": {
-            "tag": "minecraft:planks"
-          }
-        },
-        "pattern": [
-          "XIX",
-          "XRX",
-          "XXX"
-        ],
-        "result": {
-          "item": "assortedtech:fan"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "fan"
     }
-  ]
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "X": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "XIX",
+    "XRX",
+    "XXX"
+  ],
+  "result": {
+    "item": "assortedtech:fan"
+  }
 }

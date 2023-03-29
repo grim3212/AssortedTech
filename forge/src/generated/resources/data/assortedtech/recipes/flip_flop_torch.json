@@ -1,36 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "torches"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "P": {
-            "tag": "forge:dyes/blue"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          },
-          "X": {
-            "tag": "forge:rods/wooden"
-          }
-        },
-        "pattern": [
-          "P",
-          "X",
-          "R"
-        ],
-        "result": {
-          "item": "assortedtech:flip_flop_torch"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "torches"
     }
-  ]
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:dyes/blue"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "X": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "pattern": [
+    "P",
+    "X",
+    "R"
+  ],
+  "result": {
+    "item": "assortedtech:flip_flop_torch"
+  }
 }

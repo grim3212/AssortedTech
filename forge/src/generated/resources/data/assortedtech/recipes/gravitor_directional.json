@@ -1,39 +1,32 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "gravity"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "C": {
-            "item": "minecraft:compass"
-          },
-          "E": {
-            "tag": "forge:ender_pearls"
-          },
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          }
-        },
-        "pattern": [
-          " R ",
-          "ICI",
-          " E "
-        ],
-        "result": {
-          "item": "assortedtech:gravitor_directional"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "gravity"
     }
-  ]
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "E": {
+      "tag": "forge:ender_pearls"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " R ",
+    "ICI",
+    " E "
+  ],
+  "result": {
+    "item": "assortedtech:gravitor_directional"
+  }
 }

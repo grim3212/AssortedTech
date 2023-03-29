@@ -1,43 +1,31 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "bridges"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "L": {
-            "item": "assortedtech:bridge_control_laser"
-          },
-          "R": [
-            {
-              "type": "assortedtech:fluid",
-              "amount": 1000,
-              "fluid": "minecraft:water"
-            },
-            {
-              "item": "minecraft:water_bucket"
-            }
-          ]
-        },
-        "pattern": [
-          "III",
-          "ILI",
-          "IRI"
-        ],
-        "result": {
-          "item": "assortedtech:bridge_control_accel"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "bridges"
     }
-  ]
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "L": {
+      "item": "assortedtech:bridge_control_laser"
+    },
+    "R": {
+      "type": "assortedlib:stored_fluid_ingredient",
+      "amount": 1000,
+      "fluid": "minecraft:water"
+    }
+  },
+  "pattern": [
+    "III",
+    "ILI",
+    "IRI"
+  ],
+  "result": {
+    "item": "assortedtech:bridge_control_accel"
+  }
 }

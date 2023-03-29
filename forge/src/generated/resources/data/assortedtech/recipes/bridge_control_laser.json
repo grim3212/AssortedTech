@@ -1,33 +1,26 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "bridges"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "R": {
-            "tag": "forge:slimeballs"
-          }
-        },
-        "pattern": [
-          "III",
-          "IRI",
-          "III"
-        ],
-        "result": {
-          "item": "assortedtech:bridge_control_laser"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "bridges"
     }
-  ]
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:slimeballs"
+    }
+  },
+  "pattern": [
+    "III",
+    "IRI",
+    "III"
+  ],
+  "result": {
+    "item": "assortedtech:bridge_control_laser"
+  }
 }

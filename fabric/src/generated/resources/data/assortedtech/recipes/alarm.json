@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "alarm"
+    }
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "X": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    "III",
+    "IRI",
+    "IXI"
+  ],
+  "result": {
+    "item": "assortedtech:alarm"
+  }
+}

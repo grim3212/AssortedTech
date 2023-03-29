@@ -1,36 +1,29 @@
 {
-  "type": "forge:conditional",
-  "recipes": [
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
     {
-      "conditions": [
-        {
-          "type": "assortedtech:part_enabled",
-          "part": "alarm"
-        }
-      ],
-      "recipe": {
-        "type": "minecraft:crafting_shaped",
-        "category": "redstone",
-        "key": {
-          "I": {
-            "tag": "forge:ingots/iron"
-          },
-          "R": {
-            "tag": "forge:dusts/redstone"
-          },
-          "X": {
-            "item": "minecraft:lever"
-          }
-        },
-        "pattern": [
-          "III",
-          "IRI",
-          "IXI"
-        ],
-        "result": {
-          "item": "assortedtech:alarm"
-        }
-      }
+      "type": "assortedlib:part_enabled",
+      "part": "alarm"
     }
-  ]
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "X": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    "III",
+    "IRI",
+    "IXI"
+  ],
+  "result": {
+    "item": "assortedtech:alarm"
+  }
 }

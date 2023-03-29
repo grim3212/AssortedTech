@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/orientable_vertical",
-  "textures": {
-    "front": "assortedtech:block/sensors/netherrack_sensor_on",
-    "side": "assortedtech:block/sensors/netherrack_sensor_side"
-  }
-}

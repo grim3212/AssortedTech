@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "bridges"
+    }
+  ],
+  "key": {
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "L": {
+      "item": "assortedtech:bridge_control_laser"
+    },
+    "R": {
+      "tag": "c:feathers"
+    }
+  },
+  "pattern": [
+    "III",
+    "ILI",
+    "IRI"
+  ],
+  "result": {
+    "item": "assortedtech:bridge_control_trick"
+  }
+}

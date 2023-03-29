@@ -42,7 +42,7 @@ public class TechBlockLoot extends VanillaBlockLoot {
     }
 
     @Override
-    protected void generate() {
+    public void generate() {
         this.dropOther(TechBlocks.FLIP_FLOP_WALL_TORCH.get(), TechBlocks.FLIP_FLOP_TORCH.get());
         this.dropOther(TechBlocks.GLOWSTONE_WALL_TORCH.get(), TechBlocks.GLOWSTONE_TORCH.get());
         for (Block b : this.blocks) {

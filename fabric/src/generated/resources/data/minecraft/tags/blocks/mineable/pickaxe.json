@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "assortedtech:fan",
+    "assortedtech:alarm",
+    "assortedtech:attractor",
+    "assortedtech:gravitor",
+    "assortedtech:repulsor",
+    "assortedtech:attractor_directional",
+    "assortedtech:repulsor_directional",
+    "assortedtech:gravitor_directional",
+    "assortedtech:bridge_control_accel",
+    "assortedtech:bridge_control_death",
+    "assortedtech:bridge_control_gravity",
+    "assortedtech:bridge_control_laser",
+    "assortedtech:bridge_control_trick"
+  ]
+}

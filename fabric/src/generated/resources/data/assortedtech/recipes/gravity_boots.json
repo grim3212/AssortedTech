@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "assortedtech:attractor"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "I I",
+    "A A"
+  ],
+  "result": {
+    "item": "assortedtech:gravity_boots"
+  }
+}
