@@ -10,7 +10,7 @@ import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
-import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
+import com.grim3212.assorted.tech.common.properties.TechModelProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -137,8 +137,8 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     // TODO: Fix particle icon
     public TextureAtlasSprite getParticleIcon(IBlockModelData data) {
-        if (data.hasProperty(BridgeBlockEntity.BLOCK_STATE)) {
-            BlockState state = data.getData(BridgeBlockEntity.BLOCK_STATE);
+        if (data.hasProperty(TechModelProperties.BLOCK_STATE)) {
+            BlockState state = data.getData(TechModelProperties.BLOCK_STATE);
             if (state == Blocks.AIR.defaultBlockState()) {
                 return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Constants.MOD_ID, "block/bridge"));
             } else if (state != null) {
@@ -167,13 +167,15 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
     @Override
     public @Nonnull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IBlockModelData extraData, @Nullable RenderType renderType) {
         BlockState blockState = Blocks.AIR.defaultBlockState();
-        if (extraData.hasProperty(BridgeBlockEntity.BLOCK_STATE)) {
-            blockState = extraData.getData(BridgeBlockEntity.BLOCK_STATE);
+        if (extraData.hasProperty(TechModelProperties.BLOCK_STATE)) {
+            blockState = extraData.getData(TechModelProperties.BLOCK_STATE);
         }
 
         BridgeType type = state.getValue(BridgeBlock.TYPE);
 
-        return this.getCachedModel(type, blockState).getQuads(state, side, rand);
+        var cached = this.getCachedModel(type, blockState);
+        var quads = cached.getQuads(state, side, rand);
+        return quads;
     }
 
     @Nonnull

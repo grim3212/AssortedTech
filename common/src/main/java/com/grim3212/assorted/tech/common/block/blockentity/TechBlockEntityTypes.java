@@ -13,7 +13,7 @@ public class TechBlockEntityTypes {
 
     public static final RegistryProvider<BlockEntityType<?>> BLOCK_ENTITIES = RegistryProvider.create(Registries.BLOCK_ENTITY_TYPE, Constants.MOD_ID);
 
-    public static final IRegistryObject<BlockEntityType<SensorBlockEntity>> SENSOR = BLOCK_ENTITIES.register("sensor", () -> Services.REGISTRY_UTIL.createBlockEntityType(SensorBlockEntity::new, TechBlocks.SENSORS.stream().toArray(Block[]::new)));
+    public static final IRegistryObject<BlockEntityType<SensorBlockEntity>> SENSOR = BLOCK_ENTITIES.register("sensor", () -> Services.REGISTRY_UTIL.createBlockEntityType(SensorBlockEntity::new, TechBlocks.SENSORS.stream().map(x -> x.get()).toArray(Block[]::new)));
     public static final IRegistryObject<BlockEntityType<FanBlockEntity>> FAN = BLOCK_ENTITIES.register("fan", () -> Services.REGISTRY_UTIL.createBlockEntityType(FanBlockEntity::new, TechBlocks.FAN.get()));
     public static final IRegistryObject<BlockEntityType<AlarmBlockEntity>> ALARM = BLOCK_ENTITIES.register("alarm", () -> Services.REGISTRY_UTIL.createBlockEntityType(AlarmBlockEntity::new, TechBlocks.FAN.get()));
 

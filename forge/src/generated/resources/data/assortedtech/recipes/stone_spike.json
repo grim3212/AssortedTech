@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "minecraft:stone_tool_materials"
+        }
+      ]
+    }
+  ],
+  "key": {
+    "X": {
+      "tag": "minecraft:stone_tool_materials"
+    }
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "item": "assortedtech:stone_spike"
+  }
+}

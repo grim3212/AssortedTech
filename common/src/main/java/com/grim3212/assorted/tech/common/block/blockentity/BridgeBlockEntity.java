@@ -2,9 +2,9 @@ package com.grim3212.assorted.tech.common.block.blockentity;
 
 import com.grim3212.assorted.lib.client.model.data.IBlockModelData;
 import com.grim3212.assorted.lib.client.model.data.IModelDataBuilder;
-import com.grim3212.assorted.lib.client.model.data.IModelDataKey;
 import com.grim3212.assorted.lib.core.block.IBlockEntityWithModelData;
 import com.grim3212.assorted.lib.platform.Services;
+import com.grim3212.assorted.tech.common.properties.TechModelProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,11 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithModelData {
 
-    public static final IModelDataKey<BlockState> BLOCK_STATE = IModelDataKey.create();
-
     protected BlockState blockState = Blocks.AIR.defaultBlockState();
     protected Direction facing = Direction.NORTH;
-    private IBlockModelData modelData = IModelDataBuilder.create().build();
 
     public BridgeBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos pos, BlockState state) {
         super(tileEntityTypeIn, pos, state);
@@ -94,6 +91,6 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
 
     @Override
     public @NotNull IBlockModelData getBlockModelData() {
-        return IModelDataBuilder.create().withInitial(BLOCK_STATE, blockState).build();
+        return IModelDataBuilder.create().withInitial(TechModelProperties.BLOCK_STATE, blockState).build();
     }
 }

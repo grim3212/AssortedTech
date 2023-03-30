@@ -1,12 +1,10 @@
 package com.grim3212.assorted.tech.common.network;
 
-import com.grim3212.assorted.tech.client.screen.AlarmScreen;
-import com.grim3212.assorted.tech.common.block.blockentity.AlarmBlockEntity;
-import net.minecraft.client.Minecraft;
+import com.grim3212.assorted.lib.dist.Dist;
+import com.grim3212.assorted.lib.dist.DistExecutor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class AlarmOpenPacket {
     private final BlockPos pos;
@@ -25,10 +23,7 @@ public class AlarmOpenPacket {
         buf.writeBlockPos(this.pos);
     }
 
-    public static void handle(AlarmOpenPacket packet, Player player) {
-        BlockEntity te = player.level.getBlockEntity(packet.pos);
-        if (te instanceof AlarmBlockEntity alarmBlockEntity) {
-            Minecraft.getInstance().setScreen(new AlarmScreen(alarmBlockEntity));
-        }
+    public static void handle(AlarmOpenPacket packet, Player serverPlayer) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandlers.openAlarmScreen(packet.pos));
     }
 }

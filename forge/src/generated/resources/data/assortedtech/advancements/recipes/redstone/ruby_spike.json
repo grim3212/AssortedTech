@@ -1,0 +1,47 @@
+{
+  "parent": "minecraft:recipes/root",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "forge:gems/ruby"
+        }
+      ]
+    }
+  ],
+  "criteria": {
+    "has_material": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:gems/ruby"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedtech:ruby_spike"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_material",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedtech:ruby_spike"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "assortedtech:wood_spike",
+    "assortedtech:stone_spike",
+    "assortedtech:iron_spike",
+    "assortedtech:copper_spike",
+    "assortedtech:diamond_spike",
+    "assortedtech:gold_spike",
+    "assortedtech:netherite_spike",
+    "assortedtech:amethyst_spike",
+    "assortedtech:emerald_spike",
+    "assortedtech:tin_spike",
+    "assortedtech:silver_spike",
+    "assortedtech:aluminum_spike",
+    "assortedtech:nickel_spike",
+    "assortedtech:platinum_spike",
+    "assortedtech:lead_spike",
+    "assortedtech:bronze_spike",
+    "assortedtech:electrum_spike",
+    "assortedtech:invar_spike",
+    "assortedtech:steel_spike",
+    "assortedtech:ruby_spike",
+    "assortedtech:sapphire_spike",
+    "assortedtech:topaz_spike",
+    "assortedtech:peridot_spike"
+  ]
+}

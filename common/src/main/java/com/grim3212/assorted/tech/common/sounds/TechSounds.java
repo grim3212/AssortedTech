@@ -33,4 +33,7 @@ public class TechSounds {
         ResourceLocation loc = new ResourceLocation(Constants.MOD_ID, name);
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(loc));
     }
+
+    public static void init() {
+    }
 }

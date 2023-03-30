@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "tag": "forge:end_stones"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "X": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "XGX",
+    "MRM",
+    "XMX"
+  ],
+  "result": {
+    "item": "assortedtech:end_stone_sensor"
+  }
+}

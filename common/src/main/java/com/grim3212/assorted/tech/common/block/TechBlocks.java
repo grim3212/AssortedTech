@@ -6,6 +6,8 @@ import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.api.util.GravityType;
+import com.grim3212.assorted.tech.api.util.SensorType;
+import com.grim3212.assorted.tech.api.util.SpikeType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
+import java.util.stream.Stream;
 
 public class TechBlocks {
 
@@ -51,6 +54,11 @@ public class TechBlocks {
 
     public static final List<IRegistryObject<SpikeBlock>> SPIKES = Lists.newArrayList();
     public static final List<IRegistryObject<SensorBlock>> SENSORS = Lists.newArrayList();
+
+    static {
+        Stream.of(SpikeType.values()).forEach((type) -> SPIKES.add(register(type.toString() + "_spike", () -> new SpikeBlock(Block.Properties.of(Material.METAL).sound(SoundType.METAL).noCollission().strength(1.5F, 10F), type))));
+        Stream.of(SensorType.values()).forEach((type) -> SENSORS.add(register(type.toString() + "_sensor", () -> new SensorBlock(Block.Properties.of(type.getMaterial()).sound(type.getSoundType()).strength(1.0F, 10.0F), type))));
+    }
 
     private static <T extends Block> IRegistryObject<T> register(String name, Supplier<? extends T> sup) {
         return register(name, sup, block -> item(block));

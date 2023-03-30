@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "forge:gems/emerald"
+        }
+      ]
+    }
+  ],
+  "key": {
+    "X": {
+      "tag": "forge:gems/emerald"
+    }
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "item": "assortedtech:emerald_spike"
+  }
+}

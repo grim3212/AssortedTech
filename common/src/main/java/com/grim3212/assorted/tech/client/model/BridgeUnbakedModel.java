@@ -28,6 +28,7 @@ public class BridgeUnbakedModel implements IModelSpecification<BridgeUnbakedMode
 
     @Override
     public BakedModel bake(IModelBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation) {
+        this.unbakedBridge.resolveParents(baker::getModel);
         return new BridgeBakedModel(context, unbakedBridge, baker, spriteGetter, modelState, modelLocation);
     }
 
@@ -35,8 +36,7 @@ public class BridgeUnbakedModel implements IModelSpecification<BridgeUnbakedMode
         public static final Loader INSTANCE = new Loader();
 
         public BridgeUnbakedModel read(JsonDeserializationContext deserializationContext, JsonObject jsonObject) {
-            BlockModel bridge = deserializationContext.deserialize(jsonObject.getAsJsonObject("bridge"), BlockModel.class);
-            return new BridgeUnbakedModel(bridge);
+            return new BridgeUnbakedModel(deserializationContext.deserialize(jsonObject.getAsJsonObject("bridge"), BlockModel.class));
         }
     }
 }

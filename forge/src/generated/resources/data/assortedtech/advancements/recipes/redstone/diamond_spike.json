@@ -1,0 +1,47 @@
+{
+  "parent": "minecraft:recipes/root",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "forge:gems/diamond"
+        }
+      ]
+    }
+  ],
+  "criteria": {
+    "has_material": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:gems/diamond"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedtech:diamond_spike"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_material",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedtech:diamond_spike"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
+  "key": {
+    "G": {
+      "tag": "c:glass"
+    },
+    "M": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "X": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "XGX",
+    "MRM",
+    "XMX"
+  ],
+  "result": {
+    "item": "assortedtech:iron_sensor"
+  }
+}

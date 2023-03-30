@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "detected=false,facing=down": {
+      "model": "assortedtech:block/sensors/gold_sensor",
+      "x": 180
+    },
+    "detected=false,facing=east": {
+      "model": "assortedtech:block/sensors/gold_sensor",
+      "x": 90,
+      "y": 90
+    },
+    "detected=false,facing=north": {
+      "model": "assortedtech:block/sensors/gold_sensor",
+      "x": 90
+    },
+    "detected=false,facing=south": {
+      "model": "assortedtech:block/sensors/gold_sensor",
+      "x": 90,
+      "y": 180
+    },
+    "detected=false,facing=up": {
+      "model": "assortedtech:block/sensors/gold_sensor"
+    },
+    "detected=false,facing=west": {
+      "model": "assortedtech:block/sensors/gold_sensor",
+      "x": 90,
+      "y": 270
+    },
+    "detected=true,facing=down": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected",
+      "x": 180
+    },
+    "detected=true,facing=east": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected",
+      "x": 90,
+      "y": 90
+    },
+    "detected=true,facing=north": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected",
+      "x": 90
+    },
+    "detected=true,facing=south": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected",
+      "x": 90,
+      "y": 180
+    },
+    "detected=true,facing=up": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected"
+    },
+    "detected=true,facing=west": {
+      "model": "assortedtech:block/sensors/gold_sensor_detected",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

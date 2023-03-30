@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "minecraft:planks"
+        }
+      ]
+    }
+  ],
+  "key": {
+    "X": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "item": "assortedtech:wood_spike"
+  }
+}

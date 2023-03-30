@@ -1,7 +1,6 @@
 package com.grim3212.assorted.tech.common.block;
 
 import com.grim3212.assorted.lib.core.block.ExtraPropertyBlock;
-import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.TechTags;
 import com.grim3212.assorted.tech.api.util.BridgeType;
@@ -161,7 +160,7 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return this.getStoredState(level, pos) != Blocks.AIR.defaultBlockState() ? Services.LEVEL_PROPERTIES.getLightEmission(level, pos) : super.getLightEmission(state, level, pos);
+        return this.getStoredState(level, pos) != Blocks.AIR.defaultBlockState() ? this.getStoredState(level, pos).getLightEmission() : state.getLightEmission();
     }
 
     @Override

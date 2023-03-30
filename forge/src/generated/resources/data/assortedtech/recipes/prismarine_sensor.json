@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "M": {
+      "item": "minecraft:prismarine"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "X": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "XGX",
+    "MRM",
+    "XMX"
+  ],
+  "result": {
+    "item": "assortedtech:prismarine_sensor"
+  }
+}
