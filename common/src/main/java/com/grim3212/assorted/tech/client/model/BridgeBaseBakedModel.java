@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.grim3212.assorted.lib.client.model.ItemOverridesExtension;
 import com.grim3212.assorted.lib.client.model.baked.IDataAwareBakedModel;
+import com.grim3212.assorted.lib.client.model.baked.IDelegatingBakedModel;
 import com.grim3212.assorted.lib.client.model.data.IBlockModelData;
 import com.grim3212.assorted.lib.client.model.loaders.context.IModelBakingContext;
+import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.lib.util.NBTHelper;
-import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
 import com.grim3212.assorted.tech.common.properties.TechModelProperties;
@@ -30,7 +31,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -79,7 +79,7 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     @Override
     public boolean isCustomRenderer() {
-        return this.context.useBlockLight();
+        return false;
     }
 
     protected final Map<BlockState, BakedModel> cache = new HashMap<>();
@@ -135,23 +135,9 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     protected abstract BakedModel generateModel(ImmutableMap<String, String> texture);
 
-    // TODO: Fix particle icon
-    public TextureAtlasSprite getParticleIcon(IBlockModelData data) {
-        if (data.hasProperty(TechModelProperties.BLOCK_STATE)) {
-            BlockState state = data.getData(TechModelProperties.BLOCK_STATE);
-            if (state == Blocks.AIR.defaultBlockState()) {
-                return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(Constants.MOD_ID, "block/bridge"));
-            } else if (state != null) {
-                return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(state);
-            }
-        }
-
-        return this.spriteGetter.apply(this.context.getMaterial("particle").orElse(null));
-    }
-
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return this.getParticleIcon(IBlockModelData.empty());
+        return this.spriteGetter.apply(this.context.getMaterial("particle").orElse(null));
     }
 
     @Override
@@ -174,14 +160,13 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
         BridgeType type = state.getValue(BridgeBlock.TYPE);
 
         var cached = this.getCachedModel(type, blockState);
-        var quads = cached.getQuads(state, side, rand);
-        return quads;
+        return cached.getQuads(state, side, rand);
     }
 
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand) {
-        return getQuads(state, side, rand, IBlockModelData.empty(), RenderType.translucent());
+        return getQuads(state, side, rand, IBlockModelData.empty(), RenderType.cutout());
     }
 
     @Override
@@ -191,7 +176,19 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     @Override
     public @Nonnull Collection<RenderType> getSupportedRenderTypes(BlockState state, RandomSource rand, IBlockModelData data) {
-        return ImmutableList.of(RenderType.translucent());
+        BlockState blockState = Blocks.AIR.defaultBlockState();
+        if (data.hasProperty(TechModelProperties.BLOCK_STATE)) {
+            blockState = data.getData(TechModelProperties.BLOCK_STATE);
+        }
+
+        if (blockState.isAir()) {
+            return ImmutableList.of(RenderType.cutout());
+        }
+
+        BridgeType type = state.getValue(BridgeBlock.TYPE);
+        var cached = this.getCachedModel(type, blockState);
+        Collection<RenderType> renderTypes = ClientServices.MODELS.getRenderTypesFor(cached, blockState, rand, data);
+        return renderTypes.isEmpty() ? ImmutableList.of(RenderType.cutout()) : renderTypes;
     }
 
     @Override
@@ -207,13 +204,20 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
         @Override
         public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int field) {
-            BridgeBaseBakedModel bridgeModel = (BridgeBaseBakedModel) originalModel;
-
-            if (stack.hasTag() && stack.getTag().contains("stored_state")) {
-                return bridgeModel.getCachedModel(BridgeType.LASER, NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), NBTHelper.getTag(stack, "stored_state")));
+            BakedModel returnModel = originalModel;
+            if (originalModel instanceof IDelegatingBakedModel delegate) {
+                returnModel = delegate.getDelegate();
             }
 
-            return bridgeModel.getCachedModel(BridgeType.LASER, Blocks.AIR.defaultBlockState());
+            if (returnModel instanceof BridgeBaseBakedModel bridgeModel) {
+                if (stack.hasTag() && stack.getTag().contains("stored_state")) {
+                    return bridgeModel.getCachedModel(BridgeType.LASER, NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), NBTHelper.getTag(stack, "stored_state")));
+                }
+
+                return bridgeModel.getCachedModel(BridgeType.LASER, Blocks.AIR.defaultBlockState());
+            }
+
+            return returnModel;
         }
     }
 }

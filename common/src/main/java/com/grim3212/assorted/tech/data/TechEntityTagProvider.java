@@ -1,34 +1,22 @@
 package com.grim3212.assorted.tech.data;
 
+import com.grim3212.assorted.lib.data.LibEntityTagProvider;
 import com.grim3212.assorted.tech.api.TechTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class TechEntityTagProvider extends IntrinsicHolderTagsProvider<EntityType<?>> {
+public class TechEntityTagProvider extends LibEntityTagProvider {
 
     public TechEntityTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, Registries.ENTITY_TYPE, lookupProvider, (type) -> type.builtInRegistryHolder().key());
+        super(output, lookupProvider);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider lookup) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    protected IntrinsicTagAppender<EntityType<?>> tag(TagKey<EntityType<?>> tag) {
-        throw new NotImplementedException();
-    }
-
-
     public void addCommonTags(Function<TagKey<EntityType<?>>, IntrinsicTagAppender<EntityType<?>>> tagger) {
         tagger.apply(TechTags.Entities.SENSORS_NETHER).add(EntityType.BLAZE, EntityType.GHAST, EntityType.HOGLIN, EntityType.MAGMA_CUBE, EntityType.PIGLIN, EntityType.PIGLIN_BRUTE, EntityType.STRIDER, EntityType.WITHER_SKELETON, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN);
         tagger.apply(TechTags.Entities.SENSORS_END).add(EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.ENDER_DRAGON, EntityType.SHULKER);

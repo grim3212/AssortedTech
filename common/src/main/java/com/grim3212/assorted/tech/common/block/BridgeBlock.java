@@ -1,15 +1,18 @@
 package com.grim3212.assorted.tech.common.block;
 
 import com.grim3212.assorted.lib.core.block.ExtraPropertyBlock;
+import com.grim3212.assorted.lib.core.block.effects.*;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.TechTags;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.api.util.TechDamageSources;
+import com.grim3212.assorted.tech.client.model.BridgeClientEffects;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +35,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock {
+import java.util.function.Supplier;
+
+public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlockLandingEffects, IBlockRunningEffects, IBlockEffectSupplier {
 
     public static EnumProperty<BridgeType> TYPE = EnumProperty.create("type", BridgeType.class);
 
@@ -150,17 +155,31 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock {
 
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return this.getStoredState(reader, pos) != Blocks.AIR.defaultBlockState() ? this.getStoredState(reader, pos).propagatesSkylightDown(reader, pos) : super.propagatesSkylightDown(state, reader, pos);
+        BlockState stored = this.getStoredState(reader, pos);
+        return !stored.isAir() ? stored.propagatesSkylightDown(reader, pos) : super.propagatesSkylightDown(state, reader, pos);
     }
 
     @Override
     public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        return this.getStoredState(reader, pos) != Blocks.AIR.defaultBlockState() ? this.getStoredState(reader, pos).getVisualShape(reader, pos, context) : super.getVisualShape(state, reader, pos, context);
+        BlockState stored = this.getStoredState(reader, pos);
+        return !stored.isAir() ? stored.getVisualShape(reader, pos, context) : super.getVisualShape(state, reader, pos, context);
+    }
+
+    @Override
+    public int getLightBlock(BlockState state, BlockGetter reader, BlockPos pos) {
+        BlockState stored = this.getStoredState(reader, pos);
+        return stored.isAir() ? super.getLightBlock(state, reader, pos) : stored.getLightBlock(reader, pos);
+    }
+
+    @Override
+    public float getShadeBrightness(BlockState state, BlockGetter reader, BlockPos pos) {
+        BlockState stored = this.getStoredState(reader, pos);
+        return stored.isAir() ? super.getShadeBrightness(state, reader, pos) : stored.getShadeBrightness(reader, pos);
     }
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return this.getStoredState(level, pos) != Blocks.AIR.defaultBlockState() ? this.getStoredState(level, pos).getLightEmission() : state.getLightEmission();
+        return !this.getStoredState(level, pos).isAir() ? this.getStoredState(level, pos).getLightEmission() : state.getLightEmission();
     }
 
     @Override
@@ -176,5 +195,20 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock {
             return bridge.getStoredBlockState();
         }
         return Blocks.AIR.defaultBlockState();
+    }
+
+    @Override
+    public Supplier<IBlockClientEffects> getClientEffects() {
+        return BridgeClientEffects::new;
+    }
+
+    @Override
+    public boolean addLandingEffects(BlockState state1, ServerLevel level, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
+        return ServerEffectUtils.addLandingEffects(this.getStoredState(level, pos), level, entity, numberOfParticles);
+    }
+
+    @Override
+    public boolean addRunningEffects(BlockState state, Level level, BlockPos pos, Entity entity) {
+        return ServerEffectUtils.addRunningEffects(this.getStoredState(level, pos), level, entity);
     }
 }

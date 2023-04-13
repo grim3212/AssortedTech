@@ -1,18 +1,22 @@
 package com.grim3212.assorted.tech.common.handlers;
 
 import com.grim3212.assorted.lib.core.creative.CreativeTabItems;
+import com.grim3212.assorted.lib.platform.Services;
+import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.SpikeType;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public class TechCreativeItems {
 
-    public static List<ItemStack> getCreativeItems() {
+    private static List<ItemStack> getCreativeItems() {
         CreativeTabItems items = new CreativeTabItems();
 
         if (TechCommonMod.COMMON_CONFIG.gravityEnabled.get()) {
@@ -68,5 +72,9 @@ public class TechCreativeItems {
 
     private static boolean canNotCraft(SpikeType type) {
         return TechCommonMod.COMMON_CONFIG.hideUncraftableItems.get() && BuiltInRegistries.ITEM.getTag(type.getMaterial()).isPresent() && BuiltInRegistries.ITEM.getTag(type.getMaterial()).get().stream().count() < 1;
+    }
+
+    public static void init() {
+        Services.PLATFORM.registerCreativeTab(new ResourceLocation(Constants.MOD_ID, "tab"), Component.translatable("itemGroup." + Constants.MOD_ID), () -> new ItemStack(TechBlocks.FLIP_FLOP_TORCH.get()), TechCreativeItems::getCreativeItems);
     }
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.grim3212.assorted.lib.client.model.loaders.IModelSpecification;
 import com.grim3212.assorted.lib.client.model.loaders.IModelSpecificationLoader;
 import com.grim3212.assorted.lib.client.model.loaders.context.IModelBakingContext;
+import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.tech.Constants;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,7 +30,7 @@ public class BridgeUnbakedModel implements IModelSpecification<BridgeUnbakedMode
     @Override
     public BakedModel bake(IModelBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation) {
         this.unbakedBridge.resolveParents(baker::getModel);
-        return new BridgeBakedModel(context, unbakedBridge, baker, spriteGetter, modelState, modelLocation);
+        return ClientServices.MODELS.adaptToPlatform(new BridgeBakedModel(context, unbakedBridge, baker, spriteGetter, modelState, modelLocation));
     }
 
     public static final class Loader implements IModelSpecificationLoader<BridgeUnbakedModel> {

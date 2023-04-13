@@ -1,24 +1,20 @@
 package com.grim3212.assorted.tech;
 
-import com.grim3212.assorted.tech.client.TechClient;
+import com.grim3212.assorted.lib.data.ForgeBlockTagProvider;
+import com.grim3212.assorted.lib.data.ForgeEntityTagProvider;
+import com.grim3212.assorted.lib.data.ForgeItemTagProvider;
 import com.grim3212.assorted.tech.client.data.BridgeModelProvider;
 import com.grim3212.assorted.tech.client.data.TechBlockstateProvider;
 import com.grim3212.assorted.tech.client.data.TechItemModelProvider;
-import com.grim3212.assorted.tech.common.data.ForgeBlockTagProvider;
-import com.grim3212.assorted.tech.common.data.ForgeEntityTagProvider;
-import com.grim3212.assorted.tech.common.data.ForgeItemTagProvider;
-import com.grim3212.assorted.tech.data.TechBlockLoot;
-import com.grim3212.assorted.tech.data.TechRecipes;
+import com.grim3212.assorted.tech.data.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -30,11 +26,7 @@ import java.util.concurrent.CompletableFuture;
 public class AssortedTechForge {
 
     public AssortedTechForge() {
-        // Initialize client side
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> TechClient::init);
-
         final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-
         modBus.addListener(this::gatherData);
 
         TechCommonMod.init();
@@ -48,10 +40,10 @@ public class AssortedTechForge {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         datagenerator.addProvider(event.includeServer(), new TechRecipes(packOutput));
-        ForgeBlockTagProvider blockTagProvider = new ForgeBlockTagProvider(packOutput, lookupProvider, fileHelper);
+        ForgeBlockTagProvider blockTagProvider = new ForgeBlockTagProvider(packOutput, lookupProvider, fileHelper, Constants.MOD_ID, new TechBlockTagProvider(packOutput, lookupProvider));
         datagenerator.addProvider(event.includeServer(), blockTagProvider);
-        datagenerator.addProvider(event.includeServer(), new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider, fileHelper));
-        datagenerator.addProvider(event.includeServer(), new ForgeEntityTagProvider(packOutput, lookupProvider, fileHelper));
+        datagenerator.addProvider(event.includeServer(), new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider, fileHelper, Constants.MOD_ID, new TechItemTagProvider(packOutput, lookupProvider, blockTagProvider)));
+        datagenerator.addProvider(event.includeServer(), new ForgeEntityTagProvider(packOutput, lookupProvider, fileHelper, Constants.MOD_ID, new TechEntityTagProvider(packOutput, lookupProvider)));
         datagenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(TechBlockLoot::new, LootContextParamSets.BLOCK))));
 
         BridgeModelProvider loadedModels = new BridgeModelProvider(packOutput, fileHelper);

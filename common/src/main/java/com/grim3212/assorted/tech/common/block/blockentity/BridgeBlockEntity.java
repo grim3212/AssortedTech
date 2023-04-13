@@ -3,6 +3,7 @@ package com.grim3212.assorted.tech.common.block.blockentity;
 import com.grim3212.assorted.lib.client.model.data.IBlockModelData;
 import com.grim3212.assorted.lib.client.model.data.IModelDataBuilder;
 import com.grim3212.assorted.lib.core.block.IBlockEntityWithModelData;
+import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.tech.common.properties.TechModelProperties;
 import net.minecraft.core.BlockPos;
@@ -79,6 +80,8 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
             level.getLightEngine().checkBlock(getBlockPos());
             if (!level.isClientSide) {
                 level.blockUpdated(worldPosition, getBlockState().getBlock());
+            } else {
+                ClientServices.MODELS.requestModelDataRefresh(this);
             }
         }
 

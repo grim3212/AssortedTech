@@ -18,10 +18,10 @@
       "com.grim3212.assorted.tech.AssortedTechFabric"
     ],
     "client": [
-      "com.grim3212.assorted.tech.client.AssortedTechFabricClient"
+      "com.grim3212.assorted.tech.AssortedTechFabricClient"
     ],
     "fabric-datagen": [
-      "com.grim3212.assorted.tech.common.data.AssortedTechFabricDatagen"
+      "com.grim3212.assorted.tech.AssortedTechFabricDatagen"
     ]
   },
   "depends": {
