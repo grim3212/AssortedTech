@@ -1,4 +1,10 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "bridges"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_laser_bridge": {
@@ -20,12 +26,6 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
-  "fabric:load_conditions": [
-    {
-      "condition": "assortedlib:part_enabled",
-      "part": "bridges"
-    }
-  ],
   "requirements": [
     [
       "has_laser_bridge",

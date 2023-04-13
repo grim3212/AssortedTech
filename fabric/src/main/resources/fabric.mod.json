@@ -11,7 +11,7 @@
     "issues": "${issue_tracker}"
   },
   "license": "${license}",
-  "icon": "icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -29,6 +29,6 @@
     "fabric-api": "*",
     "minecraft": "${fabric_mc_version_range}",
     "java": ">=17",
-    "assortedlib": ">=1.0.1-25"
+    "assortedlib": ">=${assortedlib_version}"
   }
 }

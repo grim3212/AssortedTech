@@ -63,7 +63,7 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand 'version': project.version, 'fabric_mc_version_range': project.fabric_mc_version_range, 'license': project.license,
                 'mod_id': project.mod_id, 'mod_author': project.mod_author, 'mod_description': project.mod_description,
-                'mod_name': project.mod_name, 'issue_tracker': project.issue_tracker
+                'mod_name': project.mod_name, 'issue_tracker': project.issue_tracker, 'assortedlib_version': project.assortedlib_version
     }
 
     filesMatching("pack.mcmeta") {

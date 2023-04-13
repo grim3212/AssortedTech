@@ -1,12 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
       "part": "torches"
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
   "key": {
     "P": {
       "tag": "c:dyes/blue"

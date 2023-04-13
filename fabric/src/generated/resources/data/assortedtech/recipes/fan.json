@@ -1,12 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
   "fabric:load_conditions": [
     {
       "condition": "assortedlib:part_enabled",
       "part": "fan"
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
   "key": {
     "I": {
       "tag": "c:ingots/iron"

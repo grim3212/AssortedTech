@@ -1,4 +1,21 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "values": [
+            "c:gems/emerald"
+          ]
+        }
+      ]
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_material": {
@@ -18,23 +35,6 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
-  "fabric:load_conditions": [
-    {
-      "condition": "fabric:and",
-      "values": [
-        {
-          "condition": "assortedlib:part_enabled",
-          "part": "spikes"
-        },
-        {
-          "condition": "fabric:tags_populated",
-          "values": [
-            "c:gems/emerald"
-          ]
-        }
-      ]
-    }
-  ],
   "requirements": [
     [
       "has_material",

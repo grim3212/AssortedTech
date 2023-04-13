@@ -1,4 +1,10 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "gravity"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_ender_pearl": {
@@ -18,12 +24,6 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
-  "fabric:load_conditions": [
-    {
-      "condition": "assortedlib:part_enabled",
-      "part": "gravity"
-    }
-  ],
   "requirements": [
     [
       "has_ender_pearl",

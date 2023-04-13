@@ -1,6 +1,4 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "redstone",
   "fabric:load_conditions": [
     {
       "condition": "fabric:and",
@@ -18,6 +16,8 @@
       ]
     }
   ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
   "key": {
     "X": {
       "tag": "c:gems/peridot"

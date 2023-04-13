@@ -1,4 +1,10 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "fan"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_redstone": {
@@ -18,12 +24,6 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
-  "fabric:load_conditions": [
-    {
-      "condition": "assortedlib:part_enabled",
-      "part": "fan"
-    }
-  ],
   "requirements": [
     [
       "has_redstone",

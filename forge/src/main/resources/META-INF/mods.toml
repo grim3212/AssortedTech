@@ -3,7 +3,7 @@ loaderVersion = "[44,)"
 license = "${license}"
 logoBlur = false
 issueTrackerURL = "${issue_tracker}"
-logoFile = "icon.png"
+logoFile = "logo.png"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
@@ -27,6 +27,6 @@ side = "BOTH"
 [[dependencies.assortedtech]]
 modId = "assortedlib"
 mandatory = true
-versionRange = "[1.0.1,)"
+versionRange = "[${assortedlib_version},)"
 ordering = "NONE"
 side = "BOTH"
