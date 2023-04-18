@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:netherrack_sensor"
-  }
+  },
+  "show_notification": true
 }

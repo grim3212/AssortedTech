@@ -22,7 +22,7 @@ public class AirParticle extends TextureSheetParticle {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.fan = (FanBlockEntity) level.getBlockEntity(pos);
         this.direction = fan.getBlockState().getValue(BlockStateProperties.FACING);
-        this.startPos = new BlockPos(x, y, z);
+        this.startPos = BlockPos.containing(x, y, z);
         this.distanceModifier = TechCommonMod.COMMON_CONFIG.fanMaxRange.get() - fan.getRange() + 1;
 
         lifetime = (int) (((TechCommonMod.COMMON_CONFIG.fanMaxRange.get() + this.distanceModifier) / 4.0F) / (this.random.nextFloat() * 0.9F + 0.1F));

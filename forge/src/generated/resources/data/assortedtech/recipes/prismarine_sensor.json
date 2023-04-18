@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:prismarine_sensor"
-  }
+  },
+  "show_notification": true
 }

@@ -5,9 +5,9 @@ import com.grim3212.assorted.lib.core.block.effects.*;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.TechTags;
 import com.grim3212.assorted.tech.api.util.BridgeType;
-import com.grim3212.assorted.tech.api.util.TechDamageSources;
 import com.grim3212.assorted.tech.client.model.BridgeClientEffects;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
+import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -68,7 +68,7 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
         BridgeType type = level.getBlockState(pos).getValue(TYPE);
 
         if (type == BridgeType.DEATH) {
-            entity.hurt(TechDamageSources.laser(entity), 4);
+            entity.hurt(level.damageSources().source(TechDamageTypes.LASER), 4);
         } else if (type == BridgeType.GRAVITY) {
 
             if (entity instanceof LivingEntity livingEntity) {

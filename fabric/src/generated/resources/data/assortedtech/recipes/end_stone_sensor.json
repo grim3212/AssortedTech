@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:end_stone_sensor"
-  }
+  },
+  "show_notification": true
 }

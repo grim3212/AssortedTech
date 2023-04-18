@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "assortedtech:gravity_boots"
-  }
+  },
+  "show_notification": true
 }

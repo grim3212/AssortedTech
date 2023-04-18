@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:hay_bale_sensor"
-  }
+  },
+  "show_notification": true
 }

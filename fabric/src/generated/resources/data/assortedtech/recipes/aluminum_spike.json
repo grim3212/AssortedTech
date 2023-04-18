@@ -31,5 +31,6 @@
   "result": {
     "count": 6,
     "item": "assortedtech:aluminum_spike"
-  }
+  },
+  "show_notification": true
 }

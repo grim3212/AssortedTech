@@ -60,7 +60,7 @@ public class AirParticleData implements ParticleOptions {
             reader.expect(' ');
             double zPos = reader.readDouble();
 
-            return new AirParticleData(new BlockPos(xPos, yPos, zPos));
+            return new AirParticleData(BlockPos.containing(xPos, yPos, zPos));
         }
 
         @Override

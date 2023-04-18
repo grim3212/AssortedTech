@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "assortedtech:fan"
-  }
+  },
+  "show_notification": true
 }

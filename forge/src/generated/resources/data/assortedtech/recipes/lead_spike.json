@@ -29,5 +29,6 @@
   "result": {
     "count": 6,
     "item": "assortedtech:lead_spike"
-  }
+  },
+  "show_notification": true
 }

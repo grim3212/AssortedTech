@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:feather_sensor"
-  }
+  },
+  "show_notification": true
 }

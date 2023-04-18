@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:wood_sensor"
-  }
+  },
+  "show_notification": true
 }

@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:mossy_cobblestone_sensor"
-  }
+  },
+  "show_notification": true
 }

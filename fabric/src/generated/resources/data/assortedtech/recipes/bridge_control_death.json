@@ -27,5 +27,6 @@
   ],
   "result": {
     "item": "assortedtech:bridge_control_death"
-  }
+  },
+  "show_notification": true
 }

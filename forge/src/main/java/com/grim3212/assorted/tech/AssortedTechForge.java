@@ -42,7 +42,7 @@ public class AssortedTechForge {
         datagenerator.addProvider(event.includeServer(), new TechRecipes(packOutput));
         ForgeBlockTagProvider blockTagProvider = new ForgeBlockTagProvider(packOutput, lookupProvider, fileHelper, Constants.MOD_ID, new TechBlockTagProvider(packOutput, lookupProvider));
         datagenerator.addProvider(event.includeServer(), blockTagProvider);
-        datagenerator.addProvider(event.includeServer(), new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider, fileHelper, Constants.MOD_ID, new TechItemTagProvider(packOutput, lookupProvider, blockTagProvider)));
+        datagenerator.addProvider(event.includeServer(), new ForgeItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter(), fileHelper, Constants.MOD_ID, new TechItemTagProvider(packOutput, lookupProvider, blockTagProvider.contentsGetter())));
         datagenerator.addProvider(event.includeServer(), new ForgeEntityTagProvider(packOutput, lookupProvider, fileHelper, Constants.MOD_ID, new TechEntityTagProvider(packOutput, lookupProvider)));
         datagenerator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(TechBlockLoot::new, LootContextParamSets.BLOCK))));
 

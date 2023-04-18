@@ -8,7 +8,6 @@ import com.grim3212.assorted.tech.common.block.SpikeBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +18,7 @@ import java.util.function.Function;
 
 public class TechItemTagProvider extends LibItemTagProvider {
 
-    public TechItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, TagsProvider<Block> blockTags) {
+    public TechItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, CompletableFuture<TagLookup<Block>> blockTags) {
         super(output, lookup, blockTags);
     }
 

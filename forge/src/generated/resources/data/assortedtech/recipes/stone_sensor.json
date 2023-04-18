@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:stone_sensor"
-  }
+  },
+  "show_notification": true
 }

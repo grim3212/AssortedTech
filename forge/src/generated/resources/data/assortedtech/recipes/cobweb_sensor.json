@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:cobweb_sensor"
-  }
+  },
+  "show_notification": true
 }

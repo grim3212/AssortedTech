@@ -1,7 +1,7 @@
 package com.grim3212.assorted.tech.common.block;
 
 import com.grim3212.assorted.tech.api.util.SpikeType;
-import com.grim3212.assorted.tech.api.util.TechDamageSources;
+import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.sounds.TechSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -173,7 +173,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (state.getValue(POWERED) && entity instanceof LivingEntity e) {
-            e.hurt(TechDamageSources.spike(e), this.spikeType.getDamage());
+            e.hurt(level.damageSources().source(TechDamageTypes.SPIKE), this.spikeType.getDamage());
         }
     }
 

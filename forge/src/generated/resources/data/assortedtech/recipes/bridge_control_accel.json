@@ -27,5 +27,6 @@
   ],
   "result": {
     "item": "assortedtech:bridge_control_accel"
-  }
+  },
+  "show_notification": true
 }

@@ -29,5 +29,6 @@
   "result": {
     "count": 6,
     "item": "assortedtech:steel_spike"
-  }
+  },
+  "show_notification": true
 }

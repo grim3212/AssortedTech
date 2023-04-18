@@ -29,5 +29,6 @@
   "result": {
     "count": 6,
     "item": "assortedtech:silver_spike"
-  }
+  },
+  "show_notification": true
 }

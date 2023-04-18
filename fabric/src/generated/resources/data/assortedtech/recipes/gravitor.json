@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:gravitor"
-  }
+  },
+  "show_notification": true
 }

@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:iron_sensor"
-  }
+  },
+  "show_notification": true
 }

@@ -3,6 +3,7 @@ package com.grim3212.assorted.tech;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
 import com.grim3212.assorted.tech.common.crafting.TechConditions;
+import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.handlers.TechCreativeItems;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import com.grim3212.assorted.tech.common.network.TechPackets;

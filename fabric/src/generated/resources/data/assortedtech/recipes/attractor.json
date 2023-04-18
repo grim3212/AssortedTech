@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:attractor"
-  }
+  },
+  "show_notification": true
 }

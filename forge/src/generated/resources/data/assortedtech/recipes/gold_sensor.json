@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:gold_sensor"
-  }
+  },
+  "show_notification": true
 }

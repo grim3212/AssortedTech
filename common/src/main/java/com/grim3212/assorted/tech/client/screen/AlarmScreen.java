@@ -73,7 +73,7 @@ public class AlarmScreen extends Screen {
         AlarmScreen.drawCenteredString(stack, font, Component.translatable("alarm.screen"), width / 2, 10, 0xFF1010);
 
         int textBorder = 5;
-        font.drawWordWrap(Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
+        font.drawWordWrap(stack, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
 
     }
 }

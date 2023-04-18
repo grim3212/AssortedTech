@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "assortedtech:repulsor"
-  }
+  },
+  "show_notification": true
 }
