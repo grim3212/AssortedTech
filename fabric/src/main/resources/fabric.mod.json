@@ -24,6 +24,7 @@
       "com.grim3212.assorted.tech.AssortedTechFabricDatagen"
     ]
   },
+  "accessWidener": "${mod_id}_fabric.accesswidener",
   "depends": {
     "fabricloader": ">=0.14",
     "fabric-api": "*",
