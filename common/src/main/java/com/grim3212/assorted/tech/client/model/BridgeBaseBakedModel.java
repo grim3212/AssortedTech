@@ -11,6 +11,7 @@ import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
+import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.properties.TechModelProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -152,6 +153,11 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     @Override
     public @Nonnull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IBlockModelData extraData, @Nullable RenderType renderType) {
+        if (state == null) {
+            var cached = this.getCachedModel(BridgeType.LASER, null);
+            return cached.getQuads(TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, BridgeType.LASER), side, rand);
+        }
+
         BlockState blockState = Blocks.AIR.defaultBlockState();
         if (extraData.hasProperty(TechModelProperties.BLOCK_STATE)) {
             blockState = extraData.getData(TechModelProperties.BLOCK_STATE);

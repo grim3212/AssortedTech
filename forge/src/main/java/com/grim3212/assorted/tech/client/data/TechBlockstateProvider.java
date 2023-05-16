@@ -69,6 +69,7 @@ public class TechBlockstateProvider extends BlockStateProvider {
         String name = name(b);
 
         BridgeModelBuilder bridgeParent = this.loaderModels.getBuilder(name).loader(new ResourceLocation(Constants.MOD_ID, "bridge")).bridge(model).texture("particle", new ResourceLocation(Constants.MOD_ID, "block/bridge")).addTexture("stored", new ResourceLocation(Constants.MOD_ID, "block/bridge_gravity"));
+        defaultPerspective(bridgeParent);
 
         ConfiguredModel bridgeModel = new ConfiguredModel(bridgeParent);
         customLoaderState(b, bridgeModel);
