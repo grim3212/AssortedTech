@@ -36,15 +36,15 @@ public class FanUpdatePacket {
     }
 
     public static void handle(FanUpdatePacket packet, Player player) {
-        BlockState state = player.level.getBlockState(packet.pos);
-        BlockEntity te = player.level.getBlockEntity(packet.pos);
+        BlockState state = player.level().getBlockState(packet.pos);
+        BlockEntity te = player.level().getBlockEntity(packet.pos);
 
         if (te instanceof FanBlockEntity fan) {
             fan.setOldMode(packet.mode);
             fan.setRange(packet.range);
             if (fan.getMode() != FanMode.OFF) {
                 fan.setMode(packet.mode);
-                player.level.setBlock(packet.pos, state.setValue(FanBlock.MODE, packet.mode), 3);
+                player.level().setBlock(packet.pos, state.setValue(FanBlock.MODE, packet.mode), 3);
             }
 
         }

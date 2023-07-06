@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:bridge_control_laser"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

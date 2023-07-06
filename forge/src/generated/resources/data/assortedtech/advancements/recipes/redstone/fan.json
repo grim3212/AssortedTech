@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:fan"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

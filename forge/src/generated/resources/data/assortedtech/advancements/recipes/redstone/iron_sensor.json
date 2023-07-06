@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:iron_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

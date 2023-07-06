@@ -30,7 +30,7 @@ public class GravityBlock extends Block implements EntityBlock {
     private final GravityType type;
 
     public GravityBlock(GravityType type, Properties props) {
-        super(props);
+        super(props.pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false));
         this.type = type;
     }
@@ -43,11 +43,6 @@ public class GravityBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new GravityBlockEntity(pos, state);
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
     }
 
     @Override

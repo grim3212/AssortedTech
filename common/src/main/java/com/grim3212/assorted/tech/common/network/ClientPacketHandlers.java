@@ -13,7 +13,7 @@ public class ClientPacketHandlers {
 
     public static void openAlarmScreen(BlockPos pos) {
         LocalPlayer clientPlayer = Minecraft.getInstance().player;
-        BlockEntity te = clientPlayer.level.getBlockEntity(pos);
+        BlockEntity te = clientPlayer.level().getBlockEntity(pos);
         if (te instanceof AlarmBlockEntity alarmBlockEntity) {
             Minecraft.getInstance().setScreen(new AlarmScreen(alarmBlockEntity));
         }
@@ -21,7 +21,7 @@ public class ClientPacketHandlers {
 
     public static void openFanScreen(BlockPos pos) {
         LocalPlayer clientPlayer = Minecraft.getInstance().player;
-        BlockEntity te = clientPlayer.level.getBlockEntity(pos);
+        BlockEntity te = clientPlayer.level().getBlockEntity(pos);
         if (te instanceof FanBlockEntity fanBlockEntity) {
             Minecraft.getInstance().setScreen(new FanScreen(fanBlockEntity));
         }

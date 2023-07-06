@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:hay_bale_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

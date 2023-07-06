@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:netherrack_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

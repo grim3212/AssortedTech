@@ -5,9 +5,9 @@ import com.grim3212.assorted.lib.core.block.effects.*;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.TechTags;
 import com.grim3212.assorted.tech.api.util.BridgeType;
+import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.client.model.BridgeClientEffects;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
-import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -146,7 +146,7 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
     public static boolean canLaserBreak(LevelReader level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
 
-        if (state.getMaterial().isReplaceable()) {
+        if (state.canBeReplaced()) {
             return true;
         }
 

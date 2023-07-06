@@ -40,7 +40,7 @@ public class SensorBlock extends Block implements EntityBlock {
     private final SensorType sensorType;
 
     public SensorBlock(Properties props, SensorType sensorType) {
-        super(props);
+        super(props.pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.stateDefinition.any().setValue(DETECTED, false).setValue(FACING, Direction.NORTH));
         this.sensorType = sensorType;
     }
@@ -72,11 +72,6 @@ public class SensorBlock extends Block implements EntityBlock {
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
     }
 
     @Override

@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:mossy_cobblestone_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:attractor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

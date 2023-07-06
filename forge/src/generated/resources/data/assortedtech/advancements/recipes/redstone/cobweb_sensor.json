@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:cobweb_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

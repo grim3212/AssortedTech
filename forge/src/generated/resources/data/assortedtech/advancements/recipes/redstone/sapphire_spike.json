@@ -43,5 +43,6 @@
     "recipes": [
       "assortedtech:sapphire_spike"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

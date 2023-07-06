@@ -29,7 +29,7 @@ public class AlarmUpdatePacket {
     }
 
     public static void handle(AlarmUpdatePacket packet, Player player) {
-        BlockEntity te = player.level.getBlockEntity(packet.pos);
+        BlockEntity te = player.level().getBlockEntity(packet.pos);
 
         if (te instanceof AlarmBlockEntity fan) {
             fan.setAlarmType(packet.alarmType);

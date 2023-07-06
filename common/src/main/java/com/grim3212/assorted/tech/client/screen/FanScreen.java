@@ -6,6 +6,7 @@ import com.grim3212.assorted.tech.api.util.FanMode;
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.network.FanUpdatePacket;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -95,13 +96,14 @@ public class FanScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(stack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        PoseStack stack = guiGraphics.pose();
         stack.pushPose();
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         stack.popPose();
-        FanScreen.drawCenteredString(stack, font, Component.translatable("fan.screen.mode"), width / 2, height / 4 - 10, 0xffffff);
-        FanScreen.drawCenteredString(stack, font, Component.translatable("fan.screen.range"), width / 2, height / 4 + 45, 0xffffff);
-        FanScreen.drawCenteredString(stack, font, Component.literal("" + this.localRange), width / 2, height / 4 + 70, 0xffffff);
+        guiGraphics.drawCenteredString(font, Component.translatable("fan.screen.mode"), width / 2, height / 4 - 10, 0xffffff);
+        guiGraphics.drawCenteredString(font, Component.translatable("fan.screen.range"), width / 2, height / 4 + 45, 0xffffff);
+        guiGraphics.drawCenteredString(font, Component.literal("" + this.localRange), width / 2, height / 4 + 70, 0xffffff);
     }
 }

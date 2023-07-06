@@ -43,5 +43,6 @@
     "recipes": [
       "assortedtech:platinum_spike"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

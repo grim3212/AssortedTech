@@ -36,7 +36,7 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
     private final GravityType type;
 
     public GravityDirectionalBlock(GravityType type, Properties props) {
-        super(props);
+        super(props.pushReaction(PushReaction.BLOCK));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH));
         this.type = type;
     }
@@ -59,11 +59,6 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new GravityDirectionalBlockEntity(pos, state);
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
     }
 
     @Override

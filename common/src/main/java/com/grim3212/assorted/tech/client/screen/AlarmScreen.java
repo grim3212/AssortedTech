@@ -7,6 +7,7 @@ import com.grim3212.assorted.tech.common.network.AlarmUpdatePacket;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -60,20 +61,21 @@ public class AlarmScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(stack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
         RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, LOCATION);
         int posX = (this.width - 256) / 2;
-        this.blit(stack, posX, 5, 0, 0, 256, 230);
+        guiGraphics.blit(LOCATION, posX, 5, 0, 0, 256, 230);
 
+        PoseStack stack = guiGraphics.pose();
         stack.pushPose();
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         stack.popPose();
-        AlarmScreen.drawCenteredString(stack, font, Component.translatable("alarm.screen"), width / 2, 10, 0xFF1010);
+        guiGraphics.drawCenteredString(font, Component.translatable("alarm.screen"), width / 2, 10, 0xFF1010);
 
         int textBorder = 5;
-        font.drawWordWrap(stack, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
+        guiGraphics.drawWordWrap(font, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
 
     }
 }

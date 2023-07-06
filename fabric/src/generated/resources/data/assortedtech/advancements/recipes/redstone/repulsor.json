@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:repulsor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

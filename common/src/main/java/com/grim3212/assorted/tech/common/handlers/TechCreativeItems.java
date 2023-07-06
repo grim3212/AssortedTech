@@ -1,20 +1,29 @@
 package com.grim3212.assorted.tech.common.handlers;
 
 import com.grim3212.assorted.lib.core.creative.CreativeTabItems;
-import com.grim3212.assorted.lib.platform.Services;
+import com.grim3212.assorted.lib.registry.IRegistryObject;
+import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.SpikeType;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public class TechCreativeItems {
+
+    public static final RegistryProvider<CreativeModeTab> CREATIVE_TABS = RegistryProvider.create(Registries.CREATIVE_MODE_TAB, Constants.MOD_ID);
+
+    public static final IRegistryObject CREATIVE_TAB = CREATIVE_TABS.register("tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+            .title(Component.translatable("itemGroup." + Constants.MOD_ID))
+            .icon(() -> new ItemStack(TechBlocks.FLIP_FLOP_TORCH.get()))
+            .displayItems((props, output) -> output.acceptAll(TechCreativeItems.getCreativeItems())).build());
 
     private static List<ItemStack> getCreativeItems() {
         CreativeTabItems items = new CreativeTabItems();
@@ -75,6 +84,5 @@ public class TechCreativeItems {
     }
 
     public static void init() {
-        Services.PLATFORM.registerCreativeTab(new ResourceLocation(Constants.MOD_ID, "tab"), Component.translatable("itemGroup." + Constants.MOD_ID), () -> new ItemStack(TechBlocks.FLIP_FLOP_TORCH.get()), TechCreativeItems::getCreativeItems);
     }
 }

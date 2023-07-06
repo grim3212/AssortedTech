@@ -36,5 +36,6 @@
     "recipes": [
       "assortedtech:bridge_control_gravity"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

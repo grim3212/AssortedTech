@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:gravitor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:gold_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

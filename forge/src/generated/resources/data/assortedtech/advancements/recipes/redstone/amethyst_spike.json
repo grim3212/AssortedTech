@@ -43,5 +43,6 @@
     "recipes": [
       "assortedtech:amethyst_spike"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

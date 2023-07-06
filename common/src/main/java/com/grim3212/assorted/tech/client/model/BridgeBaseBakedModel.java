@@ -35,9 +35,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +152,7 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
     }
 
     @Override
-    public @Nonnull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IBlockModelData extraData, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull IBlockModelData extraData, @Nullable RenderType renderType) {
         if (state == null) {
             var cached = this.getCachedModel(BridgeType.LASER, null);
             return cached.getQuads(TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, BridgeType.LASER), side, rand);
@@ -169,19 +169,19 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
         return cached.getQuads(state, side, rand);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand) {
         return getQuads(state, side, rand, IBlockModelData.empty(), RenderType.cutout());
     }
 
     @Override
-    public @Nonnull List<BakedQuad> getQuads(ItemStack stack, boolean fabulous, @Nonnull RandomSource rand, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(ItemStack stack, boolean fabulous, @NotNull RandomSource rand, @Nullable RenderType renderType) {
         return getQuads(null, null, rand, IBlockModelData.empty(), RenderType.translucent());
     }
 
     @Override
-    public @Nonnull Collection<RenderType> getSupportedRenderTypes(BlockState state, RandomSource rand, IBlockModelData data) {
+    public @NotNull Collection<RenderType> getSupportedRenderTypes(BlockState state, RandomSource rand, IBlockModelData data) {
         BlockState blockState = Blocks.AIR.defaultBlockState();
         if (data.hasProperty(TechModelProperties.BLOCK_STATE)) {
             blockState = data.getData(TechModelProperties.BLOCK_STATE);
@@ -198,7 +198,7 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
     }
 
     @Override
-    public @Nonnull Collection<RenderType> getSupportedRenderTypes(ItemStack stack, boolean fabulous) {
+    public @NotNull Collection<RenderType> getSupportedRenderTypes(ItemStack stack, boolean fabulous) {
         return ImmutableList.of(RenderType.translucent());
     }
 

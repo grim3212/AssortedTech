@@ -43,5 +43,6 @@
     "recipes": [
       "assortedtech:bronze_spike"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

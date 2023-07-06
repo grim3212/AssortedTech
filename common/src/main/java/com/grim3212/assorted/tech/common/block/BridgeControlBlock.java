@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -34,7 +33,7 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public BridgeControlBlock(BridgeType type, Properties props) {
-        super(props.isValidSpawn((s, g, p, e) -> false));
+        super(props.pushReaction(PushReaction.BLOCK).isValidSpawn((s, g, p, e) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false).setValue(FACING, Direction.NORTH));
         this.type = type;
     }
@@ -100,11 +99,6 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.BLOCK;
-    }
-
-    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         ItemStack heldItem = player.getItemInHand(hand);
@@ -116,7 +110,7 @@ public class BridgeControlBlock extends Block implements EntityBlock {
                         BlockState currentState = bridgeControl.getStoredBlockState();
                         BlockState tryToSetState = block.getBlock().defaultBlockState();
 
-                        if (currentState != tryToSetState && tryToSetState.getMaterial() != Material.DECORATION) {
+                        if (currentState != tryToSetState && tryToSetState.isSolid()) {
                             bridgeControl.setStoredBlockState(tryToSetState != null ? tryToSetState : Blocks.AIR.defaultBlockState());
 
                             // Toggle to update blocks

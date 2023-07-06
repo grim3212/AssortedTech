@@ -34,5 +34,6 @@
     "recipes": [
       "assortedtech:alarm"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

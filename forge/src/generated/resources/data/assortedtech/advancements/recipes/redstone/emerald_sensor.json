@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:emerald_sensor"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -45,5 +45,6 @@
     "recipes": [
       "assortedtech:iron_spike"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
