@@ -28,5 +28,5 @@ side = "BOTH"
 modId = "assortedlib"
 mandatory = true
 versionRange = "[${assortedlib_version},)"
-ordering = "NONE"
+ordering = "AFTER"
 side = "BOTH"
