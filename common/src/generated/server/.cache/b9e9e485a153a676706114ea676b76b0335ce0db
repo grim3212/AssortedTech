@@ -1,7 +1,0 @@
-// 26.2	2026-09-09T06:45:15.2922811	Tags for minecraft:entity_type mod id assortedtech
-5effcb27697c81fc24763e4539407a4e61c6bd60 data/assortedtech/tags/entity_type/sensors/arthropods.json
-9272ccacb836a86ecce2eb8a6fd45985ced72797 data/assortedtech/tags/entity_type/sensors/end.json
-d0509b0a9b5662b266c6274e3bba6948772dcad9 data/assortedtech/tags/entity_type/sensors/flying.json
-7820d13ec67c974d29d4fcd310ab0f8177629577 data/assortedtech/tags/entity_type/sensors/nether.json
-2522a67ad7f1748174c27a84feb983eb9ed45406 data/assortedtech/tags/entity_type/sensors/pets.json
-9f6fb9010fa0234dec6a598776ad1548fa9ef178 data/assortedtech/tags/entity_type/sensors/water.json
