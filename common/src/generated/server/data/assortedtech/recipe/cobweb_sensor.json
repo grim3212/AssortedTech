@@ -8,8 +8,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "G": "#c:glass",
-    "M": "#c:string",
+    "G": "#c:glass_blocks",
+    "M": "#c:strings",
     "R": "#c:dusts/redstone",
     "X": "#c:ingots/iron"
   },

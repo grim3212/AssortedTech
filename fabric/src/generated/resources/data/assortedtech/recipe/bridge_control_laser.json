@@ -3,7 +3,7 @@
   "category": "redstone",
   "key": {
     "I": "#c:ingots/iron",
-    "R": "#c:slimeballs"
+    "R": "#c:slime_balls"
   },
   "pattern": [
     "III",
