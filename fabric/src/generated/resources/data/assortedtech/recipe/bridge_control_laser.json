@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": "#c:ingots/iron",
+    "R": "#c:slimeballs"
+  },
+  "pattern": [
+    "III",
+    "IRI",
+    "III"
+  ],
+  "result": {
+    "id": "assortedtech:bridge_control_laser"
+  }
+}

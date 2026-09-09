@@ -1,6 +1,7 @@
 package com.grim3212.assorted.tech.data;
 
 import com.grim3212.assorted.lib.data.LibBlockLootProvider;
+import net.minecraft.core.HolderLookup;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import net.minecraft.world.level.block.Block;
 
@@ -13,8 +14,9 @@ public class TechBlockLoot extends LibBlockLootProvider {
 
     private final List<Block> blocks = new ArrayList<>();
 
-    public TechBlockLoot() {
-        super(() -> TechBlocks.BLOCKS.getEntries().stream().map(Supplier::get).collect(Collectors.toList()));
+    // Loot sub providers are handed the registry lookup at construction now.
+    public TechBlockLoot(HolderLookup.Provider registries) {
+        super(registries, () -> TechBlocks.BLOCKS.getEntries().stream().map(Supplier::get).collect(Collectors.toList()));
         this.blocks.add(TechBlocks.FLIP_FLOP_TORCH.get());
         this.blocks.add(TechBlocks.GLOWSTONE_TORCH.get());
         this.blocks.add(TechBlocks.FAN.get());

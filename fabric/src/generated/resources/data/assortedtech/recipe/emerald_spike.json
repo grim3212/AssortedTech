@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "X": "#c:gems/emerald"
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "id": "assortedtech:emerald_spike"
+  }
+}

@@ -1,0 +1,36 @@
+license = "${license}"
+logoBlur = false
+issueTrackerURL = "${issue_tracker}"
+# logoFile was deprecated in 26.x; logo.png is square, so it is the icon.
+iconFile = "logo.png"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "${mod_author}"
+description = '''
+${mod_description}
+'''
+
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "assortedlib"
+type = "required"
+versionRange = "[${assortedlib_version},)"
+ordering = "AFTER"
+side = "BOTH"

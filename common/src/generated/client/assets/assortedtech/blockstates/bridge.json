@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "type=accel": {
+      "model": "assortedtech:block/bridge"
+    },
+    "type=death": {
+      "model": "assortedtech:block/bridge"
+    },
+    "type=gravity": {
+      "model": "assortedtech:block/bridge_gravity"
+    },
+    "type=laser": {
+      "model": "assortedtech:block/bridge"
+    },
+    "type=trick": {
+      "model": "assortedtech:block/bridge"
+    }
+  }
+}

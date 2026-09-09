@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "X": "#c:ingots/iron"
+  },
+  "pattern": [
+    "X X",
+    " X ",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "id": "assortedtech:iron_spike"
+  }
+}

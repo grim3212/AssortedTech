@@ -5,12 +5,17 @@ import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.FanMode;
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.network.FanUpdatePacket;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+/**
+ * The GUI went retained-mode in 26.x: a screen records elements into a {@link GuiGraphicsExtractor}
+ * from {@code extractRenderState} instead of drawing from {@code render}, and the base screen
+ * sequences background, contents and tooltips itself - so the explicit {@code renderBackground} call
+ * and the {@code super.render} sandwich are gone.
+ */
 public class FanScreen extends Screen {
 
     private final FanBlockEntity fanBlockEntity;
@@ -87,7 +92,8 @@ public class FanScreen extends Screen {
     }
 
     private void close() {
-        this.minecraft.setScreen((Screen) null);
+        // Minecraft#setScreen is gone; the current screen lives on Gui now.
+        this.minecraft.gui.setScreen(null);
     }
 
     @Override
@@ -96,14 +102,12 @@ public class FanScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
-        PoseStack stack = guiGraphics.pose();
-        stack.pushPose();
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        stack.popPose();
-        guiGraphics.drawCenteredString(font, Component.translatable("fan.screen.mode"), width / 2, height / 4 - 10, 0xffffff);
-        guiGraphics.drawCenteredString(font, Component.translatable("fan.screen.range"), width / 2, height / 4 + 45, 0xffffff);
-        guiGraphics.drawCenteredString(font, Component.literal("" + this.localRange), width / 2, height / 4 + 70, 0xffffff);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+
+        // Font no longer forces the alpha byte, so 0xffffff would draw nothing.
+        graphics.centeredText(this.font, Component.translatable("fan.screen.mode"), this.width / 2, this.height / 4 - 10, 0xFFFFFFFF);
+        graphics.centeredText(this.font, Component.translatable("fan.screen.range"), this.width / 2, this.height / 4 + 45, 0xFFFFFFFF);
+        graphics.centeredText(this.font, Component.literal("" + this.localRange), this.width / 2, this.height / 4 + 70, 0xFFFFFFFF);
     }
 }

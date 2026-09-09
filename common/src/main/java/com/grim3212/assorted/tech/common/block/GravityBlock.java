@@ -5,6 +5,7 @@ import com.grim3212.assorted.tech.common.block.blockentity.GravityBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,7 +23,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class GravityBlock extends Block implements EntityBlock {
 
@@ -46,8 +49,8 @@ public class GravityBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flg) {
-        if (!level.isClientSide) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
             boolean flag = state.getValue(POWERED);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {
@@ -61,7 +64,7 @@ public class GravityBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), 2);
         }
@@ -76,25 +79,33 @@ public class GravityBlock extends Block implements EntityBlock {
         return type;
     }
 
+    /**
+     * {@code use} split in two. A redstone torch toggles the range overlay, so that branch needs the
+     * held stack and lives in {@code useItemOn}; anything else cycles the range, which the
+     * hand-agnostic {@code useWithoutItem} handles once {@code TRY_WITH_EMPTY_HAND} falls through.
+     */
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        ItemStack inHand = player.getItemInHand(hand);
-        BlockEntity entity = level.getBlockEntity(pos);
-        if (entity instanceof GravityBlockEntity gravity) {
-            if (inHand.getItem() == Items.REDSTONE_TORCH) {
-                gravity.toggleShowRange();
-                return InteractionResult.SUCCESS;
-            } else {
-                if (player.isShiftKeyDown()) {
-                    int newRange = gravity.reverseCycleRange();
-                    player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
-                } else {
-                    int newRange = gravity.cycleRange();
-                    player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
-                }
-                return InteractionResult.SUCCESS;
-            }
+    protected InteractionResult useItemOn(ItemStack inHand, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (inHand.getItem() == Items.REDSTONE_TORCH && level.getBlockEntity(pos) instanceof GravityBlockEntity gravity) {
+            gravity.toggleShowRange();
+            return InteractionResult.SUCCESS;
         }
+
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof GravityBlockEntity gravity) {
+            int newRange = player.isShiftKeyDown() ? gravity.reverseCycleRange() : gravity.cycleRange();
+            // Player#displayClientMessage is gone; the action-bar overlay it used lives on
+            // ServerPlayer#sendSystemMessage(Component, boolean) now, and this only ever runs server side.
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable("message.sensor.range", newRange), true);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         return InteractionResult.PASS;
     }
 

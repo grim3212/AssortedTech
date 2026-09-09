@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "fan"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone",
+    "X": "#minecraft:planks"
+  },
+  "pattern": [
+    "XIX",
+    "XRX",
+    "XXX"
+  ],
+  "result": {
+    "id": "assortedtech:fan"
+  }
+}

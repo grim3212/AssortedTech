@@ -3,35 +3,34 @@ package com.grim3212.assorted.tech.common.block;
 import com.grim3212.assorted.tech.api.util.SpikeType;
 import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.sounds.TechSounds;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
@@ -44,7 +43,8 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    // DirectionProperty was folded back into a plain EnumProperty<Direction> in 26.x.
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
     private final SpikeType spikeType;
 
@@ -58,10 +58,8 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
         return spikeType;
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.spike.damage", Component.translatable(String.valueOf(this.spikeType.getDamage())).withStyle(ChatFormatting.AQUA)).withStyle(ChatFormatting.GRAY));
-    }
+    // Block.appendHoverText no longer exists - tooltips are an item concern now - so the
+    // "damage X" line moved onto the block item; see TechBlocks.TooltipBlockItem.
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
@@ -69,7 +67,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext collisionContext) {
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext collisionContext) {
         if (!state.getValue(POWERED)) {
             switch (state.getValue(FACING)) {
                 case DOWN:
@@ -91,7 +89,7 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState blockstate = this.defaultBlockState();
         LevelReader iworldreader = context.getLevel();
         BlockPos blockpos = context.getClickedPos();
@@ -109,17 +107,21 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
         return null;
     }
 
+    /**
+     * {@code updateShape} takes the neighbour's position and state explicitly now, and gets a
+     * {@link ScheduledTickAccess} instead of the {@code LevelAccessor} it used to schedule through.
+     */
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState state2, LevelAccessor level, BlockPos currentPos, BlockPos pos2) {
+    protected BlockState updateShape(BlockState stateIn, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
         if (stateIn.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            ticks.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
+        return directionToNeighbour.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : stateIn;
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+    protected boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         Direction direction = state.getValue(FACING);
         BlockPos blockpos = pos.relative(direction.getOpposite());
         BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -127,25 +129,28 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    protected BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    protected BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState state2, boolean flag) {
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState state2, boolean movedByPiston) {
         for (Direction direction : Direction.values()) {
             level.updateNeighborsAt(pos.relative(direction), this);
         }
     }
 
+    /**
+     * Replaces {@code onRemove}; 26.x only calls this for a real removal.
+     */
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState state2, boolean flag) {
-        if (!flag) {
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (!movedByPiston) {
             for (Direction direction : Direction.values()) {
                 level.updateNeighborsAt(pos.relative(direction), this);
             }
@@ -153,14 +158,14 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flag) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         level.scheduleTick(pos, this, 2);
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         Direction dir = state.getValue(FACING);
-        BlockPos poweredPos = pos.offset(dir.getOpposite().getNormal());
+        BlockPos poweredPos = pos.offset(dir.getOpposite().getUnitVec3i());
         if (!state.getValue(POWERED) && level.hasNeighborSignal(poweredPos)) {
             level.playSound(null, pos, TechSounds.SPIKE_DEPLOY.get(), SoundSource.BLOCKS, 0.3F, 0.6F);
             level.setBlock(pos, state.setValue(POWERED, true), 3);
@@ -170,15 +175,22 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
         }
     }
 
+    /**
+     * {@code entityInside} gained an {@link InsideBlockEffectApplier} and an {@code isPrecise} flag;
+     * both are ignored here, as vanilla's own hazard blocks do. {@code Entity#hurt} is deprecated -
+     * damage is applied through {@code hurtServer}. The damage source itself comes from
+     * the spike damage type is resolved out of the level's dynamic registry directly.
+     */
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (state.getValue(POWERED) && entity instanceof LivingEntity e) {
-            e.hurt(level.damageSources().source(TechDamageTypes.SPIKE), this.spikeType.getDamage());
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        if (state.getValue(POWERED) && entity instanceof LivingEntity && level instanceof ServerLevel serverLevel) {
+            DamageSource spike = TechDamageTypes.source(serverLevel, TechDamageTypes.SPIKE);
+            entity.hurtServer(serverLevel, spike, this.spikeType.getDamage());
         }
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    protected FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 }

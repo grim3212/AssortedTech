@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "P": "#c:dusts/glowstone",
+    "R": "#c:dusts/redstone",
+    "X": "#c:rods/wooden"
+  },
+  "pattern": [
+    "P",
+    "X",
+    "R"
+  ],
+  "result": {
+    "id": "assortedtech:glowstone_torch"
+  }
+}

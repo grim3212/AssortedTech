@@ -3,12 +3,15 @@ package com.grim3212.assorted.tech.common.block.blockentity;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.tech.common.sounds.TechSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class AlarmBlockEntity extends BlockEntity {
 
@@ -22,21 +25,26 @@ public class AlarmBlockEntity extends BlockEntity {
         super(TechBlockEntityTypes.ALARM.get(), pos, state);
     }
 
+    /**
+     * Block entity serialization moved off {@code CompoundTag} onto {@link ValueInput} /
+     * {@link ValueOutput}, which carry the registry lookup with them. {@code load} became
+     * {@code loadAdditional}, and the typed getters take a default rather than returning 0.
+     */
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        this.alarmType = nbt.getInt("AlarmType");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.alarmType = input.getIntOr("AlarmType", 0);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag cmp) {
-        super.saveAdditional(cmp);
-        cmp.putInt("AlarmType", this.alarmType);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("AlarmType", this.alarmType);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     @Override

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable_vertical",
-  "textures": {
-    "front": "assortedtech:block/attractor_on",
-    "side": "assortedtech:block/gravity_side",
-    "top": "assortedtech:block/gravity_side"
-  }
-}

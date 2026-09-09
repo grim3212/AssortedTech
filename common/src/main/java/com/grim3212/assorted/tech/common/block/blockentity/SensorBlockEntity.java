@@ -4,6 +4,7 @@ import com.grim3212.assorted.tech.api.util.SensorType;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -53,7 +56,7 @@ public class SensorBlockEntity extends BlockEntity {
                 }
             }
 
-            Vec3i sensorPos = dir.getNormal().multiply(obstructed ? traverse : maxLength);
+            Vec3i sensorPos = dir.getUnitVec3i().multiply(obstructed ? traverse : maxLength);
 
             AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(sensorPos.getX(), sensorPos.getY(), sensorPos.getZ()).deflate(1D);
 
@@ -101,22 +104,22 @@ public class SensorBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        this.showRange = nbt.getBoolean("ShowRange");
-        this.range = nbt.getInt("Range");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.showRange = input.getBooleanOr("ShowRange", false);
+        this.range = input.getIntOr("Range", 1);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag cmp) {
-        super.saveAdditional(cmp);
-        cmp.putBoolean("ShowRange", showRange);
-        cmp.putInt("Range", range);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putBoolean("ShowRange", showRange);
+        output.putInt("Range", range);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     @Override

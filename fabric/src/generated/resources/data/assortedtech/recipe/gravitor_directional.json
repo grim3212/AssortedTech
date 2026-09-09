@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "minecraft:compass",
+    "E": "#c:ender_pearls",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    " R ",
+    "ICI",
+    " E "
+  ],
+  "result": {
+    "id": "assortedtech:gravitor_directional"
+  }
+}

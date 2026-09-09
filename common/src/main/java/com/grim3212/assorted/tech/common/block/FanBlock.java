@@ -6,7 +6,6 @@ import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.network.FanOpenPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,13 +20,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class FanBlock extends Block implements EntityBlock {
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    // DirectionProperty was folded back into a plain EnumProperty<Direction> in 26.x.
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final EnumProperty<FanMode> MODE = EnumProperty.create("mode", FanMode.class);
 
     public FanBlock(Properties props) {
@@ -51,25 +52,29 @@ public class FanBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    protected BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    protected BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
+    /**
+     * {@code use} split into {@code useItemOn} / {@code useWithoutItem}; opening the fan screen does
+     * not care what is in hand, so a held item falls through to this hand-agnostic half.
+     */
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!worldIn.isClientSide) {
+    protected InteractionResult useWithoutItem(BlockState state, Level worldIn, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!worldIn.isClientSide()) {
             Services.NETWORK.sendTo(player, new FanOpenPacket(pos));
         }
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighbor, boolean flag) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         boolean isPowered = level.hasNeighborSignal(pos);
         BlockEntity ent = level.getBlockEntity(pos);
 

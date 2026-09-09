@@ -22,14 +22,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class BridgeControlBlock extends Block implements EntityBlock {
 
     private final BridgeType type;
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    // DirectionProperty was folded back into a plain EnumProperty<Direction> in 26.x.
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public BridgeControlBlock(BridgeType type, Properties props) {
@@ -49,8 +52,8 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flg) {
-        if (!level.isClientSide) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
             boolean flag = state.getValue(POWERED);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {
@@ -64,7 +67,7 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), 2);
         }
@@ -76,12 +79,12 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rotation) {
+    protected BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
+    protected BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -98,42 +101,58 @@ public class BridgeControlBlock extends Block implements EntityBlock {
         };
     }
 
+    /**
+     * {@code use} split in two. Setting the projected block needs the held stack, so that half lives
+     * in {@code useItemOn}; clearing it with a shift-click works with or without an item, so it is
+     * handled in both - {@code useItemOn} returning {@code TRY_WITH_EMPTY_HAND} is what falls
+     * through to {@code useWithoutItem}.
+     */
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        ItemStack heldItem = player.getItemInHand(hand);
 
         if (blockEntity instanceof BridgeControlBlockEntity bridgeControl) {
-            if (!heldItem.isEmpty() && !player.isShiftKeyDown()) {
-                if (heldItem.getItem() instanceof BlockItem block) {
-                    if (block != null && block.getBlock() != null) {
-                        BlockState currentState = bridgeControl.getStoredBlockState();
-                        BlockState tryToSetState = block.getBlock().defaultBlockState();
-
-                        if (currentState != tryToSetState && tryToSetState.isSolid()) {
-                            bridgeControl.setStoredBlockState(tryToSetState != null ? tryToSetState : Blocks.AIR.defaultBlockState());
-
-                            // Toggle to update blocks
-                            level.setBlockAndUpdate(pos, state.setValue(POWERED, false));
-
-                            level.playSound(player, pos, tryToSetState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, (tryToSetState.getSoundType().getVolume() + 1.0F) / 2.0F, tryToSetState.getSoundType().getPitch() * 0.8F);
-
-                            return InteractionResult.sidedSuccess(level.isClientSide);
-
-                        }
-                    }
-                }
+            if (player.isShiftKeyDown()) {
+                return this.clearStoredState(bridgeControl, state, level, pos);
             }
 
-            if (player.isShiftKeyDown()) {
-                bridgeControl.setStoredBlockState(Blocks.AIR.defaultBlockState());
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof BlockItem block && block.getBlock() != null) {
+                BlockState currentState = bridgeControl.getStoredBlockState();
+                BlockState tryToSetState = block.getBlock().defaultBlockState();
 
-                // Toggle to update blocks
-                level.setBlockAndUpdate(pos, state.setValue(POWERED, false));
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                // BlockState#isSolid is deprecated (it is the pre-1.13 "legacy solid" flag).
+                // isCollisionShapeFullBlock is the live equivalent, and is what a projected bridge
+                // segment - which always renders as a full cube - actually needs.
+                if (currentState != tryToSetState && tryToSetState.isCollisionShapeFullBlock(level, pos)) {
+                    bridgeControl.setStoredBlockState(tryToSetState);
+
+                    // Toggle to update blocks
+                    level.setBlockAndUpdate(pos, state.setValue(POWERED, false));
+
+                    level.playSound(player, pos, tryToSetState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, (tryToSetState.getSoundType().getVolume() + 1.0F) / 2.0F, tryToSetState.getSoundType().getPitch() * 0.8F);
+
+                    return InteractionResult.SUCCESS;
+                }
             }
         }
 
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (player.isShiftKeyDown() && level.getBlockEntity(pos) instanceof BridgeControlBlockEntity bridgeControl) {
+            return this.clearStoredState(bridgeControl, state, level, pos);
+        }
+
         return InteractionResult.PASS;
+    }
+
+    private InteractionResult clearStoredState(BridgeControlBlockEntity bridgeControl, BlockState state, Level level, BlockPos pos) {
+        bridgeControl.setStoredBlockState(Blocks.AIR.defaultBlockState());
+
+        // Toggle to update blocks
+        level.setBlockAndUpdate(pos, state.setValue(POWERED, false));
+        return InteractionResult.SUCCESS;
     }
 }

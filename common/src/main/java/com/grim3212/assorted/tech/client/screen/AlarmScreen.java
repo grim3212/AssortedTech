@@ -4,18 +4,25 @@ import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.common.block.blockentity.AlarmBlockEntity;
 import com.grim3212.assorted.tech.common.network.AlarmUpdatePacket;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
+/**
+ * The GUI went retained-mode in 26.x: a screen no longer draws from {@code render}, it records
+ * elements into a {@link GuiGraphicsExtractor} that {@code GuiRenderer} plays back later. So
+ * {@code render(GuiGraphics, ...)} became {@code extractRenderState(GuiGraphicsExtractor, ...)}, and
+ * the panel texture moved into {@code extractBackground} so it stays behind the buttons - the base
+ * screen sequences background, contents and tooltips itself now, which is why the explicit
+ * {@code renderBackground} call and the {@code super.render} sandwich are gone.
+ */
 public class AlarmScreen extends Screen {
 
-    private static final ResourceLocation LOCATION = new ResourceLocation(Constants.MOD_ID, "textures/gui/alarm.png");
+    private static final Identifier LOCATION = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/alarm.png");
 
     private final AlarmBlockEntity alarmBlockEntity;
     private int alarmType = 0;
@@ -52,7 +59,8 @@ public class AlarmScreen extends Screen {
     }
 
     private void close() {
-        this.minecraft.setScreen((Screen) null);
+        // Minecraft#setScreen is gone; the current screen lives on Gui now.
+        this.minecraft.gui.setScreen(null);
     }
 
     @Override
@@ -61,21 +69,27 @@ public class AlarmScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
-        RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, LOCATION);
-        int posX = (this.width - 256) / 2;
-        guiGraphics.blit(LOCATION, posX, 5, 0, 0, 256, 230);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
 
-        PoseStack stack = guiGraphics.pose();
-        stack.pushPose();
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        stack.popPose();
-        guiGraphics.drawCenteredString(font, Component.translatable("alarm.screen"), width / 2, 10, 0xFF1010);
+        int posX = (this.width - 256) / 2;
+        // The texture is 256x230, but the 1.20.1 blit assumed the 256x256 default, so it sampled
+        // 0..230/256 of the sheet into a 230px tall quad. Kept as-is so the panel looks exactly as it
+        // did; passing 256, 230 here would be the fix.
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LOCATION, posX, 5, 0.0F, 0.0F, 256, 230, 256, 256);
+    }
+
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+
+        int posX = (this.width - 256) / 2;
+        // Font no longer forces the alpha byte, so a colour without one is invisible: 0xFF1010.
+        graphics.centeredText(this.font, Component.translatable("alarm.screen"), this.width / 2, 10, 0xFFFF1010);
 
         int textBorder = 5;
-        guiGraphics.drawWordWrap(font, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, textBorder);
-
+        // The 1.20.1 call passed textBorder as the colour argument as well as the border, which the old
+        // Font read as an opaque 0x000005. Written out here because zero alpha would now draw nothing.
+        graphics.textWithWordWrap(this.font, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, 0xFF000005);
     }
 }

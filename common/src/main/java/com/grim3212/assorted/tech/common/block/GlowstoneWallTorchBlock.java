@@ -1,25 +1,35 @@
 package com.grim3212.assorted.tech.common.block;
 
-
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.BaseTorchBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class GlowstoneWallTorchBlock extends GlowstoneTorchBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final MapCodec<GlowstoneWallTorchBlock> CODEC = simpleCodec(GlowstoneWallTorchBlock::new);
+
+    // DirectionProperty was folded back into a plain EnumProperty<Direction> in 26.x.
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     public GlowstoneWallTorchBlock(Properties props) {
         super(props);
@@ -27,30 +37,45 @@ public class GlowstoneWallTorchBlock extends GlowstoneTorchBlock {
     }
 
     @Override
-    public String getDescriptionId() {
-        return this.asItem().getDescriptionId();
+    protected MapCodec<? extends BaseTorchBlock> codec() {
+        return CODEC;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos p_55783_, CollisionContext p_55784_) {
+    protected VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         return WallTorchBlock.getShape(state);
     }
 
+    /**
+     * See {@link FlipFlopWallTorchBlock} - {@code Blocks.WALL_TORCH}'s behaviour methods are
+     * {@code protected} now, so the wall rules are written out here rather than delegated.
+     */
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos p_55764_) {
-        return Blocks.WALL_TORCH.canSurvive(state, level, p_55764_);
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return WallTorchBlock.canSurvive(level, pos, state.getValue(FACING));
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction dir, BlockState p_55774_, LevelAccessor level, BlockPos p_55776_, BlockPos p_55777_) {
-        return Blocks.WALL_TORCH.updateShape(state, dir, p_55774_, level, p_55776_, p_55777_);
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        return directionToNeighbour.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, pos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     @Override
-    @Nullable
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState blockstate = Blocks.WALL_TORCH.getStateForPlacement(context);
-        return blockstate == null ? null : this.defaultBlockState().setValue(FACING, blockstate.getValue(FACING));
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = this.defaultBlockState();
+        LevelReader level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+
+        for (Direction direction : context.getNearestLookingDirections()) {
+            if (direction.getAxis().isHorizontal()) {
+                state = state.setValue(FACING, direction.getOpposite());
+                if (state.canSurvive(level, pos)) {
+                    return state;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -61,18 +86,18 @@ public class GlowstoneWallTorchBlock extends GlowstoneTorchBlock {
             double d1 = (double) pos.getX() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + d0 * (double) direction.getStepX();
             double d2 = (double) pos.getY() + 0.7D + (rand.nextDouble() - 0.5D) * 0.2D + 0.22D;
             double d3 = (double) pos.getZ() + 0.5D + (rand.nextDouble() - 0.5D) * 0.2D + d0 * (double) direction.getStepZ();
-            level.addParticle(this.flameParticle, d1, d2, d3, 0.0D, 0.0D, 0.0D);
+            level.addParticle(DustParticleOptions.REDSTONE, d1, d2, d3, 0.0D, 0.0D, 0.0D);
         }
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return Blocks.WALL_TORCH.rotate(state, rot);
+    protected BlockState rotate(BlockState state, Rotation rot) {
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirror) {
-        return Blocks.WALL_TORCH.mirror(state, mirror);
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override

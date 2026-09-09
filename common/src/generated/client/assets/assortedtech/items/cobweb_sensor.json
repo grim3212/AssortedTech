@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "assortedtech:block/sensors/cobweb_sensor_inventory"
+  }
+}

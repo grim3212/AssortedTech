@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,14 +26,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class GravityDirectionalBlock extends Block implements EntityBlock {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    // DirectionProperty was folded back into a plain EnumProperty<Direction> in 26.x.
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     private final GravityType type;
 
     public GravityDirectionalBlock(GravityType type, Properties props) {
@@ -47,12 +51,12 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
+    protected BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+    protected BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
@@ -62,8 +66,8 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos neighborPos, boolean flg) {
-        if (!level.isClientSide) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
             boolean flag = state.getValue(POWERED);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {
@@ -77,7 +81,7 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
             level.setBlock(pos, state.cycle(POWERED), 2);
         }
@@ -92,25 +96,32 @@ public class GravityDirectionalBlock extends Block implements EntityBlock {
         return type;
     }
 
+    /**
+     * See {@link GravityBlock} - {@code use} split into the held-item half and the hand-agnostic
+     * half, and the redstone torch branch is the only one that needs the stack.
+     */
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        ItemStack inHand = player.getItemInHand(hand);
-        BlockEntity entity = level.getBlockEntity(pos);
-        if (entity instanceof GravityDirectionalBlockEntity gravity) {
-            if (inHand.getItem() == Items.REDSTONE_TORCH) {
-                gravity.toggleShowRange();
-                return InteractionResult.SUCCESS;
-            } else {
-                if (player.isShiftKeyDown()) {
-                    int newRange = gravity.reverseCycleRange();
-                    player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
-                } else {
-                    int newRange = gravity.cycleRange();
-                    player.displayClientMessage(Component.translatable("message.sensor.range", newRange), true);
-                }
-                return InteractionResult.SUCCESS;
-            }
+    protected InteractionResult useItemOn(ItemStack inHand, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (inHand.getItem() == Items.REDSTONE_TORCH && level.getBlockEntity(pos) instanceof GravityDirectionalBlockEntity gravity) {
+            gravity.toggleShowRange();
+            return InteractionResult.SUCCESS;
         }
+
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.getBlockEntity(pos) instanceof GravityDirectionalBlockEntity gravity) {
+            int newRange = player.isShiftKeyDown() ? gravity.reverseCycleRange() : gravity.cycleRange();
+            // Player#displayClientMessage is gone; the action-bar overlay it used lives on
+            // ServerPlayer#sendSystemMessage(Component, boolean) now, and this only ever runs server side.
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable("message.sensor.range", newRange), true);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         return InteractionResult.PASS;
     }
 

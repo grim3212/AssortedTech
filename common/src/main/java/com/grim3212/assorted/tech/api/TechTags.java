@@ -1,9 +1,9 @@
 package com.grim3212.assorted.tech.api;
 
-import com.grim3212.assorted.lib.platform.Services;
+import com.grim3212.assorted.lib.util.LibCommonTags;
 import com.grim3212.assorted.tech.Constants;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -19,11 +19,7 @@ public class TechTags {
         public static final TagKey<Block> LASER_BREAKABLES = techTag("laser_breakables");
 
         private static TagKey<Block> techTag(String name) {
-            return TagKey.create(Registries.BLOCK, new ResourceLocation(Constants.MOD_ID, name));
-        }
-
-        private static TagKey<Block> commonTag(String name) {
-            return TagKey.create(Registries.BLOCK, new ResourceLocation(Services.PLATFORM.getCommonTagPrefix(), name));
+            return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
         }
     }
 
@@ -47,11 +43,11 @@ public class TechTags {
         public static final TagKey<Item> GEMS_PERIDOT = commonTag("gems/peridot");
 
         private static TagKey<Item> techTag(String name) {
-            return TagKey.create(Registries.ITEM, new ResourceLocation(Constants.MOD_ID, name));
+            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
         }
 
         private static TagKey<Item> commonTag(String name) {
-            return TagKey.create(Registries.ITEM, new ResourceLocation(Services.PLATFORM.getCommonTagPrefix(), name));
+            return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(LibCommonTags.COMMON_NAMESPACE, name));
         }
     }
 
@@ -64,7 +60,7 @@ public class TechTags {
         public static final TagKey<EntityType<?>> SENSORS_ARTHROPODS = techTag("sensors/arthropods");
 
         public static TagKey<EntityType<?>> techTag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(Constants.MOD_ID, name));
+            return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
         }
     }
 }

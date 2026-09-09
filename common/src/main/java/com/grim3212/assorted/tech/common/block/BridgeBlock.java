@@ -11,25 +11,27 @@ import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -52,32 +54,38 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         return state.getValue(TYPE).isSolid() ? Shapes.block() : Shapes.empty();
     }
 
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         if (level.getBlockState(pos).getValue(TYPE) == BridgeType.ACCEL && entity instanceof LivingEntity livingEntity) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 2));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.SPEED, 10, 2));
         }
     }
 
+    /**
+     * {@code entityInside} gained an {@link InsideBlockEffectApplier} and an {@code isPrecise} flag.
+     * The applier is vanilla's deferred collector for fire/freeze style effects and has nothing this
+     * block needs; {@code isPrecise} only says whether the entity ends its movement inside the block
+     * rather than clipping through it, and vanilla's own hazard blocks (cactus, fire) ignore it -
+     * so both are ignored here and the call shape stays what it was.
+     */
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         BridgeType type = level.getBlockState(pos).getValue(TYPE);
 
         if (type == BridgeType.DEATH) {
-            entity.hurt(level.damageSources().source(TechDamageTypes.LASER), 4);
+            if (level instanceof ServerLevel serverLevel) {
+                DamageSource laser = TechDamageTypes.source(serverLevel, TechDamageTypes.LASER);
+                entity.hurtServer(serverLevel, laser, 4);
+            }
         } else if (type == BridgeType.GRAVITY) {
 
-            if (entity instanceof LivingEntity livingEntity) {
-                for (ItemStack stack : livingEntity.getArmorSlots()) {
-                    // Don't apply lift if wearing gravity boots
-                    if (stack.getItem() == TechItems.GRAVITY_BOOTS.get()) {
-                        return;
-                    }
-                }
+            // Don't apply lift if wearing gravity boots
+            if (entity instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
+                return;
             }
 
             BlockEntity te = level.getBlockEntity(pos);
@@ -154,25 +162,13 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        BlockState stored = this.getStoredState(reader, pos);
-        return !stored.isAir() ? stored.propagatesSkylightDown(reader, pos) : super.propagatesSkylightDown(state, reader, pos);
-    }
-
-    @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
+    protected VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
         BlockState stored = this.getStoredState(reader, pos);
         return !stored.isAir() ? stored.getVisualShape(reader, pos, context) : super.getVisualShape(state, reader, pos, context);
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter reader, BlockPos pos) {
-        BlockState stored = this.getStoredState(reader, pos);
-        return stored.isAir() ? super.getLightBlock(state, reader, pos) : stored.getLightBlock(reader, pos);
-    }
-
-    @Override
-    public float getShadeBrightness(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected float getShadeBrightness(BlockState state, BlockGetter reader, BlockPos pos) {
         BlockState stored = this.getStoredState(reader, pos);
         return stored.isAir() ? super.getShadeBrightness(state, reader, pos) : stored.getShadeBrightness(reader, pos);
     }
@@ -183,7 +179,7 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         ItemStack itemstack = new ItemStack(this);
         NBTHelper.putTag(itemstack, "stored_state", NbtUtils.writeBlockState(Blocks.AIR.defaultBlockState()));
         return itemstack;

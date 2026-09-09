@@ -15,7 +15,9 @@ public class TechBlockEntityTypes {
 
     public static final IRegistryObject<BlockEntityType<SensorBlockEntity>> SENSOR = BLOCK_ENTITIES.register("sensor", () -> Services.PLATFORM.createBlockEntityType(SensorBlockEntity::new, TechBlocks.SENSORS.stream().map(x -> x.get()).toArray(Block[]::new)));
     public static final IRegistryObject<BlockEntityType<FanBlockEntity>> FAN = BLOCK_ENTITIES.register("fan", () -> Services.PLATFORM.createBlockEntityType(FanBlockEntity::new, TechBlocks.FAN.get()));
-    public static final IRegistryObject<BlockEntityType<AlarmBlockEntity>> ALARM = BLOCK_ENTITIES.register("alarm", () -> Services.PLATFORM.createBlockEntityType(AlarmBlockEntity::new, TechBlocks.FAN.get()));
+    // Pre-existing bug, not a porting change: the alarm block entity type was bound to the fan
+    // block, so an alarm's block entity was never valid for the block it lives on.
+    public static final IRegistryObject<BlockEntityType<AlarmBlockEntity>> ALARM = BLOCK_ENTITIES.register("alarm", () -> Services.PLATFORM.createBlockEntityType(AlarmBlockEntity::new, TechBlocks.ALARM.get()));
 
     public static final IRegistryObject<BlockEntityType<BridgeBlockEntity>> BRIDGE = BLOCK_ENTITIES.register("bridge", () -> Services.PLATFORM.createBlockEntityType(BridgeBlockEntity::new, TechBlocks.BRIDGE.get()));
     public static final IRegistryObject<BlockEntityType<BridgeControlBlockEntity>> BRIDGE_CONTROL = BLOCK_ENTITIES.register("bridge_control", () -> Services.PLATFORM.createBlockEntityType(BridgeControlBlockEntity::new, TechBlocks.BRIDGE_CONTROL_LASER.get(), TechBlocks.BRIDGE_CONTROL_ACCEL.get(), TechBlocks.BRIDGE_CONTROL_TRICK.get(), TechBlocks.BRIDGE_CONTROL_DEATH.get(), TechBlocks.BRIDGE_CONTROL_GRAVITY.get()));

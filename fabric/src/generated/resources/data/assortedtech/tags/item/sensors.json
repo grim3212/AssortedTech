@@ -1,0 +1,16 @@
+{
+  "values": [
+    "assortedtech:wood_sensor",
+    "assortedtech:stone_sensor",
+    "assortedtech:iron_sensor",
+    "assortedtech:mossy_cobblestone_sensor",
+    "assortedtech:prismarine_sensor",
+    "assortedtech:gold_sensor",
+    "assortedtech:emerald_sensor",
+    "assortedtech:netherrack_sensor",
+    "assortedtech:cobweb_sensor",
+    "assortedtech:end_stone_sensor",
+    "assortedtech:hay_bale_sensor",
+    "assortedtech:feather_sensor"
+  ]
+}

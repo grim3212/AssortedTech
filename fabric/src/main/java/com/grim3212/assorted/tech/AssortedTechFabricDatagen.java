@@ -16,10 +16,11 @@ public class AssortedTechFabricDatagen implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-        pack.addProvider((output, registriesFuture) -> new TechRecipes(output));
+        // Recipe providers are not data providers any more - the Runner owns the output.
+        pack.addProvider((output, registriesFuture) -> new TechRecipes.Runner(output, registriesFuture));
         FabricBlockTagProvider provider = pack.addProvider((output, registriesFuture) -> new FabricBlockTagProvider(output, registriesFuture, new TechBlockTagProvider(output, registriesFuture)));
         pack.addProvider((output, registriesFuture) -> new FabricItemTagProvider(output, registriesFuture, provider.contentsGetter(), new TechItemTagProvider(output, registriesFuture, provider.contentsGetter())));
         pack.addProvider((output, registriesFuture) -> new FabricEntityTagProvider(output, registriesFuture, new TechEntityTagProvider(output, registriesFuture)));
-        pack.addProvider((output, registriesFuture) -> new LootTableProvider(output, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(TechBlockLoot::new, LootContextParamSets.BLOCK))));
+        pack.addProvider((output, registriesFuture) -> new LootTableProvider(output, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(TechBlockLoot::new, LootContextParamSets.BLOCK)), registriesFuture));
     }
 }

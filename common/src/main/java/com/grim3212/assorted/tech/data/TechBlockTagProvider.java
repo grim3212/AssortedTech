@@ -7,7 +7,9 @@ import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.SpikeBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +25,11 @@ public class TechBlockTagProvider extends LibBlockTagProvider {
     }
 
     @Override
-    public void addCommonTags(Function<TagKey<Block>, IntrinsicTagAppender<Block>> tagger) {
+    public void addCommonTags(Function<TagKey<Block>, TagAppender<Block>> appender) {
+        // The intrinsic tag appender is gone; TagAppender only accepts ResourceKeys. Wrap it back
+        // into something that takes objects so the tag lists below stay readable.
+        Function<TagKey<Block>, BlockTagger> tagger = (tag) -> new BlockTagger(appender.apply(tag));
+
         tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.FAN.get(), TechBlocks.ALARM.get());
 
         for (IRegistryObject<SpikeBlock> b : TechBlocks.SPIKES) {
@@ -40,5 +46,26 @@ public class TechBlockTagProvider extends LibBlockTagProvider {
 
         tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.ATTRACTOR.get(), TechBlocks.GRAVITOR.get(), TechBlocks.REPULSOR.get(), TechBlocks.ATTRACTOR_DIRECTIONAL.get(), TechBlocks.REPULSOR_DIRECTIONAL.get(), TechBlocks.GRAVITOR_DIRECTIONAL.get());
         tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.BRIDGE_CONTROL_ACCEL.get(), TechBlocks.BRIDGE_CONTROL_DEATH.get(), TechBlocks.BRIDGE_CONTROL_GRAVITY.get(), TechBlocks.BRIDGE_CONTROL_LASER.get(), TechBlocks.BRIDGE_CONTROL_TRICK.get());
+    }
+
+    private record BlockTagger(TagAppender<Block> appender) {
+
+        BlockTagger add(Block... values) {
+            for (Block value : values) {
+                this.appender.add(BuiltInRegistries.BLOCK.getResourceKey(value).orElseThrow());
+            }
+
+            return this;
+        }
+
+        BlockTagger addTag(TagKey<Block> tag) {
+            this.appender.addTag(tag);
+            return this;
+        }
+
+        BlockTagger addOptionalTag(TagKey<Block> tag) {
+            this.appender.addOptionalTag(tag);
+            return this;
+        }
     }
 }

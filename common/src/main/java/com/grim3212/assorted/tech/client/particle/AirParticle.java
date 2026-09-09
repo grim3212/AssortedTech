@@ -5,22 +5,35 @@ import com.grim3212.assorted.tech.api.util.FanMode;
 import com.grim3212.assorted.tech.common.block.blockentity.FanBlockEntity;
 import com.grim3212.assorted.tech.common.particle.air.AirParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-public class AirParticle extends TextureSheetParticle {
+/**
+ * {@code TextureSheetParticle} was removed in 26.2; the textured base class is
+ * {@link SingleQuadParticle}, which takes its {@link TextureAtlasSprite} in the constructor instead of
+ * having one pushed in afterwards by {@code pickSprite}. {@code getRenderType()} was replaced by
+ * {@link SingleQuadParticle#getLayer()}, which returns a {@link SingleQuadParticle.Layer} record
+ * naming the atlas and the render pipeline rather than a {@code ParticleRenderType} constant.
+ */
+public class AirParticle extends SingleQuadParticle {
 
     private final FanBlockEntity fan;
     private final BlockPos startPos;
     private final Direction direction;
     private final double distanceModifier;
 
-    public AirParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, BlockPos pos) {
-        super(level, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.fan = (FanBlockEntity) level.getBlockEntity(pos);
+    public AirParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, FanBlockEntity fan, TextureAtlasSprite sprite) {
+        super(level, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
+        this.fan = fan;
         this.direction = fan.getBlockState().getValue(BlockStateProperties.FACING);
         this.startPos = BlockPos.containing(x, y, z);
         this.distanceModifier = TechCommonMod.COMMON_CONFIG.fanMaxRange.get() - fan.getRange() + 1;
@@ -34,8 +47,8 @@ public class AirParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     @Override
@@ -119,12 +132,20 @@ public class AirParticle extends TextureSheetParticle {
             this.sprites = sprite;
         }
 
+        /**
+         * {@code createParticle} is handed the engine's {@link RandomSource} now, and the provider is
+         * what resolves the sprite - {@code Particle#pickSprite} no longer exists. Returning null is
+         * the documented way to decline, which is used here when the fan the particle would follow is
+         * not loaded on the client; the 1.20.1 code cast the lookup unchecked and would have thrown.
+         */
         @Nullable
         @Override
-        public Particle createParticle(AirParticleData data, ClientLevel level, double x, double y, double z, double mx, double my, double mz) {
-            AirParticle particle = new AirParticle(level, x, y, z, mx, my, mz, data.pos);
-            particle.pickSprite(this.sprites);
-            return particle;
+        public Particle createParticle(AirParticleData data, ClientLevel level, double x, double y, double z, double mx, double my, double mz, RandomSource random) {
+            BlockEntity blockEntity = level.getBlockEntity(data.pos);
+            if (!(blockEntity instanceof FanBlockEntity fan)) {
+                return null;
+            }
+            return new AirParticle(level, x, y, z, mx, my, mz, fan, this.sprites.get(random));
         }
     }
 }

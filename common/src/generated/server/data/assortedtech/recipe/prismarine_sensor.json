@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "G": "#c:glass",
+    "M": "minecraft:prismarine",
+    "R": "#c:dusts/redstone",
+    "X": "#c:ingots/iron"
+  },
+  "pattern": [
+    "XGX",
+    "MRM",
+    "XMX"
+  ],
+  "result": {
+    "id": "assortedtech:prismarine_sensor"
+  }
+}

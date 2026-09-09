@@ -1,29 +1,33 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
     id 'idea'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
+base.archivesName = "${mod_id}-fabric-${minecraft_version}"
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_mc_version}:${parchment_version}@zip")
-    })
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    // No `mappings` declaration: as of 26.x Fabric has dropped intermediary (the meta API
+    // reports intermediary 0.0.0) and Loom uses official Mojang names directly, so there is
+    // no remapping step to configure. Parchment has published nothing for 26.x either.
 
-    modImplementation("com.grim3212.assorted.lib:assortedlib-fabric:$assortedlib_version+$minecraft_version")
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    // Loom 1.17 dropped modImplementation along with remapping: 26.x has no intermediary, so mod
+    // dependencies are ordinary dependencies now.
+    implementation "com.grim3212.assorted.lib:assortedlib-fabric-${minecraft_version}:${assortedlib_version}"
 
     implementation project(":common")
 }
 
 loom {
-    mixin.defaultRefmapName = "${mod_id}.refmap.json"
-    accessWidenerPath = file("src/main/resources/${mod_id}_fabric.accesswidener")
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
 
     runs {
         client {
@@ -31,14 +35,12 @@ loom {
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
             runDir("run")
-            vmArg("-XX:+AllowEnhancedClassRedefinition")
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("run")
-            vmArg("-XX:+AllowEnhancedClassRedefinition")
         }
         datagenClient {
             inherit client
@@ -52,33 +54,36 @@ loom {
 }
 
 sourceSets {
-    main.resources.srcDirs += ['src/generated/resources', '../common/src/generated/resources']
+    main.resources.srcDirs += ['src/generated/resources', '../common/src/generated/client', '../common/src/generated/server']
+}
+
+// Fabric consumes both its own generated tree and the shared one NeoForge writes into common, and
+// the two overlap on the shared c: tags (verified byte-identical). Allow the duplicate rather than
+// dropping a root - dropping the common root is what left every block with a missing model.
+tasks.withType(AbstractCopyTask).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 processResources {
     from project(":common").sourceSets.main.resources
-    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
         expand 'version': project.version, 'fabric_mc_version_range': project.fabric_mc_version_range, 'license': project.license,
                 'mod_id': project.mod_id, 'mod_author': project.mod_author, 'mod_description': project.mod_description,
-                'mod_name': project.mod_name, 'issue_tracker': project.issue_tracker, 'assortedlib_version': project.assortedlib_version
+                'mod_name': project.mod_name, 'issue_tracker': project.issue_tracker,
+                'assortedlib_version': project.assortedlib_version
     }
 
     filesMatching("pack.mcmeta") {
         expand 'mod_name': project.mod_name
     }
 
-    filesMatching('*.mixins.json') {
-        expand "refmap_target": "${archivesBaseName}-"
-    }
-
     // Exclude datagenerator .cache directory
     exclude '.cache'
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     source(project(":common").sourceSets.main.allSource)
 }
 
@@ -86,15 +91,19 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
-            artifactId project.archivesBaseName
+            artifactId project.base.archivesName.get()
             version project.version
             from components.java
         }
     }
 
     repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+        // Only declare the shared maven when local_maven is actually set; otherwise this
+        // resolved to the literal "file://null" and broke publishing.
+        if (System.getenv("local_maven") != null) {
+            maven {
+                url "file://" + System.getenv("local_maven")
+            }
         }
     }
 }

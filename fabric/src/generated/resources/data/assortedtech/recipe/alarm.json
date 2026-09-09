@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone",
+    "X": "minecraft:lever"
+  },
+  "pattern": [
+    "III",
+    "IRI",
+    "IXI"
+  ],
+  "result": {
+    "id": "assortedtech:alarm"
+  }
+}

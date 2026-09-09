@@ -3,7 +3,7 @@ package com.grim3212.assorted.tech.common.network;
 import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.lib.platform.services.INetworkHelper;
 import com.grim3212.assorted.tech.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TechPackets {
 
@@ -14,8 +14,8 @@ public class TechPackets {
         Services.NETWORK.register(new INetworkHelper.MessageHandler<>(resource("fan_update"), FanUpdatePacket.class, FanUpdatePacket::encode, FanUpdatePacket::decode, FanUpdatePacket::handle, INetworkHelper.MessageBoundSide.SERVER));
     }
 
-    private static ResourceLocation resource(String name) {
-        return new ResourceLocation(Constants.MOD_ID, name);
+    private static Identifier resource(String name) {
+        return Identifier.fromNamespaceAndPath(Constants.MOD_ID, name);
     }
 
 }

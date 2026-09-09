@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "assortedtech:block/sensors/gold_sensor_inventory"
+  }
+}

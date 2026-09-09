@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "G": "#c:glass",
+    "M": "minecraft:hay_block",
+    "R": "#c:dusts/redstone",
+    "X": "#c:ingots/iron"
+  },
+  "pattern": [
+    "XGX",
+    "MRM",
+    "XMX"
+  ],
+  "result": {
+    "id": "assortedtech:hay_bale_sensor"
+  }
+}

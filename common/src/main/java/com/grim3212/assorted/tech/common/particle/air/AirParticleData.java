@@ -1,71 +1,45 @@
 package com.grim3212.assorted.tech.common.particle.air;
 
-import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.tech.common.particle.TechParticleTypes;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
-import java.util.Locale;
-
+/**
+ * The options carried by the fan's air particle: the position of the fan that spawned it, which the
+ * particle reads back so it can follow the fan's range and mode.
+ * <p>
+ * {@link ParticleOptions} is down to a single {@code getType()} method in 26.2 -
+ * {@code writeToNetwork}, {@code writeToString} and the {@code Deserializer} inner interface are all
+ * gone. Serialization is entirely a {@link MapCodec} (for the {@code /particle} command and any data
+ * that names a particle) plus a {@link StreamCodec} (for the wire), both handed to the game by
+ * {@link AirParticleType}.
+ */
 public class AirParticleData implements ParticleOptions {
 
-    public static final Codec<AirParticleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(BlockPos.CODEC.fieldOf("pos").forGetter(d -> d.pos)).apply(instance, AirParticleData::new));
+    /**
+     * The command/data form is now the codec's, so an air particle is named
+     * {@code assortedtech:air{pos:[x,y,z]}} rather than the old positional
+     * {@code assortedtech:air <x> <y> <z>}.
+     */
+    public static final MapCodec<AirParticleData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("pos").forGetter(data -> data.pos)
+    ).apply(instance, AirParticleData::new));
+
+    public static final StreamCodec<ByteBuf, AirParticleData> STREAM_CODEC = BlockPos.STREAM_CODEC.map(AirParticleData::new, data -> data.pos);
 
     public final BlockPos pos;
-
-    public AirParticleData() {
-        this(BlockPos.ZERO);
-    }
 
     public AirParticleData(BlockPos pos) {
         this.pos = pos;
     }
 
-    public static Codec<AirParticleData> getCodec() {
-        return CODEC;
-    }
-
     @Override
-    public ParticleType<?> getType() {
+    public ParticleType<AirParticleData> getType() {
         return TechParticleTypes.AIR.get();
     }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-    }
-
-    @Override
-    public String writeToString() {
-        double d0 = pos.getX();
-        double d1 = pos.getY();
-        double d2 = pos.getZ();
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Services.PLATFORM.getRegistry(Registries.PARTICLE_TYPE).getRegistryName(this.getType()), d0, d1, d2);
-    }
-
-    public static final Deserializer<AirParticleData> DESERIALIZER = new ParticleOptions.Deserializer<AirParticleData>() {
-        @Override
-        public AirParticleData fromCommand(ParticleType<AirParticleData> type, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            double xPos = reader.readDouble();
-            reader.expect(' ');
-            double yPos = reader.readDouble();
-            reader.expect(' ');
-            double zPos = reader.readDouble();
-
-            return new AirParticleData(BlockPos.containing(xPos, yPos, zPos));
-        }
-
-        @Override
-        public AirParticleData fromNetwork(ParticleType<AirParticleData> type, FriendlyByteBuf buf) {
-            return new AirParticleData(buf.readBlockPos());
-        }
-    };
 }

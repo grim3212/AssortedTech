@@ -1,34 +1,36 @@
 plugins {
-    id 'java'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+    id 'java-library'
+    id 'net.neoforged.moddev' version "${moddev_version}"
     id 'maven-publish'
 }
 
-archivesBaseName = "${mod_id}-common-${minecraft_version}"
+base.archivesName = "${mod_id}-common-${minecraft_version}"
 
-minecraft {
-    version(minecraft_version)
-    accessWideners "src/main/resources/${mod_id}_common.accesswidener"
+// ModDevGradle "vanilla mode": compiles against plain, deobfuscated Minecraft with no
+// loader attached. This replaces SpongePowered VanillaGradle, which is no longer maintained.
+neoForge {
+    neoFormVersion = project.neoform_version
+
     runs {
         if (project.hasProperty('common_runs_enabled') ? project.findProperty('common_runs_enabled').toBoolean() : true) {
-
-            server(project.hasProperty('common_server_run_name') ? project.findProperty('common_server_run_name') : 'vanilla_server') {
-                workingDirectory(this.file("run"))
+            client {
+                client()
+                gameDirectory = project.file('run')
             }
-            client(project.hasProperty('common_client_run_name') ? project.findProperty('common_client_run_name') : 'vanilla_client') {
-                workingDirectory(this.file("run"))
+            server {
+                server()
+                gameDirectory = project.file('run')
             }
         }
     }
 }
 
 dependencies {
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
-    compileOnly group: 'com.grim3212.assorted.lib', name: "assortedlib-common", version: "$assortedlib_version+$minecraft_version"
+    compileOnly group: "org.spongepowered", name: "mixin", version: project.mixin_version
+    compileOnly group: "com.grim3212.assorted.lib", name: "assortedlib-common-${minecraft_version}", version: assortedlib_version
 }
 
 processResources {
-
     filesMatching("pack.mcmeta") {
         expand 'mod_name': project.mod_name
     }
@@ -38,15 +40,19 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
-            artifactId project.archivesBaseName
+            artifactId project.base.archivesName.get()
             version project.version
             from components.java
         }
     }
 
     repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+        // Only declare the shared maven when local_maven is actually set; otherwise this
+        // resolved to the literal "file://null" and broke publishing.
+        if (System.getenv("local_maven") != null) {
+            maven {
+                url "file://" + System.getenv("local_maven")
+            }
         }
     }
 }

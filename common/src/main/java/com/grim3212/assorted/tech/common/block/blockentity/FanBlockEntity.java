@@ -8,6 +8,7 @@ import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.particle.air.AirParticleData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -58,7 +61,7 @@ public class FanBlockEntity extends BlockEntity {
             }
 
             int distance = obstructed ? traverse : maxLength;
-            Vec3i fanPos = dir.getNormal().multiply(distance);
+            Vec3i fanPos = dir.getUnitVec3i().multiply(distance);
             AABB aabb = state.getCollisionShape(level, pos).bounds().move(pos).expandTowards(fanPos.getX(), fanPos.getY(), fanPos.getZ()).deflate(1D);
 
             List<? extends Entity> list = level.getEntities((Entity) null, aabb);
@@ -88,18 +91,18 @@ public class FanBlockEntity extends BlockEntity {
                 }
             }));
 
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 if (TechClient.CLIENT_CONFIG.showFanParticles.get()) {
                     BlockPos particlePos = mode == FanMode.BLOW ? pos.relative(dir) : pos;
                     AirParticleData particleData = new AirParticleData(pos);
 
                     if (mode == FanMode.BLOW) {
                         for (int ii = 1; ii <= range / 4 + 1; ii++) {
-                            level.addParticle(particleData, particlePos.getX() + this.level.random.nextDouble(), particlePos.getY() + this.level.random.nextDouble(), particlePos.getZ() + this.level.random.nextDouble(), speed, speed, speed);
+                            level.addParticle(particleData, particlePos.getX() + this.level.getRandom().nextDouble(), particlePos.getY() + this.level.getRandom().nextDouble(), particlePos.getZ() + this.level.getRandom().nextDouble(), speed, speed, speed);
                         }
                     } else if (mode == FanMode.SUCK) {
                         for (int ii = 1; ii <= range / 4 + 1; ii++) {
-                            level.addParticle(particleData, particlePos.getX() + this.level.random.nextDouble() + (fanPos.getX() * this.level.random.nextDouble()), particlePos.getY() + this.level.random.nextDouble() + (fanPos.getY() * this.level.random.nextDouble()), particlePos.getZ() + this.level.random.nextDouble() + (fanPos.getZ() * this.level.random.nextDouble()), speed, speed, speed);
+                            level.addParticle(particleData, particlePos.getX() + this.level.getRandom().nextDouble() + (fanPos.getX() * this.level.getRandom().nextDouble()), particlePos.getY() + this.level.getRandom().nextDouble() + (fanPos.getY() * this.level.getRandom().nextDouble()), particlePos.getZ() + this.level.getRandom().nextDouble() + (fanPos.getZ() * this.level.getRandom().nextDouble()), speed, speed, speed);
                         }
                     }
                 }
@@ -108,24 +111,24 @@ public class FanBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        this.mode = FanMode.VALUES[nbt.getInt("Mode")];
-        this.oldMode = FanMode.VALUES[nbt.getInt("OldMode")];
-        this.range = nbt.getInt("Range");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.mode = FanMode.VALUES[input.getIntOr("Mode", FanMode.BLOW.ordinal())];
+        this.oldMode = FanMode.VALUES[input.getIntOr("OldMode", FanMode.BLOW.ordinal())];
+        this.range = input.getIntOr("Range", 1);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag cmp) {
-        super.saveAdditional(cmp);
-        cmp.putInt("Mode", mode.ordinal());
-        cmp.putInt("OldMode", oldMode.ordinal());
-        cmp.putInt("Range", range);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("Mode", mode.ordinal());
+        output.putInt("OldMode", oldMode.ordinal());
+        output.putInt("Range", range);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     @Override

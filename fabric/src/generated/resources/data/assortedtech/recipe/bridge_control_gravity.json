@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "I": "#c:ingots/iron",
+    "L": "assortedtech:bridge_control_laser",
+    "R": "#c:ender_pearls"
+  },
+  "pattern": [
+    "III",
+    "ILI",
+    "IRI"
+  ],
+  "result": {
+    "id": "assortedtech:bridge_control_gravity"
+  }
+}

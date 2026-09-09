@@ -5,15 +5,18 @@ import com.grim3212.assorted.tech.api.util.GravityType;
 import com.grim3212.assorted.tech.common.block.GravityBlock;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,22 +69,22 @@ public class GravityBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
-		this.showRange = nbt.getBoolean("ShowRange");
-		this.range = nbt.getInt("Range");
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		this.showRange = input.getBooleanOr("ShowRange", false);
+		this.range = input.getIntOr("Range", 1);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag cmp) {
-		super.saveAdditional(cmp);
-		cmp.putBoolean("ShowRange", showRange);
-		cmp.putInt("Range", range);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		output.putBoolean("ShowRange", showRange);
+		output.putInt("Range", range);
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return this.saveWithoutMetadata();
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		return this.saveWithoutMetadata(registries);
 	}
 
 	@Override
@@ -111,12 +114,9 @@ public class GravityBlockEntity extends BlockEntity {
 				double speed = TechCommonMod.COMMON_CONFIG.gravitorSpeed.get();
 
 				list.stream().forEach((entity -> {
-					if (entity instanceof Player player) {
-						for (ItemStack armorStack : player.getArmorSlots()) {
-							if (armorStack.getItem() == TechItems.GRAVITY_BOOTS.get()) {
-								return;
-							}
-						}
+					// LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
+					if (entity instanceof Player player && player.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
+						return;
 					}
 
 					if (!(entity instanceof FallingBlockEntity)) {
@@ -136,12 +136,9 @@ public class GravityBlockEntity extends BlockEntity {
 				double speed = gravSpeed + (gravModSpeed / distanceModifier);
 
 				list.stream().forEach((entity -> {
-					if (entity instanceof Player player) {
-						for (ItemStack armorStack : player.getArmorSlots()) {
-							if (armorStack.getItem() == TechItems.GRAVITY_BOOTS.get()) {
-								return;
-							}
-						}
+					// LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
+					if (entity instanceof Player player && player.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
+						return;
 					}
 
 					if (!(entity instanceof FallingBlockEntity)) {

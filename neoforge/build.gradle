@@ -1,0 +1,137 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version "${moddev_version}"
+    id 'maven-publish'
+    id 'idea'
+}
+
+base.archivesName = "${mod_id}-neoforge-${minecraft_version}"
+
+neoForge {
+    version = project.neoforge_version
+
+    if (project.hasProperty('neoforge_ats_enabled') && project.findProperty('neoforge_ats_enabled').toBoolean()) {
+        accessTransformers.from('src/main/resources/META-INF/accesstransformer.cfg')
+    }
+
+    // NeoForge has shipped official mappings at runtime since 1.20.5, so mixin refmaps
+    // are no longer generated or needed. mixingradle is gone with them.
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+            sourceSet project(":common").sourceSets.main
+        }
+    }
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run')
+        }
+
+        server {
+            server()
+            gameDirectory = project.file('run')
+            programArgument '--nogui'
+        }
+
+        // Two data runs with SEPARATE output roots. GatherDataEvent split into .Client and
+        // .Server, MDG 2.x has no combined run type, and each run prunes anything in its output it
+        // did not generate - pointing both at one tree made the second delete the first's output.
+        clientData {
+            clientData()
+            gameDirectory = project.file('run')
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', file('../common/src/generated/client/').getAbsolutePath(),
+                    '--existing', file('../common/src/main/resources/').getAbsolutePath()
+        }
+
+        serverData {
+            serverData()
+            gameDirectory = project.file('run')
+            programArguments.addAll '--mod', mod_id, '--all',
+                    '--output', file('../common/src/generated/server/').getAbsolutePath(),
+                    '--existing', file('../common/src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+}
+
+// The NeoForge datagen owns the shared output - it is the side with the model providers - and
+// writes into common so BOTH loaders can consume it. Two roots because client and server datagen
+// write separately and each prunes only its own tree; Minecraft merges resource roots.
+sourceSets.main.resources {
+    srcDir '../common/src/generated/client'
+    srcDir '../common/src/generated/server'
+    exclude '**/.cache'
+}
+
+dependencies {
+    compileOnly project(":common")
+
+    implementation "com.grim3212.assorted.lib:assortedlib-neoforge-${minecraft_version}:${assortedlib_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    source(project(":common").sourceSets.main.allSource)
+}
+
+// neoforge.mods.toml is templated out of src/main/templates, matching the modern MDK layout.
+tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neoforge_version       : neoforge_version,
+            neoforge_version_range : neoforge_version_range,
+            assortedlib_version    : assortedlib_version,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_author             : mod_author,
+            mod_description        : mod_description,
+            issue_tracker          : issue_tracker,
+            license                : license,
+            version                : version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into "${layout.buildDirectory.get()}/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir tasks.named('generateModMetadata')
+neoForge.ideSyncTask tasks.named('generateModMetadata')
+
+processResources {
+    from project(":common").sourceSets.main.resources
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    exclude '.cache'
+    exclude "${mod_id}_common.accesswidener"
+
+    // Expanded in place rather than via a follow-up Copy task: writing into build/resources/main
+    // from a second task made :jar consume an output it did not declare a dependency on.
+    filesMatching('pack.mcmeta') {
+        expand 'mod_name': mod_name
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.base.archivesName.get()
+            version project.version
+            from components.java
+        }
+    }
+    repositories {
+        // Only declare the shared maven when local_maven is actually set; otherwise this
+        // resolved to the literal "file://null" and broke publishing.
+        if (System.getenv("local_maven") != null) {
+            maven {
+                url "file://" + System.getenv("local_maven")
+            }
+        }
+    }
+}
