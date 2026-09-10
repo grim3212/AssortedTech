@@ -45,17 +45,24 @@ public class AlarmScreen extends Screen {
             Services.NETWORK.sendToServer(new AlarmUpdatePacket(this.alarmBlockEntity.getBlockPos(), this.alarmType));
             this.close();
         }).bounds(this.width / 2 - 25, 210, 50, 20).build());
-        this.addRenderableWidget(Button.builder(Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)), btn -> {
+        this.addRenderableWidget(Button.builder(alarmName(this.alarmType), btn -> {
             this.alarmType += 1;
             if (this.alarmType > 13) {
                 this.alarmType = 0;
             }
 
-            btn.setMessage(Component.translatable("alarm.screen.name", (char) (65 + this.alarmType)));
+            btn.setMessage(alarmName(this.alarmType));
         }).bounds(this.width / 2 - 50, 100, 100, 20).build());
         this.addRenderableWidget(Button.builder(Component.translatable("alarm.screen.test"), btn -> {
             Minecraft.getInstance().player.playSound(AlarmBlockEntity.getSound(this.alarmType).get(), 1.0F, 1.0F);
         }).bounds(this.width / 2 - 25, 120, 50, 20).build());
+    }
+
+    // String.valueOf, not the bare char: TranslatableContents only accepts a Component, Number,
+    // Boolean or String, and a Character throws while the component is built - which killed the whole
+    // screen before it could open.
+    private static Component alarmName(int alarmType) {
+        return Component.translatable("alarm.screen.name", String.valueOf((char) ('A' + alarmType)));
     }
 
     private void close() {
