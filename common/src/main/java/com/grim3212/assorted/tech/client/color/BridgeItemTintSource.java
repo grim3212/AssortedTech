@@ -23,9 +23,9 @@ import org.jetbrains.annotations.Nullable;
  * {@link ItemTintSource} entries in its item model json, and code only registers the {@link MapCodec}
  * that reads a custom source type, keyed by id.
  * <p>
- * TODO(26.2): nothing reaches this source yet. {@code assets/assortedtech/items/bridge.json} has to
- *  carry {@code "tints": [{"type": "assortedtech:bridge"}]} for it to be consulted, which is a datagen
- *  change this class cannot make. Until then a held bridge block is untinted.
+ * Reached from {@code assets/assortedtech/items/bridge.json}, which carries
+ * {@code "tints": [{"type": "assortedtech:bridge"}]} - written by
+ * {@code TechBlockstateProvider#bridge} through {@code registerSimpleTintedItemModel}.
  * <p>
  * Behaviour note: the 1.20.1 lambda answered {@code ItemColors#getColor} for a stack of the stored
  * block, and returned opaque white for any tint index other than the model's. There is no
