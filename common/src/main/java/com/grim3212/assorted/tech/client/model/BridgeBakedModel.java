@@ -46,8 +46,10 @@ import net.minecraft.resources.Identifier;
  *  RangeSelectItemModel) choose between *pre-baked children* using codec registered properties - so
  *  there is no hook that can bake a new model for a stack while it is being drawn, and a bridge's
  *  variants are unbounded (one per block in the game). The bridge item therefore renders its static
- *  model until an ItemModel type that can bake per stack exists, or the set of stored states is
- *  enumerated into the item json. AssortedDecor's colorizer item lost exactly the same thing.
+ *  model for now.
+ *  How to fix it: AssortedDecor solved the identical problem with ColorizerItemModel - a codec
+ *  registered ItemModel whose update() reads the stack's stored state and reaches this same lazily
+ *  baked cache through IDataAwareBakedModel. Copying that shape is all this needs.
  */
 public class BridgeBakedModel extends BridgeBaseBakedModel {
 
