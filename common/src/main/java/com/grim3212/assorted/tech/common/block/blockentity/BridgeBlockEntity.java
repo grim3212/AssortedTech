@@ -48,6 +48,14 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
         super.loadAdditional(input);
         this.blockState = input.read("stored_state", BlockState.CODEC).orElse(Blocks.AIR.defaultBlockState());
         this.facing = Direction.from3DDataValue(input.getIntOr("facing", Direction.NORTH.get3DDataValue()));
+
+        // The block entity sync packet lands here, and neither onDataPacket nor handleUpdateTag
+        // refreshes model data - so a segment the client did not build itself keeps the empty data it
+        // was created with and draws the fallback texture. setStoredBlockState only covers the
+        // locally-set case.
+        if (this.level != null && this.level.isClientSide()) {
+            ClientServices.MODELS.requestModelDataRefresh(this);
+        }
     }
 
     @Override
