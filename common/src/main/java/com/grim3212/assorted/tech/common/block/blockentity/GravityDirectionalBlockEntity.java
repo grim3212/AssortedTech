@@ -2,7 +2,6 @@ package com.grim3212.assorted.tech.common.block.blockentity;
 
 import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.GravityType;
-import com.grim3212.assorted.tech.common.block.GravityBlock;
 import com.grim3212.assorted.tech.common.block.GravityDirectionalBlock;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
@@ -106,7 +105,7 @@ public class GravityDirectionalBlockEntity extends BlockEntity {
         BlockState state = this.level.getBlockState(pos);
 
         if (state.getBlock() instanceof GravityDirectionalBlock gravityBlock) {
-            if (!state.getValue(GravityBlock.POWERED)) return;
+            if (!state.getValue(GravityDirectionalBlock.POWERED)) return;
 
             GravityType type = gravityBlock.getType();
             Direction dir = state.getValue(GravityDirectionalBlock.FACING);

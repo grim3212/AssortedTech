@@ -73,10 +73,8 @@ public class TechClient {
             }
         }, () -> ImmutableList.of(TechBlocks.BRIDGE.get()));
 
-        // TODO(26.2): registering this codec is only half of what the old registerItemColor call did.
-        //  See BridgeItemTintSource - the bridge's item model json has to list
-        //  {"type": "assortedtech:bridge"} in its "tints" array before anything consults it, which is a
-        //  datagen change this class cannot make.
+        // Registering the codec is only half of it: the bridge's item model json lists
+        // {"type": "assortedtech:bridge"} in its "tints" array, which is what actually consults this.
         ClientServices.CLIENT.registerItemTintSource(BridgeItemTintSource.ID, BridgeItemTintSource.MAP_CODEC);
     }
 
