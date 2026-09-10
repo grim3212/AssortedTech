@@ -23,6 +23,7 @@ import net.minecraft.resources.Identifier;
 public class AlarmScreen extends Screen {
 
     private static final Identifier LOCATION = Identifier.fromNamespaceAndPath(Constants.MOD_ID, "textures/gui/alarm.png");
+    private static final int TEXT_TOP = 30;
 
     private final AlarmBlockEntity alarmBlockEntity;
     private int alarmType = 0;
@@ -91,12 +92,22 @@ public class AlarmScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
 
         int posX = (this.width - 256) / 2;
-        // Font no longer forces the alpha byte, so a colour without one is invisible: 0xFF1010.
-        graphics.centeredText(this.font, Component.translatable("alarm.screen"), this.width / 2, 10, 0xFFFF1010);
 
+        // The panel texture is a busy pastel swirl. Dark text on it - even on a light plate - stays hard
+        // to read at GUI scale, so the body uses the idiom vanilla reaches for when text has to survive
+        // an arbitrary background (see GuiGraphicsExtractor#textWithBackdrop, used by the HUD title):
+        // an opaque dark backdrop with white, drop-shadowed glyphs.
+        // Font no longer forces the alpha byte, so a colour without one is invisible: 0xFF1010.
+        Component title = Component.translatable("alarm.screen");
+        graphics.text(this.font, title, this.width / 2 - this.font.width(title) / 2, 10, 0xFFFF1010, true);
+
+        Component description = Component.translatable("alarm.screen.description");
         int textBorder = 5;
-        // The 1.20.1 call passed textBorder as the colour argument as well as the border, which the old
-        // Font read as an opaque 0x000005. Written out here because zero alpha would now draw nothing.
-        graphics.textWithWordWrap(this.font, Component.translatable("alarm.screen.description"), posX + textBorder, 30, 256 - textBorder * 2, 0xFF000005);
+        int textX = posX + textBorder;
+        int textWidth = 256 - textBorder * 2;
+        int textHeight = this.font.wordWrapHeight(description, textWidth);
+
+        graphics.fill(textX - 3, TEXT_TOP - 3, textX + textWidth + 3, TEXT_TOP + textHeight + 3, 0xF01A1A22);
+        graphics.textWithWordWrap(this.font, description, textX, TEXT_TOP, textWidth, 0xFFFFFFFF, true);
     }
 }
