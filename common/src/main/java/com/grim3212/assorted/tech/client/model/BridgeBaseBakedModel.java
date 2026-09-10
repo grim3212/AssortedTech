@@ -19,56 +19,34 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A bridge takes its geometry from a fixed shape and its texture from whatever block state the bridge
  * block entity is holding, so one baked bridge owns a cache of models keyed by that stored state.
  * <p>
  * The base type is {@link IDataAwareBakedModel} - a {@link BlockStateModel} that additionally sees the
- * block entity's model data - because {@code BakedModel} is gone and the vanilla replacement,
- * {@link BlockStateModel#collectParts(RandomSource, List)}, receives no level, position or model data.
- * Everything the 1.20.1 version answered about how to <em>draw</em> the model went with it: ambient
- * occlusion, gui light and the particle sprite are properties of the individual
- * {@linkplain BlockStateModelPart parts} now, item transforms belong to the item pipeline, and a model
- * no longer picks a {@code RenderType} at all - the chunk layer is derived per quad from
- * {@link BakedQuad.MaterialInfo#layer()}.
+ * block entity's model data - because the vanilla
+ * {@link BlockStateModel#collectParts(RandomSource, List)} receives no level, position or model data.
  * <p>
- * Two inputs the 1.20.1 version read are gone from this class rather than lost:
- * <ul>
- * <li>the {@code BridgeType} of the block state, which only ever chose between the {@code bridge} and
- * {@code bridge_gravity} fallback textures. A {@link BlockStateModel} is baked per block state now, so
- * that choice belongs in the blockstate json: {@code TechBlockstateProvider} emits one loader model per
- * fallback texture and dispatches {@code BridgeBlock.TYPE} between them, and the fallback here is
- * simply "apply no overrides", which leaves the {@code stored} slot the model json declares in
- * place.</li>
- * <li>the item override list - see the TODO on {@link BridgeBakedModel}.</li>
- * </ul>
+ * <b>This model only survives if it is reached from the blockstate side.</b> A model json loader can
+ * only contribute geometry, so AssortedLib's specification delegators flatten whatever a
+ * specification bakes, once, against empty model data - which for a bridge is the fallback texture
+ * everywhere. The blockstate json therefore names {@code assortedlib:specification}, which bakes this
+ * model whole and hands it to {@code ForgeBakedModelDelegate} / {@code FabricBakedModelDelegate}.
  * <p>
- * TODO(26.2): reached through a model json loader, this class collapses to its unseeded output, so a
- *  placed bridge draws its fallback texture and never the block it has absorbed.
- *  What it used to do: a custom model loader returned a whole {@code BakedModel}, so the bridge could
- *  pick a different set of quads per draw from the block entity's model data.
- *  Why it is at risk: {@code UnbakedGeometry#bake} has to return a {@code QuadCollection}, so
- *  AssortedLib's {@code ForgeModelGeometryToSpecificationPlatformDelegator} (and the Fabric
- *  equivalent) flatten whatever a specification bakes into a single quad collection at bake time, with
- *  empty model data. The per position behaviour only survives if the baked model reaches the
- *  blockstate layer intact, which in 26.2 means a {@code CustomUnbakedBlockStateModel} registered from
- *  the blockstate json (NeoForge's {@code RegisterBlockStateModels} / Fabric's own registry) rather
- *  than a model json loader. AssortedLib's {@code ForgeBakedModelDelegate} /
- *  {@code FabricBakedModelDelegate} already route
- *  {@link #collectParts(RandomSource, IBlockModelData, List)} correctly once the model gets there, so
- *  what is missing is the blockstate side entry point, in the library and in this mod's generated
- *  blockstate json - not this class. This is the identical gap AssortedDecor's
- *  {@code ColorizerBaseBakedModel} carries.
- *  <p>
- *  Note also that the {@link ModelBaker} is held past baking, as it was in 1.20.1, because a stored
- *  block state is only known at render time and there is no bounded set of them to bake eagerly. On
- *  the flattening path above that never matters - the model is collected from immediately after it is
- *  baked - but a blockstate side wrapper would bake children long after the model manager has moved
- *  on, and that is the thing to check first if the bridges misbehave once one exists.
+ * The {@code BridgeType} the 1.20.1 version read is gone from this class rather than lost: it only
+ * ever chose between the {@code bridge} and {@code bridge_gravity} fallback textures, and a
+ * {@link BlockStateModel} is baked per block state now, so {@code TechBlockstateProvider} emits one
+ * loader model per fallback and dispatches {@code BridgeBlock.TYPE} between them. The fallback here is
+ * "apply no overrides", which leaves the {@code stored} slot the model json declares in place. For the
+ * item side see the TODO on {@link BridgeBakedModel}.
+ * <p>
+ * The {@link ModelBaker} is deliberately held past baking, as it was in 1.20.1: a stored block state
+ * is only known while rendering and there is no bounded set of them to bake eagerly. It stays usable
+ * because the bakery's resolved models and atlas preparations live as long as the baked models do.
  */
 public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
@@ -93,38 +71,56 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
         this.particle = particleMaterial != null ? bakery.materials().get(particleMaterial, this.debugName) : bakery.materials().reportMissingReference("particle", this.debugName);
     }
 
-    protected final Map<BlockState, BlockStateModel> cache = new HashMap<>();
-    protected BlockStateModel EMPTY;
+    /**
+     * Concurrent because it is filled during rendering, not during baking: the stored states are only
+     * known once chunks are being built, and section compilation runs on several threads at once.
+     */
+    protected final Map<BlockState, BlockStateModel> cache = new ConcurrentHashMap<>();
+    protected final Map<BlockState, Material.Baked> particleCache = new ConcurrentHashMap<>();
+    protected volatile BlockStateModel EMPTY;
 
     public BlockStateModel getCachedModel(BlockState blockState) {
-        if (blockState == null || blockState == Blocks.AIR.defaultBlockState()) {
-            if (EMPTY == null) {
+        if (isEmpty(blockState)) {
+            BlockStateModel empty = EMPTY;
+            if (empty == null) {
                 // No overrides: an empty bridge is whatever the model json's own stored slot names,
                 // which is what lets one loader model per BridgeType fallback texture stand in for the
                 // type check this class used to make.
-                EMPTY = generateModel(ImmutableMap.of());
+                EMPTY = empty = generateModel(ImmutableMap.of());
             }
-            return EMPTY;
+            return empty;
         }
 
-        if (!this.cache.containsKey(blockState)) {
-            String texture;
-            if (blockState.getBlock() == Blocks.GRASS_BLOCK) {
-                texture = "minecraft:block/grass_block_top";
-            } else if (blockState.getBlock() == Blocks.PODZOL) {
-                texture = "minecraft:block/dirt_podzol_top";
-            } else if (blockState.getBlock() == Blocks.MYCELIUM) {
-                texture = "minecraft:block/mycelium_top";
-            } else {
-                // BlockModelShaper is gone; the particle sprite of a block state is answered by the
-                // baked block state models the ModelManager holds.
-                texture = Minecraft.getInstance().getModelManager().getBlockStateModelSet().getParticleMaterial(blockState).sprite().contents().name().toString();
-            }
+        return this.cache.computeIfAbsent(blockState, state -> generateModel(textures(storedTexture(state))));
+    }
 
-            this.cache.put(blockState, generateModel(textures(texture)));
+    // Resolved from the stored texture rather than read off the cached model, so it costs no bake for
+    // a state that was only ever broken and never drawn.
+    public Material.Baked getCachedParticle(BlockState blockState) {
+        if (isEmpty(blockState)) {
+            return this.particle;
         }
 
-        return this.cache.get(blockState);
+        return this.particleCache.computeIfAbsent(blockState, state -> this.bakery.materials().get(new Material(Identifier.parse(storedTexture(state))), this.debugName));
+    }
+
+    private static boolean isEmpty(BlockState blockState) {
+        return blockState == null || blockState == Blocks.AIR.defaultBlockState();
+    }
+
+    // Grass, podzol and mycelium are special cased: their particle sprite is the side texture, not the
+    // top one that reads as the block's colour.
+    private static String storedTexture(BlockState state) {
+        if (state.getBlock() == Blocks.GRASS_BLOCK) {
+            return "minecraft:block/grass_block_top";
+        } else if (state.getBlock() == Blocks.PODZOL) {
+            return "minecraft:block/dirt_podzol_top";
+        } else if (state.getBlock() == Blocks.MYCELIUM) {
+            return "minecraft:block/mycelium_top";
+        }
+
+        // BlockModelShaper is gone; the particle sprite is answered by the ModelManager's baked models.
+        return Minecraft.getInstance().getModelManager().getBlockStateModelSet().getParticleMaterial(state).sprite().contents().name().toString();
     }
 
     /**
@@ -141,12 +137,22 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
     @Override
     public void collectParts(@NotNull RandomSource random, @NotNull IBlockModelData extraData, @NotNull List<BlockStateModelPart> output) {
-        BlockState blockState = Blocks.AIR.defaultBlockState();
+        collectCachedParts(this.getCachedModel(storedState(extraData)), random, output);
+    }
+
+    // Break and hit particles read the sprite, not the geometry; without this they show the model
+    // json's own particle slot - the fallback bridge texture - whatever the block entity has stored.
+    @Override
+    public Material.Baked particleMaterial(@NotNull IBlockModelData extraData) {
+        return this.getCachedParticle(storedState(extraData));
+    }
+
+    private static BlockState storedState(IBlockModelData extraData) {
         if (extraData.hasProperty(TechModelProperties.BLOCK_STATE)) {
-            blockState = extraData.getData(TechModelProperties.BLOCK_STATE);
+            return extraData.getData(TechModelProperties.BLOCK_STATE);
         }
 
-        collectCachedParts(this.getCachedModel(blockState), random, output);
+        return Blocks.AIR.defaultBlockState();
     }
 
     // Deprecated by NeoForge in favour of a level/pos aware overload that only exists in its patched

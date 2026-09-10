@@ -1,6 +1,7 @@
 package com.grim3212.assorted.tech.client.data;
 
 import com.mojang.math.Quadrant;
+import com.grim3212.assorted.lib.client.data.SpecificationBlockStateModelBuilder;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.client.color.BridgeItemTintSource;
@@ -164,7 +165,7 @@ public class TechBlockstateProvider extends ModelProvider {
 
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(b)
                 .with(PropertyDispatch.initial(BridgeBlock.TYPE)
-                        .generate(type -> BlockModelGenerators.plainVariant(type == BridgeType.GRAVITY ? gravity : plain))));
+                        .generate(type -> bridgeVariant(type == BridgeType.GRAVITY ? gravity : plain))));
 
         // The bridge item drew the "no stored block" LASER model in 1.20.1 - its override list ran on
         // every stack - so it points at the plain model here.
@@ -174,6 +175,20 @@ public class TechBlockstateProvider extends ModelProvider {
         // list in its item model json now, and the source's position in that list is the index it
         // answers for. This is the entry BridgeItemTintSource's TODO(26.2) was waiting on.
         blockModels.registerSimpleTintedItemModel(b, plain, new BridgeItemTintSource());
+    }
+
+    /**
+     * A bridge's own {@link MultiVariant}, drawn through {@link SpecificationBlockStateModelBuilder}
+     * rather than as a plain variant.
+     * <p>
+     * This is what makes a placed bridge show the block it has absorbed. A plain variant bakes the
+     * model json, and a model json can only contribute geometry, so the bridge's specification would
+     * be baked once against no block entity and every bridge in the world would draw its fallback
+     * texture. Routed through the specification type, the bridge's own {@code BlockStateModel}
+     * survives to the blockstate layer - the only layer that still sees the level and the position.
+     */
+    private static MultiVariant bridgeVariant(Identifier model) {
+        return SpecificationBlockStateModelBuilder.specificationVariant(model);
     }
 
     private Identifier bridgeModel(BlockModelGenerators blockModels, String path, Material stored) {
