@@ -12,6 +12,7 @@ import com.grim3212.assorted.tech.Constants;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
@@ -30,6 +31,14 @@ public class BridgeUnbakedModel implements IModelSpecification<BridgeUnbakedMode
     @Override
     public BlockStateModel bake(IModelBakingContext context, ModelBaker baker, ModelState modelState, Identifier modelLocation) {
         return new BridgeBakedModel(context, this.unbakedBridge, baker, modelState, modelLocation);
+    }
+
+    // BridgeBakedModel resolves the shape with baker.getModel(parent), and nothing else pulls
+    // tinted_cube in - it is the json parent of nothing and no blockstate names it - so without this
+    // discovery never sees it and the bridges bake to the missing model.
+    @Override
+    public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        resolver.markDependency(this.unbakedBridge.parent());
     }
 
     /**
