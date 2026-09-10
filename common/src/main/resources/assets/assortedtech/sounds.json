@@ -108,7 +108,7 @@
 		"category": "block",
 		"subtitle": "assortedtech.subtitle.alarm",
 		"sounds": [
-			"assortedtech:alarm_m"
+			"assortedtech:alarm_n"
 		]
 	}
 }
