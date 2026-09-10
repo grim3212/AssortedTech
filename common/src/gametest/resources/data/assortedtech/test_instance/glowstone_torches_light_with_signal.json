@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:glowstone_torches_light_with_signal",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 60,
+  "setup_ticks": 0,
+  "required": true
+}

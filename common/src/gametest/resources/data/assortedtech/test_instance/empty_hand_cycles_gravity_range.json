@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:empty_hand_cycles_gravity_range",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 20,
+  "setup_ticks": 0,
+  "required": true
+}
