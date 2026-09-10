@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:gravity_boots_exempt_player",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 70,
+  "setup_ticks": 0,
+  "required": true
+}

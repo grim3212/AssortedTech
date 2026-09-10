@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:block_entity_data_survives_reload",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 20,
+  "setup_ticks": 0,
+  "required": true
+}
