@@ -5,6 +5,10 @@ import com.grim3212.assorted.lib.client.model.data.IModelDataBuilder;
 import com.grim3212.assorted.lib.core.block.IBlockEntityWithModelData;
 import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.lib.platform.Services;
+import com.grim3212.assorted.tech.TechCommonMod;
+import com.grim3212.assorted.tech.common.block.BridgeBlock;
+import com.grim3212.assorted.tech.common.block.BridgeControlBlock;
+import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.properties.TechModelProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,6 +68,51 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    /**
+     * Tells the controller to close the hole when one of its segments is broken.
+     * <p>
+     * This runs while the block entity is still attached, which is the only point the segment's
+     * facing can still be read - {@code affectNeighborsAfterRemoval} runs after it has been dropped.
+     * The segment cannot put itself back from here: the {@code setBlockState} that is removing it is
+     * still in flight and would overwrite it. So the controller is asked to run its own gap sweep on
+     * its next tick, which happens the tick after this one.
+     * <p>
+     * The controller is unpowered while it is tearing its own bridge down, so this cannot fight
+     * {@code deleteBridge}. {@link BridgeControlBlockEntity} inherits this and must not run it, hence
+     * the block check rather than a {@code this} check.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+
+        if (this.level == null || this.level.isClientSide() || !(state.getBlock() instanceof BridgeBlock)) {
+            return;
+        }
+
+        Direction towardsController = this.facing.getOpposite();
+        int maxLength = TechCommonMod.COMMON_CONFIG.bridgeMaxLength.get();
+
+        for (int i = 1; i <= maxLength; i++) {
+            BlockPos check = pos.relative(towardsController, i);
+            BlockState checkState = this.level.getBlockState(check);
+
+            if (checkState.getBlock() instanceof BridgeControlBlock) {
+                if (checkState.getValue(BridgeControlBlock.POWERED) && checkState.getValue(BridgeControlBlock.FACING) == this.facing
+                        && this.level.getBlockEntity(check) instanceof BridgeControlBlockEntity controller) {
+                    controller.requestGapFill();
+                }
+
+                return;
+            }
+
+            // Anything that is not another segment of the same run means this one was not projected
+            // from a controller in that direction.
+            if (!checkState.is(TechBlocks.BRIDGE.get())) {
+                return;
+            }
+        }
     }
 
     public Direction getFacing() {

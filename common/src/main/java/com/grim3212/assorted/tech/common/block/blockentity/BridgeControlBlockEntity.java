@@ -22,6 +22,7 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
     private boolean removed = false;
     private int length = 0;
     private int checkTimer = 0;
+    private boolean fillGapsRequested = false;
 
     public BridgeControlBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -76,12 +77,22 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
 
         // Don't try and fill gaps every time
         // Shouldn't be gaps except in creative
-        if (checkTimer == 1000) {
+        if (fillGapsRequested || checkTimer == 1000) {
             checkTimer = 0;
+            fillGapsRequested = false;
             fillGaps(state, bridgeType);
         } else {
             checkTimer++;
         }
+    }
+
+    /**
+     * Asks for the sweep that repairs holes to run on the next tick instead of waiting out the timer.
+     * Called by a segment that is being broken, so the gap closes immediately rather than up to 1000
+     * ticks later.
+     */
+    public void requestGapFill() {
+        this.fillGapsRequested = true;
     }
 
     private void fillGaps(BlockState state, BridgeType bridgeType) {

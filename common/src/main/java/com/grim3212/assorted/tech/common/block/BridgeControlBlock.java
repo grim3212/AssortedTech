@@ -1,5 +1,6 @@
 package com.grim3212.assorted.tech.common.block;
 
+import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeControlBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -86,6 +87,32 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     @Override
     protected BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    /**
+     * Tears down the projected bridge when the controller itself is broken.
+     * <p>
+     * {@code affectNeighborsAfterRemoval} runs after the block entity has already been dropped from
+     * the chunk, so the run length it tracked is gone - the segments are walked from the controller's
+     * own position instead, which needs nothing but the outgoing state. That is the right hook
+     * regardless: this is a neighbour side effect, and the block entity half
+     * ({@code preRemoveSideEffects}) must not set blocks while its own removal is still in flight.
+     */
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        Direction facing = state.getValue(FACING);
+        int maxLength = TechCommonMod.COMMON_CONFIG.bridgeMaxLength.get();
+
+        for (int i = 1; i <= maxLength; i++) {
+            BlockPos segment = pos.relative(facing, i);
+            BlockState segmentState = level.getBlockState(segment);
+
+            if (!segmentState.is(TechBlocks.BRIDGE.get()) || segmentState.getValue(BridgeBlock.TYPE) != this.type) {
+                break;
+            }
+
+            level.removeBlock(segment, false);
+        }
     }
 
     public BridgeType getType() {
