@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}_gametest",
+  "version": "${version}",
+  "name": "${mod_name} Game Tests",
+  "description": "Development-only gametests for ${mod_name}. Never built into a release artifact.",
+  "authors": [
+    "${mod_author}"
+  ],
+  "license": "${license}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.grim3212.assorted.tech.gametest.TechFabricGameTests"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19",
+    "${mod_id}": "*"
+  }
+}

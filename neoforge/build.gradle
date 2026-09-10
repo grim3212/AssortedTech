@@ -7,6 +7,17 @@ plugins {
 
 base.archivesName = "${mod_id}-neoforge-${minecraft_version}"
 
+// Gametests, in their own source set so they are never packaged. It mirrors main: common's
+// gametest sources are compiled inline here, and common's gametest resources - the test_instance
+// jsons and the test_box structure, which both loaders share - are copied in alongside.
+// Declared before the loader block below, which references it.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+    }
+}
+
 neoForge {
     version = project.neoforge_version
 
@@ -20,6 +31,9 @@ neoForge {
         "${mod_id}" {
             sourceSet sourceSets.main
             sourceSet project(":common").sourceSets.main
+            // Development only. This source set is not an input to `jar`, so nothing here ships;
+            // it is listed so a dev run can see the test classes and the test_instance jsons.
+            sourceSet sourceSets.gametest
         }
     }
 
@@ -54,6 +68,14 @@ neoForge {
                     '--existing', file('../common/src/main/resources/').getAbsolutePath()
         }
 
+        // Headless gametest run: boots a server, runs every test_instance, exits non-zero on
+        // failure. The run type comes from NeoForge's own userdev config, so there is no
+        // convenience method for it the way there is for client()/server().
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file('run')
+        }
+
         configureEach {
             logLevel = org.slf4j.event.Level.DEBUG
         }
@@ -75,8 +97,18 @@ dependencies {
     implementation "com.grim3212.assorted.lib:assortedlib-neoforge-${minecraft_version}:${assortedlib_version}"
 }
 
-tasks.withType(JavaCompile).configureEach {
+// Only the main compile takes common's sources. configureEach fed them to compileTestJava too,
+// which has no Minecraft on its classpath, and that is what made `./gradlew build` fail.
+tasks.named('compileJava') {
     source(project(":common").sourceSets.main.allSource)
+}
+
+tasks.named('compileGametestJava') {
+    source(project(":common").sourceSets.gametest.allSource)
+}
+
+tasks.named('processGametestResources') {
+    from project(":common").sourceSets.gametest.resources
 }
 
 // neoforge.mods.toml is templated out of src/main/templates, matching the modern MDK layout.

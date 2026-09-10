@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:gravitor_lifts_only_when_powered",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 100,
+  "setup_ticks": 0,
+  "required": true
+}
