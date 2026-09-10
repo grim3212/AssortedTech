@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:directional_repulsor_pushes_entity",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 80,
+  "setup_ticks": 0,
+  "required": true
+}

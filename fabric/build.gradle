@@ -6,6 +6,17 @@ plugins {
 
 base.archivesName = "${mod_id}-fabric-${minecraft_version}"
 
+// Gametests, in their own source set so they are never packaged. It mirrors main: common's
+// gametest sources are compiled inline here, and common's gametest resources - the test_instance
+// jsons and the test_box structure, which both loaders share - are copied in alongside.
+// Declared before the loader block below, which references it.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     // No `mappings` declaration: as of 26.x Fabric has dropped intermediary (the meta API
@@ -27,6 +38,13 @@ loom {
         "${mod_id}" {
             sourceSet sourceSets.main
         }
+        // A second, development-only mod. Fabric has no equivalent of FML's @EventBusSubscriber,
+        // so the only way to register the test functions without `main` referencing the gametest
+        // source set - which would drag the tests into the shipped jar - is to give that source set
+        // its own fabric.mod.json and let it load as its own mod. Not an input to `jar`.
+        "${mod_id}_gametest" {
+            sourceSet sourceSets.gametest
+        }
     }
 
     runs {
@@ -41,6 +59,17 @@ loom {
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("run")
+        }
+        // Headless gametest run. Fabric API's gametest module swaps the server main class out
+        // when this property is set, runs every test_instance and exits non-zero on failure.
+        gameTest {
+            inherit server
+            name "Fabric Game Test"
+            ideConfigGenerated(true)
+            source sourceSets.gametest
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${file("build/gametest/report.xml")}"
+            runDir "build/gametest"
         }
         datagenClient {
             inherit client
@@ -83,8 +112,23 @@ processResources {
     exclude '.cache'
 }
 
-tasks.withType(JavaCompile).configureEach {
+// Only the main compile takes common's sources. configureEach fed them to compileTestJava too,
+// which has no Minecraft on its classpath, and that is what made `./gradlew build` fail.
+tasks.named('compileJava') {
     source(project(":common").sourceSets.main.allSource)
+}
+
+tasks.named('compileGametestJava') {
+    source(project(":common").sourceSets.gametest.allSource)
+}
+
+tasks.named('processGametestResources') {
+    from project(":common").sourceSets.gametest.resources
+
+    filesMatching("fabric.mod.json") {
+        expand 'version': project.version, 'mod_id': project.mod_id, 'mod_name': project.mod_name,
+                'mod_author': project.mod_author, 'license': project.license
+    }
 }
 
 publishing {

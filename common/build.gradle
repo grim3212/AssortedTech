@@ -25,6 +25,16 @@ neoForge {
     }
 }
 
+// Gametests live in their own source set so they can never reach the published jar. Only the
+// loader modules ever build them - this declaration exists so they have somewhere to live and so
+// `common/src/gametest/java` compiles against common's main output.
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+    }
+}
+
 dependencies {
     compileOnly group: "org.spongepowered", name: "mixin", version: project.mixin_version
     compileOnly group: "com.grim3212.assorted.lib", name: "assortedlib-common-${minecraft_version}", version: assortedlib_version
