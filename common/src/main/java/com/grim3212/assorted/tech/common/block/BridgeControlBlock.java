@@ -119,8 +119,13 @@ public class BridgeControlBlock extends Block implements EntityBlock {
         return type;
     }
 
+    // Server only, like the vanilla hopper: the tick places and removes bridge blocks, and the
+    // server sends clients the result. A client placing its own copies left ghost segments.
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide()) {
+            return null;
+        }
         return (level1, blockPos, blockState, t) -> {
             if (t instanceof BridgeControlBlockEntity bridge) {
                 bridge.tick();
