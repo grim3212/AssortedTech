@@ -9,7 +9,6 @@ import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.SpikeType;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.item.TechItems;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -91,11 +90,8 @@ public class TechCreativeItems {
         return items.getItems();
     }
 
-    // Registry#getTag is gone; a registry is its own HolderLookup now, so a tag resolves through
-    // Registry#get(TagKey) to an Optional<HolderSet.Named>. The original "present but empty" test is
-    // kept exactly, so a tag no pack defines at all still leaves the spike visible.
     private static boolean canNotCraft(SpikeType type) {
-        return TechCommonMod.COMMON_CONFIG.hideUncraftableItems.get() && BuiltInRegistries.ITEM.get(type.getMaterial()).map(holders -> holders.size() < 1).orElse(false);
+        return TechCommonMod.COMMON_CONFIG.hideUncraftableItems.get() && type.isUncraftable();
     }
 
     public static void init() {
