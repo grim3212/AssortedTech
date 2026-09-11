@@ -46,6 +46,7 @@ final class GravityTests {
         out.accept("directional_gravity_ignores_off_axis", GravityTests::directionalGravityIgnoresOffAxis);
         out.accept("redstone_toggles_gravity_blocks", GravityTests::redstoneTogglesGravityBlocks);
         out.accept("gravity_boots_exempt_player", GravityTests::gravityBootsExemptPlayer);
+        out.accept("gravity_boots_exempt_a_mob_from_a_gravitor", GravityTests::gravityBootsExemptAMobFromAGravitor);
         out.accept("empty_hand_cycles_gravity_range", GravityTests::emptyHandCyclesGravityRange);
     }
 
@@ -111,10 +112,8 @@ final class GravityTests {
     /**
      * Gravity boots exempt their wearer from a gravity effect.
      * <p>
-     * The gravity <em>bridge</em> is the exemption that is reachable from a gametest: it tests any
-     * {@code LivingEntity}, so a mob can wear the boots. The gravity <em>block</em> exempts
-     * {@code Player} only, and there is no way to put a real player in a headless test world - see
-     * TESTING-CHECKLIST.md.
+     * This is the gravity <em>bridge</em>; {@code gravity_boots_exempt_player} and
+     * {@code gravity_boots_exempt_a_mob_from_a_gravitor} cover the gravity blocks.
      */
     private static void gravityBootsExemptWearer(GameTestHelper helper) {
         BlockPos bare = new BlockPos(2, 1, 4);
@@ -368,5 +367,41 @@ final class GravityTests {
         helper.assertValueEqual(gravity.getRange(), 2, "gravity range after a shift-click");
 
         helper.succeed();
+    }
+
+    /**
+     * A mob wearing gravity boots is exempt from a gravitor, as a player is. The gravity blocks used to
+     * exempt only players, while the gravity bridge exempted any living entity.
+     */
+    private static void gravityBootsExemptAMobFromAGravitor(GameTestHelper helper) {
+        BlockPos gravitor = new BlockPos(4, 1, 4);
+        BlockPos lever = new BlockPos(4, 0, 4);
+        BlockPos bareStand = new BlockPos(3, 1, 4);
+        BlockPos bootedStand = new BlockPos(5, 1, 4);
+
+        helper.setBlock(bareStand, Blocks.STONE);
+        helper.setBlock(bootedStand, Blocks.STONE);
+        helper.setBlock(gravitor, TechBlocks.GRAVITOR.get());
+        helper.setBlock(lever, Blocks.REDSTONE_BLOCK);
+
+        Pig bare = helper.spawnWithNoFreeWill(EntityTypes.PIG, bareStand.above());
+        Pig booted = helper.spawnWithNoFreeWill(EntityTypes.PIG, bootedStand.above());
+        booted.setItemSlot(EquipmentSlot.FEET, new ItemStack(TechItems.GRAVITY_BOOTS.get()));
+
+        double[] lift = {0.0D, 0.0D};
+
+        helper.startSequence()
+                .thenExecute(() -> helper.assertBlockProperty(gravitor, GravityBlock.POWERED, true))
+                .thenExecuteFor(30, () -> {
+                    lift[0] = Math.max(lift[0], bare.getDeltaMovement().y);
+                    lift[1] = Math.max(lift[1], booted.getDeltaMovement().y);
+                })
+                .thenExecute(() -> {
+                    helper.assertTrue(lift[0] > 0.05D,
+                            "a powered gravitor did not lift a bare pig - its best upward speed was " + lift[0]);
+                    helper.assertTrue(lift[1] < 0.01D,
+                            "a powered gravitor lifted a pig wearing gravity boots - it reached " + lift[1]);
+                })
+                .thenSucceed();
     }
 }
