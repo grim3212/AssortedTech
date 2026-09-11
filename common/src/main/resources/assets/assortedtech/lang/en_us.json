@@ -105,5 +105,7 @@
 	"alarm.screen.done": "Done",
 	"alarm.screen.description": "Press the button below to cycle through the different types of alarms available. When you've found the one you want, click the 'Done' button at the bottom. Supply a redstone pulse (on/off signal) to any side of the box to sound the alarm.",
 	"alarm.screen.name": "Alarm %s",
-	"alarm.screen.test": "Test"
+	"alarm.screen.test": "Test",
+	"tag.item.assortedtech.sensors": "Sensors",
+	"tag.item.assortedtech.spikes": "Spikes"
 }
