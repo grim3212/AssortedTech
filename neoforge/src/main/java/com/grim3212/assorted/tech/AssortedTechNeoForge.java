@@ -1,5 +1,6 @@
 package com.grim3212.assorted.tech;
 
+import com.grim3212.assorted.tech.client.data.TechLanguageProvider;
 import com.grim3212.assorted.lib.data.ForgeBlockTagProvider;
 import com.grim3212.assorted.lib.data.ForgeEntityTagProvider;
 import com.grim3212.assorted.lib.data.ForgeItemTagProvider;
@@ -66,5 +67,6 @@ public class AssortedTechNeoForge {
         event.addProvider(new TechBlockstateProvider(packOutput));
         event.addProvider(new TechItemModelProvider(packOutput));
         event.addProvider(new TechEquipmentAssetProvider(packOutput));
+        event.addProvider(new TechLanguageProvider(packOutput));
     }
 }
