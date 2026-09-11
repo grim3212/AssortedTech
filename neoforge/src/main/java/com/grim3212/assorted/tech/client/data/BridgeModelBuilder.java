@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.grim3212.assorted.tech.client.model.BridgeUnbakedModel;
 import net.minecraft.resources.Identifier;
+import com.grim3212.assorted.lib.client.data.LibCustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ import java.util.Map;
  * to point the loader at an OBJ model - AssortedDecor's colorizer uses that path - and nothing in this
  * mod ever called {@code objModel}, so it was emitting nothing and had no reader on the other side.
  */
-public class BridgeModelBuilder extends CustomLoaderBuilder {
+public class BridgeModelBuilder extends LibCustomLoaderBuilder {
 
     public static BridgeModelBuilder begin() {
         return new BridgeModelBuilder();

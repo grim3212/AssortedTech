@@ -71,6 +71,17 @@ loom {
             vmArg "-Dfabric-api.gametest.report-file=${file("build/gametest/report.xml")}"
             runDir "build/gametest"
         }
+        // A real client, driven by Fabric client gametest API: runs the fabric-client-gametest
+        // entrypoints in the gametest source set once the title screen is up, then exits - non-zero
+        // on a failure. For what a headless server cannot see, like how an item is drawn.
+        clientGameTest {
+            inherit client
+            name "Fabric Client Game Test"
+            ideConfigGenerated(true)
+            source sourceSets.gametest
+            vmArg "-Dfabric.client.gametest"
+            runDir "build/clientGameTest"
+        }
         datagenClient {
             inherit client
             name "Fabric Datagen"
