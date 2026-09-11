@@ -29,7 +29,7 @@ public class TechCreativeItems {
     // library's modifyCreativeTab hook instead, which both loaders already implement on top of
     // their own creative tab events.
     // CreativeModeTab.builder(Row, int) is deprecated by NeoForge's patches only; the vanilla jar
-    // this module compiles against has no other builder. See PORTING-26.2.md.
+    // this module compiles against has no other builder.
     @SuppressWarnings("deprecation")
     public static final IRegistryObject CREATIVE_TAB = CREATIVE_TABS.register("tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .title(Component.translatable("itemGroup." + Constants.MOD_ID))

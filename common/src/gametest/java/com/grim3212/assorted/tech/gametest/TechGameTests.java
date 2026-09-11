@@ -19,8 +19,6 @@ import java.util.function.Consumer;
  * not used for motion - they skip {@code move} on three ticks out of four while resting on the
  * ground.
  * <p>
- * Manual checks that need a human are in {@code TESTING-CHECKLIST.md}.
- * <p>
  * The tests themselves are split by feature into the {@code *Tests} classes in this package,
  * with shared helpers in {@code TechTestSupport}; this only lists them.
  */
