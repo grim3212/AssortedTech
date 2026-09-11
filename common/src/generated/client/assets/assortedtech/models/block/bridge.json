@@ -79,6 +79,7 @@
       ]
     }
   },
+  "fabric:type": "assortedtech:bridge",
   "loader": "assortedtech:bridge",
   "textures": {
     "particle": "assortedtech:block/bridge"

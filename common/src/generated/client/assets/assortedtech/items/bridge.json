@@ -1,6 +1,6 @@
 {
   "model": {
-    "type": "minecraft:model",
+    "type": "assortedtech:bridge",
     "model": "assortedtech:block/bridge",
     "tints": [
       {

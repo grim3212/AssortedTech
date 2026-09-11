@@ -6,6 +6,7 @@ import com.grim3212.assorted.tech.client.blockentity.GravityBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.blockentity.GravityDirectionalBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.blockentity.SensorBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.color.BridgeItemTintSource;
+import com.grim3212.assorted.tech.client.model.BridgeItemModel;
 import com.grim3212.assorted.tech.client.model.BridgeUnbakedModel;
 import com.grim3212.assorted.tech.client.particle.AirParticle;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
@@ -76,6 +77,9 @@ public class TechClient {
         // Registering the codec is only half of it: the bridge's item model json lists
         // {"type": "assortedtech:bridge"} in its "tints" array, which is what actually consults this.
         ClientServices.CLIENT.registerItemTintSource(BridgeItemTintSource.ID, BridgeItemTintSource.MAP_CODEC);
+
+        // The item model type items/bridge.json names, so a bridge item draws the block it holds.
+        ClientServices.CLIENT.registerItemModelType(BridgeItemModel.ID, BridgeItemModel.Unbaked.MAP_CODEC);
     }
 
 }

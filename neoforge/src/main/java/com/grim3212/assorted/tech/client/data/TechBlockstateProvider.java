@@ -5,6 +5,7 @@ import com.grim3212.assorted.lib.client.data.SpecificationBlockStateModelBuilder
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.client.color.BridgeItemTintSource;
+import com.grim3212.assorted.tech.client.model.BridgeItemModel;
 import com.grim3212.assorted.tech.common.block.AlarmBlock;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
 import com.grim3212.assorted.tech.common.block.FanBlock;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -167,14 +169,14 @@ public class TechBlockstateProvider extends ModelProvider {
                 .with(PropertyDispatch.initial(BridgeBlock.TYPE)
                         .generate(type -> bridgeVariant(type == BridgeType.GRAVITY ? gravity : plain))));
 
-        // The bridge item drew the "no stored block" LASER model in 1.20.1 - its override list ran on
-        // every stack - so it points at the plain model here.
+        // The bridge item draws the block its stack holds, through BridgeItemModel over the plain model;
+        // with nothing stored that is the plain model itself, which is what 1.20.1 drew.
         //
         // The tint source sits at index 0 because that is the tint index tinted_cube stamps on every
         // face, and it is what replaced the deleted registerItemColor handler: an item's tints are a
         // list in its item model json now, and the source's position in that list is the index it
         // answers for. This is the entry BridgeItemTintSource's TODO(26.2) was waiting on.
-        blockModels.registerSimpleTintedItemModel(b, plain, new BridgeItemTintSource());
+        blockModels.itemModelOutput.accept(b.asItem(), new BridgeItemModel.Unbaked(plain, List.of(new BridgeItemTintSource())));
     }
 
     /**

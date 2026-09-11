@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:bridge_item_draws_its_stored_block",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

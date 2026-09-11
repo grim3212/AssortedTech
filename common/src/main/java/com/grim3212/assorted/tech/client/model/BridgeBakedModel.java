@@ -35,21 +35,9 @@ import net.minecraft.resources.Identifier;
  * would have produced a slot {@code TextureSlots#getMaterial} can never find (it strips the leading
  * {@code #} before looking a slot up). See the report entry in REVIEW-BEHAVIOUR-CHANGES.md.
  * <p>
- * TODO(26.2): the item override list that used to live here is gone.
- *  What it did: BridgeItemOverrideList extended ItemOverrides and, from
- *  resolve(BakedModel, ItemStack, ClientLevel, LivingEntity, int), read the "stored_state" tag off the
- *  stack and handed back getCachedModel(...) so a bridge item in an inventory or in hand showed the
- *  block it had absorbed.
- *  Why it cannot be expressed: ItemOverrides and ItemOverride were deleted. Item variation is
- *  data-driven through net.minecraft.client.renderer.item.ItemModel - an item's json names one
- *  ItemModel.Unbaked type and the branching implementations (SelectItemModel, ConditionalItemModel,
- *  RangeSelectItemModel) choose between *pre-baked children* using codec registered properties - so
- *  there is no hook that can bake a new model for a stack while it is being drawn, and a bridge's
- *  variants are unbounded (one per block in the game). The bridge item therefore renders its static
- *  model for now.
- *  How to fix it: AssortedDecor solved the identical problem with ColorizerItemModel - a codec
- *  registered ItemModel whose update() reads the stack's stored state and reaches this same lazily
- *  baked cache through IDataAwareBakedModel. Copying that shape is all this needs.
+ * The item form is {@link BridgeItemModel}, which reaches this model's cache through AssortedLib's
+ * {@code DataAwareItemModel}. The {@code BridgeItemOverrideList} 1.20.1 hung off this class went with
+ * {@code ItemOverrides}.
  */
 public class BridgeBakedModel extends BridgeBaseBakedModel {
 

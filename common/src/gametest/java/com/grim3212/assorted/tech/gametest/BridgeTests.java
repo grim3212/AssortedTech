@@ -1,0 +1,258 @@
+package com.grim3212.assorted.tech.gametest;
+
+import com.grim3212.assorted.lib.registry.IRegistryObject;
+import com.grim3212.assorted.tech.api.util.BridgeType;
+import com.grim3212.assorted.tech.common.block.BridgeBlock;
+import com.grim3212.assorted.tech.common.block.BridgeControlBlock;
+import com.grim3212.assorted.tech.common.block.TechBlocks;
+import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
+import com.grim3212.assorted.tech.common.block.blockentity.BridgeControlBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import static com.grim3212.assorted.tech.gametest.TechTestSupport.*;
+
+/**
+ * Bridge controls: projecting and clearing, which blocks they take, the stored state and bridge effects.
+ */
+final class BridgeTests {
+
+    private BridgeTests() {
+    }
+
+    static void register(BiConsumer<String, Consumer<GameTestHelper>> out) {
+        out.accept("bridge_control_projects_and_clears", BridgeTests::bridgeControlProjectsAndClears);
+        out.accept("bridge_control_refuses_non_full_cube", BridgeTests::bridgeControlRefusesNonFullCube);
+        out.accept("every_bridge_control_projects_and_clears", BridgeTests::everyBridgeControlProjectsAndClears);
+        out.accept("bridge_copies_controls_stored_state", BridgeTests::bridgeCopiesControlsStoredState);
+        out.accept("bridge_effects_apply_to_entities", BridgeTests::bridgeEffectsApplyToEntities);
+    }
+
+    /**
+     * A powered bridge control projects one segment per tick until something it cannot break is in
+     * the way, and clears the whole run again once the signal goes.
+     */
+    private static void bridgeControlProjectsAndClears(GameTestHelper helper) {
+        BlockPos control = new BlockPos(2, 1, 4);
+        BlockPos lever = new BlockPos(2, 1, 3);
+        BlockPos stop = new BlockPos(6, 1, 4);
+        BlockPos[] run = {new BlockPos(3, 1, 4), new BlockPos(4, 1, 4), new BlockPos(5, 1, 4)};
+
+        helper.startSequence()
+                .thenExecute(() -> {
+                    helper.setBlock(stop, Blocks.STONE);
+                    helper.setBlock(control, TechBlocks.BRIDGE_CONTROL_LASER.get().defaultBlockState()
+                            .setValue(BridgeControlBlock.FACING, Direction.EAST));
+                    helper.setBlock(lever, Blocks.REDSTONE_BLOCK);
+                })
+                .thenExecute(() -> helper.assertBlockProperty(control, BridgeControlBlock.POWERED, true))
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    for (BlockPos pos : run) {
+                        helper.assertBlockPresent(TechBlocks.BRIDGE.get(), pos);
+                        helper.assertBlockProperty(pos, BridgeBlock.TYPE, BridgeType.LASER);
+                    }
+                    // Stone is not in assortedtech:laser_breakables, so the run has to stop at it.
+                    helper.assertBlockPresent(Blocks.STONE, stop);
+                })
+                .thenExecute(() -> helper.setBlock(lever, Blocks.AIR))
+                .thenIdle(15)
+                .thenExecute(() -> {
+                    helper.assertBlockProperty(control, BridgeControlBlock.POWERED, false);
+                    for (BlockPos pos : run) {
+                        helper.assertBlockNotPresent(TechBlocks.BRIDGE.get(), pos);
+                    }
+                    helper.assertBlockPresent(Blocks.STONE, stop);
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * A bridge control only accepts a block that fills its own collision box.
+     * <p>
+     * This is a behaviour change worth pinning: the 1.20.1 check was the deprecated
+     * {@code BlockState#isSolid} (the pre-1.13 "legacy solid" flag), and the live equivalent is
+     * {@code isCollisionShapeFullBlock}. A slab passed the old flag and must not pass this one -
+     * a projected segment always renders as a full cube.
+     */
+    private static void bridgeControlRefusesNonFullCube(GameTestHelper helper) {
+        BlockPos control = new BlockPos(4, 1, 4);
+        helper.setBlock(control, TechBlocks.BRIDGE_CONTROL_LASER.get());
+
+        Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        BlockPos absolute = helper.absolutePos(control);
+        // Hit the underside, so the fall-through place attempt that useBlock ends with lands on the
+        // solid floor and does nothing rather than dropping a stray block in the test volume.
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(absolute), Direction.DOWN, absolute, false);
+
+        BridgeControlBlockEntity blockEntity = helper.getBlockEntity(control, BridgeControlBlockEntity.class);
+
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Blocks.STONE_SLAB));
+        helper.useBlock(control, player, hit);
+        helper.assertTrue(blockEntity.getStoredBlockState().isAir(),
+                "a bridge control accepted a slab, which is not a full cube");
+
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Blocks.STONE));
+        helper.useBlock(control, player, hit);
+        helper.assertTrue(blockEntity.getStoredBlockState().is(Blocks.STONE),
+                "a bridge control refused a full cube");
+
+        helper.succeed();
+    }
+
+    /**
+     * All five controls project their own kind of bridge while powered and tear it down again when
+     * the signal goes, in five lanes that cannot reach each other.
+     * <p>
+     * Only the laser control was covered before, and it is the one with the least to go wrong: the
+     * other four differ in {@link BridgeType#isSolid()} and in what {@code entityInside} does, and a
+     * control that projected the wrong type would still look right in a screenshot.
+     */
+    private static void everyBridgeControlProjectsAndClears(GameTestHelper helper) {
+        List<IRegistryObject<BridgeControlBlock>> controls = List.of(TechBlocks.BRIDGE_CONTROL_LASER,
+                TechBlocks.BRIDGE_CONTROL_ACCEL, TechBlocks.BRIDGE_CONTROL_TRICK, TechBlocks.BRIDGE_CONTROL_DEATH,
+                TechBlocks.BRIDGE_CONTROL_GRAVITY);
+
+        helper.startSequence()
+                .thenExecute(() -> {
+                    for (int lane = 0; lane < controls.size(); lane++) {
+                        int z = lane * 2;
+                        helper.setBlock(new BlockPos(5, 1, z), Blocks.STONE);
+                        helper.setBlock(new BlockPos(1, 1, z), controls.get(lane).get().defaultBlockState()
+                                .setValue(BridgeControlBlock.FACING, Direction.EAST));
+                        helper.setBlock(new BlockPos(0, 1, z), Blocks.REDSTONE_BLOCK);
+                    }
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    for (int lane = 0; lane < controls.size(); lane++) {
+                        int z = lane * 2;
+                        BridgeType type = controls.get(lane).get().getType();
+                        helper.assertBlockProperty(new BlockPos(1, 1, z), BridgeControlBlock.POWERED, true);
+                        for (int x = 2; x <= 4; x++) {
+                            BlockPos segment = new BlockPos(x, 1, z);
+                            helper.assertBlockPresent(TechBlocks.BRIDGE.get(), segment);
+                            helper.assertBlockProperty(segment, BridgeBlock.TYPE, type);
+                        }
+                        // Stone is not in assortedtech:laser_breakables, so every run has to stop at it.
+                        helper.assertBlockPresent(Blocks.STONE, new BlockPos(5, 1, z));
+                    }
+                })
+                .thenExecute(() -> {
+                    for (int lane = 0; lane < controls.size(); lane++) {
+                        helper.setBlock(new BlockPos(0, 1, lane * 2), Blocks.AIR);
+                    }
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    for (int lane = 0; lane < controls.size(); lane++) {
+                        int z = lane * 2;
+                        helper.assertBlockProperty(new BlockPos(1, 1, z), BridgeControlBlock.POWERED, false);
+                        for (int x = 2; x <= 4; x++) {
+                            helper.assertBlockNotPresent(TechBlocks.BRIDGE.get(), new BlockPos(x, 1, z));
+                        }
+                    }
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * Every segment of a projected bridge carries the controller's stored block state and the
+     * direction the run travels in - the first is what the segment is drawn as, the second is how a
+     * broken segment finds its way back to the controller.
+     * <p>
+     * The state gets onto the controller the way a player puts it there, by right-clicking with a
+     * block item, so the whole path is covered rather than just the field. Note that the block comes
+     * from the click, not from a block placed behind or above the controller.
+     */
+    private static void bridgeCopiesControlsStoredState(GameTestHelper helper) {
+        BlockPos control = new BlockPos(1, 1, 4);
+        BlockPos lever = new BlockPos(0, 1, 4);
+        BlockPos stop = new BlockPos(5, 1, 4);
+
+        helper.setBlock(stop, Blocks.STONE);
+        helper.setBlock(control, TechBlocks.BRIDGE_CONTROL_LASER.get().defaultBlockState()
+                .setValue(BridgeControlBlock.FACING, Direction.EAST));
+
+        Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        BlockPos absolute = helper.absolutePos(control);
+        // The underside, so the place attempt useBlock falls through to lands on the floor.
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(absolute), Direction.DOWN, absolute, false);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Blocks.GOLD_BLOCK));
+        helper.useBlock(control, player, hit);
+
+        helper.startSequence()
+                .thenExecute(() -> {
+                    helper.assertTrue(helper.getBlockEntity(control, BridgeControlBlockEntity.class)
+                                    .getStoredBlockState().is(Blocks.GOLD_BLOCK),
+                            "the bridge control did not take the block it was clicked with");
+                    helper.setBlock(lever, Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    for (int x = 2; x <= 4; x++) {
+                        BlockPos segment = new BlockPos(x, 1, 4);
+                        helper.assertBlockPresent(TechBlocks.BRIDGE.get(), segment);
+                        BridgeBlockEntity bridge = helper.getBlockEntity(segment, BridgeBlockEntity.class);
+                        helper.assertTrue(bridge.getStoredBlockState().is(Blocks.GOLD_BLOCK),
+                                "bridge segment " + x + " did not take the control's stored block state");
+                        helper.assertValueEqual(bridge.getFacing(), Direction.EAST, "bridge segment " + x + " facing");
+                    }
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * The three bridge types that do something to whatever touches them: accel hands out Speed on
+     * {@code stepOn}, death hurts on {@code entityInside}, and gravity flings along its stored
+     * facing. Health is read five ticks in, inside the twenty-tick invulnerability window that
+     * follows the first hit.
+     */
+    private static void bridgeEffectsApplyToEntities(GameTestHelper helper) {
+        BlockPos accel = new BlockPos(2, 1, 4);
+        BlockPos death = new BlockPos(5, 1, 4);
+        BlockPos gravity = new BlockPos(7, 1, 4);
+
+        helper.setBlock(accel, TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, BridgeType.ACCEL));
+        helper.setBlock(death, TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, BridgeType.DEATH));
+        helper.setBlock(gravity, TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, BridgeType.GRAVITY));
+        helper.getBlockEntity(gravity, BridgeBlockEntity.class).setFacing(Direction.UP);
+
+        // Accel is the only one of the three that is solid, so its subject stands on top of it while
+        // the other two stand inside a segment that has no collision at all.
+        Pig runner = helper.spawnWithNoFreeWill(EntityTypes.PIG, accel.above());
+        Pig victim = helper.spawnWithNoFreeWill(EntityTypes.PIG, death);
+        Pig flier = helper.spawnWithNoFreeWill(EntityTypes.PIG, gravity);
+
+        float victimStart = victim.getHealth();
+        double flierStart = flier.getY();
+        double[] rise = {0.0D};
+
+        helper.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    helper.assertLivingEntityHasMobEffect(runner, MobEffects.SPEED, 2);
+                    helper.assertTrue(victim.getHealth() < victimStart,
+                            "a death bridge did not hurt the entity standing in it");
+                })
+                .thenExecuteFor(40, () -> rise[0] = Math.max(rise[0], flier.getY() - flierStart))
+                .thenExecute(() -> helper.assertTrue(rise[0] > 1.0D,
+                        "an upward gravity bridge did not change an entity's fall - it rose " + rise[0]))
+                .thenSucceed();
+    }
+}

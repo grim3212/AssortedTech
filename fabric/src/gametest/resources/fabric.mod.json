@@ -12,6 +12,9 @@
   "entrypoints": {
     "main": [
       "com.grim3212.assorted.tech.gametest.TechFabricGameTests"
+    ],
+    "fabric-client-gametest": [
+      "com.grim3212.assorted.tech.gametest.TechClientGameTests"
     ]
   },
   "depends": {
