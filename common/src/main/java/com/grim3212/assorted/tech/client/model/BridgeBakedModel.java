@@ -1,7 +1,6 @@
 package com.grim3212.assorted.tech.client.model;
 
 import com.google.common.collect.ImmutableMap;
-import com.grim3212.assorted.lib.client.model.RetexturableBlockModel;
 import com.grim3212.assorted.lib.client.model.loaders.context.IModelBakingContext;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
@@ -25,15 +24,6 @@ import net.minecraft.resources.Identifier;
  * overrides go in child-first, the parent's own slots after them, and
  * {@link ResolvedModel#findTopGeometry} supplies the geometry to bake against the resolved slots.
  * This is the same route AssortedDecor's {@code ColorizerBakedModel} takes.
- * <p>
- * AssortedLib's {@link RetexturableBlockModel} is deliberately <em>not</em> used, and this class was
- * its last remaining caller. Two things stop it: it is an
- * {@link net.minecraft.client.resources.model.UnbakedModel} with no bake entry point of its own, and
- * a {@link ModelBaker} can only turn an {@link Identifier} into a {@link ResolvedModel} - there is no
- * way to resolve an ad-hoc {@code UnbakedModel} instance - so a retextured copy could never be baked;
- * and its {@code retexture} builds slot names verbatim, so this mod's 1.20.1 {@code "#stored"} key
- * would have produced a slot {@code TextureSlots#getMaterial} can never find (it strips the leading
- * {@code #} before looking a slot up). See the report entry in REVIEW-BEHAVIOUR-CHANGES.md.
  * <p>
  * The item form is {@link BridgeItemModel}, which reaches this model's cache through AssortedLib's
  * {@code DataAwareItemModel}. The {@code BridgeItemOverrideList} 1.20.1 hung off this class went with
