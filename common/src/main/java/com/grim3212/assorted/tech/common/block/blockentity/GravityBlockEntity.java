@@ -1,5 +1,6 @@
 package com.grim3212.assorted.tech.common.block.blockentity;
 
+import net.minecraft.world.entity.LivingEntity;
 import com.grim3212.assorted.tech.TechCommonMod;
 import com.grim3212.assorted.tech.api.util.GravityType;
 import com.grim3212.assorted.tech.common.block.GravityBlock;
@@ -11,7 +12,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -115,7 +115,7 @@ public class GravityBlockEntity extends BlockEntity {
 
 				list.stream().forEach((entity -> {
 					// LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
-					if (entity instanceof Player player && player.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
+					if (entity instanceof LivingEntity living && living.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
 						return;
 					}
 
@@ -137,7 +137,7 @@ public class GravityBlockEntity extends BlockEntity {
 
 				list.stream().forEach((entity -> {
 					// LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
-					if (entity instanceof Player player && player.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
+					if (entity instanceof LivingEntity living && living.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
 						return;
 					}
 
