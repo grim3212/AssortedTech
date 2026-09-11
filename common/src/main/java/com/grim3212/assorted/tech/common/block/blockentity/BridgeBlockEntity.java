@@ -90,17 +90,9 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
     }
 
     /**
-     * Tells the controller to close the hole when one of its segments is broken.
-     * <p>
-     * This runs while the block entity is still attached, which is the only point the segment's
-     * facing can still be read - {@code affectNeighborsAfterRemoval} runs after it has been dropped.
-     * The segment cannot put itself back from here: the {@code setBlockState} that is removing it is
-     * still in flight and would overwrite it. So the controller is asked to run its own gap sweep on
-     * its next tick, which happens the tick after this one.
-     * <p>
-     * The controller is unpowered while it is tearing its own bridge down, so this cannot fight
-     * {@code deleteBridge}. {@link BridgeControlBlockEntity} inherits this and must not run it, hence
-     * the block check rather than a {@code this} check.
+     * Asks the controller to close the gap when a segment is broken. Only here can the segment's
+     * facing still be read, but it cannot restore itself mid-removal, so the controller refills on
+     * its next tick. {@link BridgeControlBlockEntity} inherits this, hence the block check.
      */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {

@@ -13,12 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 /**
- * The GUI went retained-mode in 26.x: a screen no longer draws from {@code render}, it records
- * elements into a {@link GuiGraphicsExtractor} that {@code GuiRenderer} plays back later. So
- * {@code render(GuiGraphics, ...)} became {@code extractRenderState(GuiGraphicsExtractor, ...)}, and
- * the panel texture moved into {@code extractBackground} so it stays behind the buttons - the base
- * screen sequences background, contents and tooltips itself now, which is why the explicit
- * {@code renderBackground} call and the {@code super.render} sandwich are gone.
+ * The alarm screen. The panel is drawn in {@code extractBackground} so it stays behind the buttons.
  */
 public class AlarmScreen extends Screen {
 

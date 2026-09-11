@@ -90,13 +90,9 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     /**
-     * Tears down the projected bridge when the controller itself is broken.
-     * <p>
-     * {@code affectNeighborsAfterRemoval} runs after the block entity has already been dropped from
-     * the chunk, so the run length it tracked is gone - the segments are walked from the controller's
-     * own position instead, which needs nothing but the outgoing state. That is the right hook
-     * regardless: this is a neighbour side effect, and the block entity half
-     * ({@code preRemoveSideEffects}) must not set blocks while its own removal is still in flight.
+     * Tears down the projected bridge when the controller is broken. The block entity is gone by
+     * now, so the segments are walked from the controller's position; the block entity's {@code
+     * preRemoveSideEffects} must not set blocks while its own removal is in flight.
      */
     @Override
     protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
@@ -134,10 +130,9 @@ public class BridgeControlBlock extends Block implements EntityBlock {
     }
 
     /**
-     * {@code use} split in two. Setting the projected block needs the held stack, so that half lives
-     * in {@code useItemOn}; clearing it with a shift-click works with or without an item, so it is
-     * handled in both - {@code useItemOn} returning {@code TRY_WITH_EMPTY_HAND} is what falls
-     * through to {@code useWithoutItem}.
+     * Setting the projected block needs the held stack, so it is in {@code useItemOn}; clearing it
+     * with a shift-click is handled in both, as {@code TRY_WITH_EMPTY_HAND} falls through to {@code
+     * useWithoutItem}.
      */
     @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {

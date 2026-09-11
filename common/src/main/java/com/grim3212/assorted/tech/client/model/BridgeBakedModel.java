@@ -14,20 +14,10 @@ import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
 
 /**
- * The json flavour of the bridge: the {@code "bridge"} object names a parent model, and every stored
- * block state re-bakes that parent with the stored block's texture in the {@code stored} slot.
- * <p>
- * There is no mutable json model object to copy and retexture any more - {@code BlockModel} is a
- * {@code CuboidModel} record whose textures are a {@link TextureSlots.Data}, and its element and face
- * deserializers are package private, so an inline geometry object could not be re-read here either.
- * The parent chain is walked directly instead, which is what vanilla model inheritance does: the
- * overrides go in child-first, the parent's own slots after them, and
- * {@link ResolvedModel#findTopGeometry} supplies the geometry to bake against the resolved slots.
- * This is the same route AssortedDecor's {@code ColorizerBakedModel} takes.
- * <p>
- * The item form is {@link BridgeItemModel}, which reaches this model's cache through AssortedLib's
- * {@code DataAwareItemModel}. The {@code BridgeItemOverrideList} 1.20.1 hung off this class went with
- * {@code ItemOverrides}.
+ * The json bridge: the {@code "bridge"} object names a parent model, and each stored block state
+ * re-bakes that parent with the stored block's texture in the {@code stored} slot, walking the
+ * parent chain as vanilla inheritance does (overrides first). The item form is {@link
+ * BridgeItemModel}.
  */
 public class BridgeBakedModel extends BridgeBaseBakedModel {
 

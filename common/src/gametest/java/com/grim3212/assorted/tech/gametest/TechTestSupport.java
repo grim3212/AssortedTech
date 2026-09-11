@@ -25,7 +25,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -119,11 +118,9 @@ final class TechTestSupport {
     }
 
     /**
-     * Reads POWERED off whichever gravity block is actually there.
-     * <p>
-     * The plain and the directional block each declare their own {@code BooleanProperty} named
-     * "powered", and 26.2 looks properties up by identity, so asking a directional block for
-     * {@link GravityBlock#POWERED} throws rather than answering.
+     * Reads POWERED off whichever gravity block is there. The plain and directional blocks each
+     * declare their own "powered" property, and properties resolve by identity, so the wrong one
+     * throws.
      */
     static boolean isPowered(GameTestHelper helper, BlockPos pos) {
         BlockState state = helper.getBlockState(pos);
@@ -133,12 +130,9 @@ final class TechTestSupport {
     }
 
     /**
-     * Clears every position back to air.
-     * <p>
-     * Registered through {@code runBeforeTestEnd} by anything that lights a torch, so it runs
-     * whether the test passed or failed. Block light does not stop at the wall of a test box, and a
-     * lit block left behind can raise the level a neighbouring test measures - which shows up as an
-     * unrelated, pre-existing test failing depending on where the runner happened to place it.
+     * Sets every position back to air. Registered through {@code runBeforeTestEnd} by anything that
+     * lights a torch, so it also runs on failure: block light crosses test box walls and would skew
+     * a neighbouring test.
      */
     static void extinguish(GameTestHelper helper, BlockPos... positions) {
         for (BlockPos pos : positions) {
@@ -167,12 +161,8 @@ final class TechTestSupport {
     }
 
     /**
-     * A real, survival mode {@link ServerPlayer} placed in the test level.
-     * <p>
-     * {@code makeMockServerPlayerInLevel} is deprecated for removal and hard-codes creative;
-     * {@code makeMockPlayer} and {@code makeMockServerPlayer} hand back a player that was never
-     * placed in a level, so its connection is null and any message to it NPEs. This is the same
-     * helper AssortedTools' gametests use.
+     * A real survival mode {@link ServerPlayer} placed in the test level. The mock helpers are
+     * either creative and deprecated, or never placed in a level, so any message to them NPEs.
      */
     static ServerPlayer survivalPlayer(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();

@@ -134,7 +134,7 @@ public class GravityDirectionalBlockEntity extends BlockEntity {
                 double speed = TechCommonMod.COMMON_CONFIG.gravitorSpeed.get();
 
                 list.stream().forEach((entity -> {
-                    // LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
+                    // Gravity boots exempt any living wearer.
                     if (entity instanceof LivingEntity living && living.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
                         return;
                     }
@@ -163,7 +163,7 @@ public class GravityDirectionalBlockEntity extends BlockEntity {
                 double speed = fanSpeed + (fanModSpeed / distanceModifier);
 
                 list.stream().forEach((entity -> {
-                    // LivingEntity#getArmorSlots is gone; the only slot this ever cared about is the boots one.
+                    // Gravity boots exempt any living wearer.
                     if (entity instanceof LivingEntity living && living.getItemBySlot(EquipmentSlot.FEET).getItem() == TechItems.GRAVITY_BOOTS.get()) {
                         return;
                     }

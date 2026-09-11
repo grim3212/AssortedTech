@@ -23,12 +23,8 @@ import org.joml.Matrix4fc;
 import java.util.List;
 
 /**
- * The bridge item, drawn with the block it has absorbed rather than its empty fallback.
- * <p>
- * 1.20.1 did this with a {@code BridgeItemOverrideList} on the baked model. {@code ItemOverrides} is
- * gone; this registers the {@code assortedtech:bridge} item model type, which reads the stack's
- * {@code stored_state} and draws through AssortedLib's {@link DataAwareItemModel} - the same shape
- * AssortedDecor's colorizer items use.
+ * The bridge item, drawn with the block it has absorbed: the {@code assortedtech:bridge} item model
+ * type reads the stack's {@code stored_state} and draws through {@link DataAwareItemModel}.
  */
 public final class BridgeItemModel {
 

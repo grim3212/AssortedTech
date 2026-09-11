@@ -5,22 +5,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * Automated in-world checks for AssortedTech.
- * <p>
- * The bodies live in common because the behaviour they check is common; each loader module only
- * registers them into {@code Registries.TEST_FUNCTION} through its own hook, and
- * {@code data/assortedtech/test_instance/*.json} pairs each one with the shared {@code test_box}
- * structure.
- * <p>
- * Everything this mod does to an entity happens on a block entity tick or on
- * {@code entityInside}, so the subject is almost always a pig spawned with no free will: it has no
- * goals to wander with, but {@code LivingEntity} still runs {@code travel}/{@code move} every tick,
- * which is what makes both the motion and the {@code entityInside} paths fire. Item entities are
- * not used for motion - they skip {@code move} on three ticks out of four while resting on the
- * ground.
- * <p>
- * The tests themselves are split by feature into the {@code *Tests} classes in this package,
- * with shared helpers in {@code TechTestSupport}; this only lists them.
+ * Automated in-world checks for AssortedTech. Entity subjects are pigs spawned with no free will:
+ * they still run {@code travel}/{@code move} every tick, which motion and {@code entityInside}
+ * need. Item entities skip {@code move} most ticks while resting, so they are not used. The tests
+ * live in the {@code *Tests} classes, with helpers in {@code TechTestSupport}; this only lists
+ * them.
  */
 public final class TechGameTests {
 

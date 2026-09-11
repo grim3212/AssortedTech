@@ -22,10 +22,8 @@ import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.pig.Pig;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -52,12 +50,9 @@ final class DeviceTests {
     }
 
     /**
-     * The flip flop torch toggles once per rising edge and holds that state while unpowered - the
-     * whole point of the block, and entirely a matter of the {@code LIT}/{@code PREV_LIT} pair being
-     * updated in the right order.
-     * <p>
-     * It reads its signal from the block it stands on ({@code hasSignal(pos.below(), DOWN)}), so the
-     * support block is what gets swapped rather than a neighbour.
+     * The flip flop torch toggles once per rising edge and holds while unpowered, which depends on
+     * {@code LIT}/{@code PREV_LIT} updating in the right order. It reads the block it stands on, so
+     * that is the block that gets powered.
      */
     private static void flipFlopTorchLatches(GameTestHelper helper) {
         BlockPos support = new BlockPos(4, 1, 4);
@@ -83,12 +78,8 @@ final class DeviceTests {
     }
 
     /**
-     * The alarm gets an {@link AlarmBlockEntity}, and its block entity type is bound to the alarm
-     * block rather than the fan.
-     * <p>
-     * They were crossed before the port fixed it - {@code assortedtech:alarm} listed
-     * {@code TechBlocks.FAN} as its only valid block - which makes every alarm block entity invalid
-     * for the block it lives on. Nothing about that is visible to the compiler.
+     * The alarm gets an {@link AlarmBlockEntity} whose type is bound to the alarm block. Bound to
+     * the wrong block, every alarm block entity is invalid, and nothing catches it at compile time.
      */
     private static void alarmHasItsOwnBlockEntity(GameTestHelper helper) {
         BlockPos alarm = new BlockPos(4, 1, 4);
@@ -111,13 +102,10 @@ final class DeviceTests {
     }
 
     /**
-     * Everything this mod keeps on a block entity survives being written out and read back - the
-     * gravity and sensor ranges, the fan's range and mode, and the bridge's facing and stored state.
-     * <p>
-     * This is the chunk round trip rather than an approximation of it: the same
-     * {@code saveWithFullMetadata} / {@code loadStatic} pair a chunk save and load uses. The port
-     * moved every one of these off {@code CompoundTag} and onto {@code ValueOutput} /
-     * {@code ValueInput}, where a mismatched key or a wrong default is silent.
+     * Every block entity field (gravity and sensor ranges, fan range and mode, bridge facing and
+     * stored state) survives the {@code saveWithFullMetadata} / {@code loadStatic} round trip a
+     * chunk uses. A mismatched {@code ValueOutput} / {@code ValueInput} key or a wrong default is
+     * silent.
      */
     private static void blockEntityDataSurvivesReload(GameTestHelper helper) {
         BlockPos gravity = new BlockPos(1, 1, 1);
@@ -173,11 +161,8 @@ final class DeviceTests {
     }
 
     /**
-     * A blowing fan drives entities away from its face and a sucking one draws them in. The two run
-     * in separate lanes because at range 4 their volumes would otherwise overlap.
-     * <p>
-     * The fan screen that sets all of this in game needs a human; the range is set on the block
-     * entity here, and that it survives a reload is covered by the reload test.
+     * A blowing fan pushes entities away from its face and a sucking one pulls them in. They run in
+     * separate lanes because at range 4 their volumes would overlap.
      */
     private static void fanBlowsAndSucks(GameTestHelper helper) {
         BlockPos blower = new BlockPos(1, 1, 1);
@@ -219,16 +204,9 @@ final class DeviceTests {
     }
 
     /**
-     * The glowstone torch and its wall form both light on a redstone signal and go dark again, and
-     * both report the light level the block itself claims.
-     * <p>
-     * The wall form is a separate block rather than a state of the standing one, so nothing about it
-     * is covered by testing the standing torch. Their names are covered by the assets test - the two
-     * wall torches needed lang keys of their own once {@code Block#getDescriptionId()} became final.
-     * <p>
-     * A lit glowstone torch is a light level 15 source, which outreaches the gap between one test
-     * box and the next: it is kept in the middle of the box and put out again before the test ends,
-     * so it cannot raise the light a neighbouring test measures.
+     * The standing and wall glowstone torches light on a redstone signal, go dark without one, and
+     * report the light level the block claims. A lit torch outreaches the gap between test boxes,
+     * so it stays mid-box and is put out before the test ends.
      */
     private static void glowstoneTorchesLightWithSignal(GameTestHelper helper) {
         BlockPos standSupport = new BlockPos(3, 2, 4);
@@ -273,12 +251,9 @@ final class DeviceTests {
     }
 
     /**
-     * The wall form of the flip flop torch latches the way the standing one does, but off the block
-     * it hangs on rather than the block below it - a different {@code hasNeighborSignal} override,
-     * so a different thing to get wrong.
-     * <p>
-     * A lit torch is a light source, so it stays in the middle of the box and is put out before the
-     * test ends - see {@link #glowstoneTorchesLightWithSignal}.
+     * The wall flip flop torch latches like the standing one, but off the block it hangs on: a
+     * separate {@code hasNeighborSignal} override. Lit torches are handled as in {@link
+     * #glowstoneTorchesLightWithSignal}.
      */
     private static void flipFlopWallTorchLatches(GameTestHelper helper) {
         BlockPos support = new BlockPos(3, 3, 4);

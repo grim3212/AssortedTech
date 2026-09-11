@@ -5,7 +5,6 @@ import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.sounds.TechSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -176,10 +175,8 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     /**
-     * {@code entityInside} gained an {@link InsideBlockEffectApplier} and an {@code isPrecise} flag;
-     * both are ignored here, as vanilla's own hazard blocks do. {@code Entity#hurt} is deprecated -
-     * damage is applied through {@code hurtServer}. The damage source itself comes from
-     * the spike damage type is resolved out of the level's dynamic registry directly.
+     * Hurts a living entity by this spike type's damage while powered. The effect applier and
+     * {@code isPrecise} are ignored, as vanilla's own hazard blocks do.
      */
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {

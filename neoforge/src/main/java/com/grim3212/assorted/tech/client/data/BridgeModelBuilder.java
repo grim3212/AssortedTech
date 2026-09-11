@@ -7,31 +7,14 @@ import com.grim3212.assorted.tech.client.model.BridgeUnbakedModel;
 import net.minecraft.resources.Identifier;
 import com.grim3212.assorted.lib.client.data.LibCustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder;
-import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 /**
- * Writes the {@code assortedtech:bridge} loader block into a bridge block model json.
- * <p>
- * Forge's {@code ModelBuilder} / {@code BlockStateProvider} pair is gone, so this is no longer a
- * builder hanging off a {@code BlockModelBuilder} owned by a second {@code ModelProvider}.
- * {@link CustomLoaderBuilder} is still the hook, but it now plugs into
- * {@link ExtendedModelTemplateBuilder#customLoader} and contributes to the json a
- * {@link net.minecraft.client.data.models.model.ModelTemplate} emits, so it is constructed with the
- * loader id plus whether the loader tolerates inline vanilla elements (it does not - it replaces the
- * geometry outright) and it has to be able to deep copy itself, because a {@code ModelTemplate} is
- * immutable.
- * <p>
- * The {@code loader} key and the shape of the {@code bridge} object are unchanged;
- * {@code UnbakedModelParser} still reads {@code loader}, the {@code Identifier} it names is still what
- * {@code ModelEvent.RegisterLoaders} is keyed by, and {@link BridgeUnbakedModel.Loader} still reads a
- * {@code parent} plus a {@code textures} map out of {@code bridge}.
- * <p>
- * The {@code model} / top level {@code textures} branch of the 1.20.1 builder is dropped. It existed
- * to point the loader at an OBJ model - AssortedDecor's colorizer uses that path - and nothing in this
- * mod ever called {@code objModel}, so it was emitting nothing and had no reader on the other side.
+ * Writes the {@code assortedtech:bridge} loader block into a bridge block model json: a
+ * {@code parent} and the {@code textures} map {@link BridgeUnbakedModel.Loader} reads. The loader
+ * replaces the geometry, so it takes no inline elements.
  */
 public class BridgeModelBuilder extends LibCustomLoaderBuilder {
 

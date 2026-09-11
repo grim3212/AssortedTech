@@ -16,23 +16,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Tints a held bridge block with the colour of the block state it is carrying, which is what the old
- * {@code IClientHelper#registerItemColor} lambda in {@code TechClient} did.
- * <p>
- * {@code ItemColor} and {@code ItemColors} were deleted in 26.2: an item's tints are a list of
- * {@link ItemTintSource} entries in its item model json, and code only registers the {@link MapCodec}
- * that reads a custom source type, keyed by id.
- * <p>
- * Reached from {@code assets/assortedtech/items/bridge.json}, which carries
- * {@code "tints": [{"type": "assortedtech:bridge"}]} - written by
- * {@code TechBlockstateProvider#bridge} through {@code registerSimpleTintedItemModel}.
- * <p>
- * Behaviour note: the 1.20.1 lambda answered {@code ItemColors#getColor} for a stack of the stored
- * block, and returned opaque white for any tint index other than the model's. There is no
- * {@code ItemColors} to ask any more and the tint layer is decided by this source's position in the
- * json list rather than by an index argument, so the colour is taken from the stored block's own
- * {@link BlockTintSource} at layer 0 instead - the same answer for every vanilla block item, whose
- * item colours were block-colour delegates.
+ * Tints a held bridge with the colour of the block state it carries, taken from the stored block's
+ * own {@link BlockTintSource} at layer 0. {@code items/bridge.json} names it as
+ * {@code "tints": [{"type": "assortedtech:bridge"}]}.
  */
 public record BridgeItemTintSource() implements ItemTintSource {
 

@@ -15,23 +15,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Writes an {@code equipment_asset} definition for every armour material.
- * <p>
- * Since 1.21.4 the worn-armour texture is not derived from the material's name. An
- * {@code ArmorMaterial} carries a {@link ResourceKey} into the {@code equipment_asset} registry, and
- * the client resolves the layer textures through the JSON that key names. Without these files
- * armour renders untextured on the player - and nothing warns, because a missing equipment asset is
- * not a missing model.
- * <p>
- * This does not extend vanilla's {@code EquipmentAssetProvider}: its bootstrap is private and
- * hardcodes vanilla's own materials, so there is nothing to hook into. The write itself is two
- * lines, which is all that class does either.
- * <p>
- * {@code addMainHumanoidLayer} rather than {@code addHumanoidLayers}: this mod's only armour is a
- * pair of boots, so there was never a {@code _layer_2.png} and declaring a leggings layer would
- * point at a texture that does not exist. The one texture now lives at
- * {@code textures/entity/equipment/humanoid/gravity.png} in the mod's own namespace, rather than
- * squatting in {@code assets/minecraft}.
+ * Writes an {@code equipment_asset} for every armour material; without one the armour renders
+ * untextured and nothing warns. Vanilla's {@code EquipmentAssetProvider} hardcodes its own
+ * materials, so it cannot be extended. The only armour is boots, so only the main humanoid layer is
+ * declared.
  */
 public class TechEquipmentAssetProvider implements DataProvider {
 

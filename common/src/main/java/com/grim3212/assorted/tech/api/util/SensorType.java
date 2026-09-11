@@ -70,12 +70,9 @@ public enum SensorType implements StringRepresentable {
     }
 
     /**
-     * Builds the crafting ingredient for this sensor.
-     * <p>
-     * {@code Ingredient.of(TagKey)} is gone - an {@link Ingredient} is a {@code HolderSet<Item>} now,
-     * so a tag has to be resolved through a lookup. The built-in registry cannot supply one during
-     * data generation (its tags are never bound there), so the caller passes the lookup it already
-     * holds; in a recipe provider that is {@code registries.lookupOrThrow(Registries.ITEM)}.
+     * The crafting ingredient for this sensor. Tags resolve through {@code items} because the
+     * built-in registry has no bound tags during datagen; a recipe provider passes {@code
+     * registries.lookupOrThrow(Registries.ITEM)}.
      */
     public Ingredient getCraftingMaterial(HolderGetter<Item> items) {
         return craftingMaterial.apply(items);

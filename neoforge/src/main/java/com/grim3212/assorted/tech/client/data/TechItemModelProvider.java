@@ -6,7 +6,6 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -14,7 +13,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -22,26 +20,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Forge's {@code ItemModelProvider} / {@code ItemModelBuilder} / {@code ExistingFileHelper} are gone,
- * and so is the idea that an item model is one json. An item points at a data driven
- * {@code ItemModel} in {@code assets/assortedtech/items/} - a {@code minecraft:model} /
- * {@code select} / {@code condition} tree - which names the {@code assets/assortedtech/models/}
- * geometry to draw. {@link ModelProvider} writes both halves.
- * <p>
- * This provider owns exactly the three items whose model is not derived from a block model, which is
- * the same set the 1.20.1 {@code TechItemModelProvider} covered. Two of them are {@link BlockItem}s
- * (the torches are {@code StandingAndWallBlockItem}s registered separately from their blocks), so
- * {@link TechBlockstateProvider} filters them back out of its own {@link #getKnownItems()} - a
- * {@link ModelProvider} refuses a duplicate item model definition, and its
- * {@code finalizeAndValidate} would otherwise point a {@code BlockItem} with no model of its own at
- * the block model, which for a torch is the 3D block rather than the flat inventory sprite.
- * <p>
- * {@code generateFlatItem(item, template)} is not usable here: it derives the texture from the item's
- * id, and both torch textures live under {@code block/}. Each model therefore goes through
- * {@link ModelTemplate#create(Identifier, TextureMapping, java.util.function.BiConsumer)} followed by
- * {@code itemModelOutput.accept(...)}, the same shape {@code ToolsItemModelProvider} uses.
- * {@code item/generated} is {@link ModelTemplates#FLAT_ITEM}, which resolves to the same vanilla
- * parent.
+ * Item models for the items not drawn from a block model, including the two torch block items,
+ * whose inventory model is a flat sprite from {@code block/}. That is why {@code generateFlatItem},
+ * which takes the texture from the item id, is not used.
  */
 public class TechItemModelProvider extends ModelProvider {
 

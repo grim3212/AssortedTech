@@ -19,19 +19,8 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The mod's armour materials.
- * <p>
- * No longer implements {@code ArmorMaterial}: that is a record now, so an entry builds one rather
- * than answering questions about itself. {@code ArmorItem.Type} became {@link ArmorType}, and the
- * per-slot durability multiplier that used to come from a mixin into vanilla's {@code ArmorMaterials}
- * is public API - {@link ArmorType#getDurability(int)}.
- * <p>
- * The repair ingredient is a {@link TagKey} rather than an {@code Ingredient}, so the ender pearl it
- * used to name directly is the common ender pearl tag.
- * <p>
- * Each material also needs an {@code assets/assortedtech/equipment/<name>.json}: since 1.21.4 the
- * worn-armour texture is resolved through the {@code equipment_asset} registry instead of being
- * derived from the material's name.
+ * The mod's armour materials. Each also needs {@code assets/assortedtech/equipment/<name>.json}, or
+ * the worn armour renders untextured.
  */
 public enum TechArmorMaterials {
     GRAVITY("gravity", 15, Util.make(new EnumMap<>(ArmorType.class), (map) -> {
@@ -64,11 +53,8 @@ public enum TechArmorMaterials {
     }
 
     /**
-     * This entry as the record vanilla builds armour from.
-     * <p>
-     * The durability the record carries is the multiplier, not a finished number -
-     * {@code Properties#humanoidArmor} scales it per slot with {@link ArmorType#getDurability(int)},
-     * which is what the old {@code getDurabilityForType} did by hand.
+     * This entry as vanilla's armour record. Its durability is a multiplier that
+     * {@code Properties#humanoidArmor} scales per slot with {@link ArmorType#getDurability(int)}.
      */
     public ArmorMaterial material() {
         return new ArmorMaterial(this.durabilityMultiplier, this.defense, this.enchantmentValue, this.equipSound, this.toughness, this.knockbackResistance, this.repairIngredient, this.assetId);

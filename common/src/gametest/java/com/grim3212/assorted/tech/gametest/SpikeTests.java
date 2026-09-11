@@ -35,11 +35,9 @@ final class SpikeTests {
     }
 
     /**
-     * A powered spike hurts what stands on it, and {@link SpikeType#getDamage()} is what decides how
-     * much: 14 damage kills a 10 health pig outright, 2 damage does not come close.
-     * <p>
-     * The redstone goes in first so the spike powers itself from its own {@code onPlace} neighbour
-     * sweep; setting {@code POWERED} by hand would be undone by the scheduled tick that follows.
+     * A powered spike's damage is {@link SpikeType#getDamage()}: 14 kills a 10 health pig, 2 does
+     * not. The redstone goes in first so the spike powers itself in {@code onPlace}; setting {@code
+     * POWERED} by hand is undone by the scheduled tick.
      */
     private static void spikeDamageScalesWithType(GameTestHelper helper) {
         BlockPos weak = new BlockPos(2, 1, 4);
@@ -66,19 +64,10 @@ final class SpikeTests {
     }
 
     /**
-     * Every {@link SpikeType}, each with its own pig standing on it, checked against the exact
-     * damage the enum declares rather than against "more" and "less".
-     * <p>
-     * A spike reads its signal from the block <em>behind</em> its face, so the redstone goes in the
-     * floor rows between the spikes rather than under them.
-     * <p>
-     * Only the <em>first</em> hit carries the material's damage, so each pig is watched every tick
-     * and the number is taken from the tick its health first moves. Waiting a fixed number of ticks
-     * and then reading does not work: a spike is standing on its victim, so it hits again as soon as
-     * the invulnerability window lets it, and the second hit lands well inside any window wide enough
-     * to be sure the first one has. The spike damage type scales only
-     * {@code when_caused_by_living_non_player} and this source has no entity, so difficulty does not
-     * enter into it.
+     * Every {@link SpikeType} deals exactly its declared damage. The redstone goes in the floor
+     * between the spikes, since a spike reads the block behind its face. Damage is read on the tick
+     * a pig's health first moves: the spike hits again as soon as invulnerability lapses, so a
+     * fixed wait can catch two hits. A source with no entity does not scale with difficulty.
      */
     private static void everySpikeTypeDamages(GameTestHelper helper) {
         SpikeType[] types = SpikeType.values();
@@ -130,9 +119,8 @@ final class SpikeTests {
 
     /**
      * With {@code hideUncraftableItems} on, a spike is hidden when nothing can be its material: its
-     * tag is empty, or no pack defines it at all. The second case used to count as craftable. This
-     * checks the rule itself, since the config is off in a test world; the Assorted Core metals have
-     * no tag here, so the undefined case is exercised.
+     * tag is empty or undefined. The config is off in tests, so this checks the rule directly;
+     * Assorted Core's metals have no tag here, which exercises the undefined case.
      */
     private static void spikesWithNoMaterialAreUncraftable(GameTestHelper helper) {
         List<String> wrong = new ArrayList<>();

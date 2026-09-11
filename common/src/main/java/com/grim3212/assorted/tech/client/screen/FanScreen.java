@@ -10,12 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-/**
- * The GUI went retained-mode in 26.x: a screen records elements into a {@link GuiGraphicsExtractor}
- * from {@code extractRenderState} instead of drawing from {@code render}, and the base screen
- * sequences background, contents and tooltips itself - so the explicit {@code renderBackground} call
- * and the {@code super.render} sandwich are gone.
- */
+/** The fan screen, which sets the fan's range and mode. */
 public class FanScreen extends Screen {
 
     private final FanBlockEntity fanBlockEntity;

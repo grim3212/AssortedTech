@@ -24,12 +24,9 @@ public class TechCreativeItems {
 
     public static final ResourceKey<CreativeModeTab> CREATIVE_TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(Constants.MOD_ID, "tab"));
 
-    // CreativeModeTab.Output is protected in 26.2 vanilla, so a display items generator cannot be
-    // written against the plain game jar. The tab is registered empty and filled through the
-    // library's modifyCreativeTab hook instead, which both loaders already implement on top of
-    // their own creative tab events.
-    // CreativeModeTab.builder(Row, int) is deprecated by NeoForge's patches only; the vanilla jar
-    // this module compiles against has no other builder.
+    // CreativeModeTab.Output is protected in vanilla, so the tab is registered empty and filled
+    // through
+    // modifyCreativeTab. The builder is deprecated only by NeoForge's patches.
     @SuppressWarnings("deprecation")
     public static final IRegistryObject CREATIVE_TAB = CREATIVE_TABS.register("tab", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .title(Component.translatable("itemGroup." + Constants.MOD_ID))

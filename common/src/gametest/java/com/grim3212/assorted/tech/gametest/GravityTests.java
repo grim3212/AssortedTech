@@ -7,7 +7,6 @@ import com.grim3212.assorted.tech.common.block.GravityDirectionalBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
 import com.grim3212.assorted.tech.common.block.blockentity.GravityBlockEntity;
-import com.grim3212.assorted.tech.common.block.blockentity.GravityDirectionalBlockEntity;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.pig.Pig;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -51,11 +49,9 @@ final class GravityTests {
     }
 
     /**
-     * A powered gravitor lifts whatever is inside its radius, and an unpowered one does nothing.
-     * <p>
-     * Powered is reached the way it is in game - a redstone block next to it, so
-     * {@code neighborChanged} does the toggle - rather than by writing the property, because writing
-     * it would also rebuild the block entity the tick depends on.
+     * A powered gravitor lifts what is inside its radius; an unpowered one does nothing. It is
+     * powered by a redstone block, because writing the property would rebuild the block entity the
+     * tick needs.
      */
     private static void gravitorLiftsOnlyWhenPowered(GameTestHelper helper) {
         BlockPos gravitor = new BlockPos(4, 1, 4);
@@ -84,10 +80,8 @@ final class GravityTests {
     }
 
     /**
-     * The directional gravity blocks crashed on their first tick as recently as 2026-09-10 -
-     * {@code GravityDirectionalBlockEntity#tick} read {@code GravityBlock.POWERED}, a different
-     * property instance with the same name, and 26.2 resolves properties by identity. So this ticks
-     * a repulsor deliberately and asserts the push actually lands, not just that nothing threw.
+     * A directional repulsor's push actually lands, not just that its tick does not throw. The tick
+     * must read its own block's {@code POWERED}, since properties resolve by identity.
      */
     private static void directionalRepulsorPushesEntity(GameTestHelper helper) {
         BlockPos repulsor = new BlockPos(4, 1, 4);
@@ -110,10 +104,8 @@ final class GravityTests {
     }
 
     /**
-     * Gravity boots exempt their wearer from a gravity effect.
-     * <p>
-     * This is the gravity <em>bridge</em>; {@code gravity_boots_exempt_player} and
-     * {@code gravity_boots_exempt_a_mob_from_a_gravitor} cover the gravity blocks.
+     * Gravity boots exempt their wearer from a gravity <em>bridge</em>. For the gravity blocks see
+     * {@code gravity_boots_exempt_player} and {@code gravity_boots_exempt_a_mob_from_a_gravitor}.
      */
     private static void gravityBootsExemptWearer(GameTestHelper helper) {
         BlockPos bare = new BlockPos(2, 1, 4);
@@ -148,11 +140,8 @@ final class GravityTests {
     }
 
     /**
-     * A powered attractor drags whatever is in its radius towards itself.
-     * <p>
-     * Measured as the distance to the block rather than as a rise, because pulling <em>in</em> is
-     * the whole difference from the repulsor - and measured against the same reference point the
-     * block entity uses, the block's lower corner, not its centre.
+     * A powered attractor pulls entities in. Measured as distance, which is what separates it from
+     * the repulsor, to the block's lower corner, the point the block entity uses.
      */
     private static void attractorPullsEntityIn(GameTestHelper helper) {
         BlockPos attractor = new BlockPos(4, 4, 4);
@@ -206,11 +195,9 @@ final class GravityTests {
     }
 
     /**
-     * The directional blocks act along a beam out of the face they point at, and nowhere else.
-     * <p>
-     * That volume is the block's own column expanded by {@code range + 1} along that face and then
-     * deflated by one on every side, so an entity one block to the side is outside it. Both pigs
-     * stand at the same height on the same tick; only the axis separates them.
+     * The directional blocks act only along a beam out of their face: the block's column expanded
+     * by {@code range + 1} that way and deflated by one on every side, so an entity one block to
+     * the side is outside it.
      */
     private static void directionalGravityIgnoresOffAxis(GameTestHelper helper) {
         BlockPos repulsor = new BlockPos(4, 1, 4);
@@ -245,13 +232,9 @@ final class GravityTests {
     }
 
     /**
-     * Every gravity block - not just the gravitor the lift test uses - follows its redstone signal
-     * on and off.
-     * <p>
-     * {@link GravityBlock#POWERED} and {@link GravityDirectionalBlock#POWERED} are two different
-     * property instances that share a name, and 26.2 resolves properties by identity, so the state
-     * has to be asked with the property its own block declared. Reading it through the wrong one is
-     * exactly the mistake that made the directional blocks crash on their first tick.
+     * Every gravity block follows its redstone signal on and off. {@link GravityBlock#POWERED} and
+     * {@link GravityDirectionalBlock#POWERED} are different instances and properties resolve by
+     * identity, so each state is read with its own block's property.
      */
     private static void redstoneTogglesGravityBlocks(GameTestHelper helper) {
         List<Block> blocks = List.of(TechBlocks.ATTRACTOR.get(), TechBlocks.REPULSOR.get(), TechBlocks.GRAVITOR.get(),
@@ -294,12 +277,9 @@ final class GravityTests {
     }
 
     /**
-     * The gravity <em>block</em> half of the boots, which the bridge test cannot reach: its
-     * exemption tests {@code instanceof Player}, so the subject has to be a real player.
-     * <p>
-     * The assertion is on delta movement rather than on height. The block entity sets it directly
-     * every tick it is powered, and a headless server has no client telling it where the player
-     * went, so the velocity is the honest observation and the position is not.
+     * Gravity boots exempt a player from a gravity <em>block</em>. Asserted on delta movement,
+     * which the block entity sets every powered tick: a server player's position only moves when a
+     * client reports it, and a headless server has none.
      */
     private static void gravityBootsExemptPlayer(GameTestHelper helper) {
         BlockPos gravitor = new BlockPos(4, 1, 4);
@@ -337,13 +317,9 @@ final class GravityTests {
     }
 
     /**
-     * Right-clicking a gravity block with an empty hand steps the range on, and shift-clicking steps
-     * it back. Only the server-side number is checked here; the action bar it is echoed on needs a
-     * human to check.
-     * <p>
-     * The subject is a real {@link ServerPlayer} rather than a mock, because the branch under test
-     * ends in {@code ServerPlayer#sendSystemMessage} - a mock server player has no connection and
-     * NPEs there, and a plain mock player skips the call altogether.
+     * An empty-hand right-click steps a gravity block's range on and a shift-click steps it back.
+     * The player is a real {@link ServerPlayer}: the branch ends in {@code sendSystemMessage},
+     * which NPEs on a mock with no connection.
      */
     private static void emptyHandCyclesGravityRange(GameTestHelper helper) {
         BlockPos attractor = new BlockPos(4, 1, 4);
@@ -369,10 +345,7 @@ final class GravityTests {
         helper.succeed();
     }
 
-    /**
-     * A mob wearing gravity boots is exempt from a gravitor, as a player is. The gravity blocks used to
-     * exempt only players, while the gravity bridge exempted any living entity.
-     */
+    /** Gravity boots exempt any living wearer from a gravitor, not only a player. */
     private static void gravityBootsExemptAMobFromAGravitor(GameTestHelper helper) {
         BlockPos gravitor = new BlockPos(4, 1, 4);
         BlockPos lever = new BlockPos(4, 0, 4);
