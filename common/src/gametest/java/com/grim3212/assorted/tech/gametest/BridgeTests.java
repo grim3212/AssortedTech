@@ -1,5 +1,10 @@
 package com.grim3212.assorted.tech.gametest;
 
+import net.minecraft.world.InteractionResult;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.component.DataComponents;
+import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
@@ -40,6 +45,7 @@ final class BridgeTests {
         out.accept("bridge_control_refuses_non_full_cube", BridgeTests::bridgeControlRefusesNonFullCube);
         out.accept("every_bridge_control_projects_and_clears", BridgeTests::everyBridgeControlProjectsAndClears);
         out.accept("bridge_copies_controls_stored_state", BridgeTests::bridgeCopiesControlsStoredState);
+        out.accept("bridge_placed_from_an_item_keeps_its_block", BridgeTests::bridgePlacedFromAnItemKeepsItsBlock);
         out.accept("bridge_effects_apply_to_entities", BridgeTests::bridgeEffectsApplyToEntities);
     }
 
@@ -254,5 +260,30 @@ final class BridgeTests {
                 .thenExecute(() -> helper.assertTrue(rise[0] > 1.0D,
                         "an upward gravity bridge did not change an entity's fall - it rose " + rise[0]))
                 .thenSucceed();
+    }
+
+    /**
+     * A bridge placed from an item that carries a stored block keeps it. Nothing in play writes one
+     * onto a stack - pick-block writes air - but a command or another mod can, and the bridge item
+     * model already draws it.
+     */
+    private static void bridgePlacedFromAnItemKeepsItsBlock(GameTestHelper helper) {
+        BlockPos floor = new BlockPos(4, 1, 4);
+        helper.setBlock(floor, Blocks.STONE);
+
+        ItemStack stack = new ItemStack(TechBlocks.BRIDGE.get());
+        NBTHelper.putTag(stack, "stored_state", NbtUtils.writeBlockState(Blocks.GOLD_BLOCK.defaultBlockState()));
+        ServerPlayer player = survivalPlayer(helper);
+        player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+
+        BlockPos at = helper.absolutePos(floor);
+        BlockHitResult top = new BlockHitResult(Vec3.atCenterOf(at).relative(Direction.UP, 0.5D), Direction.UP, at, false);
+        InteractionResult result = player.gameMode.useItemOn(player, helper.getLevel(), stack, InteractionHand.MAIN_HAND, top);
+        helper.assertTrue(result.consumesAction(), "placing a bridge from an item came back as " + result);
+
+        BridgeBlockEntity bridge = helper.getBlockEntity(floor.above(), BridgeBlockEntity.class);
+        helper.assertTrue(bridge.getStoredBlockState().is(Blocks.GOLD_BLOCK), "a bridge placed from an item holding gold stores " + bridge.getStoredBlockState());
+        helper.assertTrue(bridge.components().get(DataComponents.CUSTOM_DATA) == null, "the stored block was also kept on the bridge as custom data");
+        helper.succeed();
     }
 }
