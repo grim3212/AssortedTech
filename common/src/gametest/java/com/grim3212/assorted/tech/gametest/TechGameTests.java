@@ -22,6 +22,7 @@ public final class TechGameTests {
         BridgeTests.register(out);
         SensorTests.register(out);
         SpikeTests.register(out);
+        TooltipTests.register(out);
         DeviceTests.register(out);
         AssetTests.register(out);
     }
