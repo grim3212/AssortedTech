@@ -10,14 +10,8 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.codec.StreamCodec;
 
 /**
- * The options carried by the fan's air particle: the position of the fan that spawned it, which the
- * particle reads back so it can follow the fan's range and mode.
- * <p>
- * {@link ParticleOptions} is down to a single {@code getType()} method in 26.2 -
- * {@code writeToNetwork}, {@code writeToString} and the {@code Deserializer} inner interface are all
- * gone. Serialization is entirely a {@link MapCodec} (for the {@code /particle} command and any data
- * that names a particle) plus a {@link StreamCodec} (for the wire), both handed to the game by
- * {@link AirParticleType}.
+ * The fan air particle's options: the position of the fan that spawned it, so the particle can
+ * follow the fan's range and mode. Serialized by the codecs {@link AirParticleType} provides.
  */
 public class AirParticleData implements ParticleOptions {
 

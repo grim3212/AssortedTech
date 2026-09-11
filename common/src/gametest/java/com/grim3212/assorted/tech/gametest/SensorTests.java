@@ -27,12 +27,8 @@ final class SensorTests {
     }
 
     /**
-     * A sensor raises its signal to 15 while something its {@link SensorType} accepts is in front of
-     * it, and drops back to 0 once that is gone. The wood sensor takes any entity, so the subject
-     * only has to be there.
-     * <p>
-     * The detection volume is one block deep in front of the face at range 1, so the pig goes at
-     * {@code sensor.north(1)}, resting on the same floor.
+     * A sensor signals 15 while something its {@link SensorType} accepts is in front of it, and 0
+     * once it is gone. At range 1 the detection volume is the one block in front of the face.
      */
     private static void sensorDetectsAndClears(GameTestHelper helper) {
         BlockPos sensor = new BlockPos(4, 1, 4);
@@ -60,13 +56,8 @@ final class SensorTests {
     }
 
     /**
-     * Every {@link SensorType}, each in its own cell with the one thing its predicate accepts in
-     * front of it.
-     * <p>
-     * The cells are spaced so nothing can drift into a neighbour's detection volume, which at range
-     * 1 is the single block in front of the face. Driving this off the enum rather than off a
-     * hand-written list is the point: a thirteenth sensor type gets a test for free, and a predicate
-     * that quietly stopped matching cannot hide behind the eleven that still do.
+     * Every {@link SensorType}, each in its own cell with the one thing its predicate accepts.
+     * Driven off the enum so a new type is tested automatically and a broken predicate cannot hide.
      */
     private static void everySensorTypeDetects(GameTestHelper helper) {
         SensorType[] types = SensorType.values();

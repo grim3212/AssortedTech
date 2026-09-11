@@ -42,18 +42,8 @@ final class AssetTests {
     }
 
     /**
-     * Every block and item this mod registers has a model and a name, and the creative tab they all
-     * live in exists.
-     * <p>
-     * The mod's own assets are on the classpath even on a headless server, so this is the real check
-     * and not a proxy for one: a blockstate json per block, an item model json per item, and a key
-     * in {@code en_us.json} for every {@code getDescriptionId()}. Missing models and missing lang
-     * keys are the most repeated failure of this port - the two wall torches needed keys of their
-     * own once {@code Block#getDescriptionId()} became final - and they are invisible to a compiler
-     * and to a green datagen run alike.
-     * <p>
-     * Everything missing is reported in one message, because fixing them one failure at a time is a
-     * slow loop.
+     * Every block and item has a model and an English name, and the creative tab exists. Every gap
+     * is reported at once.
      */
     private static void assetsHaveModelsAndNames(GameTestHelper helper) {
         JsonObject lang = readJson("/assets/" + Constants.MOD_ID + "/lang/en_us.json");
@@ -110,11 +100,9 @@ final class AssetTests {
     }
 
     /**
-     * The bridge item draws the block it holds: {@code items/bridge.json} has to name the
-     * {@code assortedtech:bridge} item model type over the bridge block model, keeping the bridge tint.
-     * A plain {@code minecraft:model} - what the port first generated - bakes the bridge once, empty,
-     * and nothing warns. What it then draws is checked in a real client by
-     * {@code TechClientGameTests}.
+     * The bridge item draws the block it holds: {@code items/bridge.json} must name the {@code
+     * assortedtech:bridge} item model type, as a plain {@code minecraft:model} bakes the bridge
+     * once, empty, and nothing warns. {@code TechClientGameTests} checks what it draws.
      */
     private static void bridgeItemDrawsItsStoredBlock(GameTestHelper helper) {
         JsonObject json = readJson("/assets/" + Constants.MOD_ID + "/items/bridge.json");
@@ -131,11 +119,9 @@ final class AssetTests {
     }
 
     /**
-     * Every custom blockstate model and every loader model this mod's blocks use is read by both
-     * loaders. The jsons are generated once and shared, but NeoForge reads a variant's custom type from
-     * {@code "type"} and a model's loader from {@code "loader"}, while Fabric reads both from
-     * {@code "fabric:type"} and ignores the others. A json carrying only NeoForge's key loads on Fabric
-     * as a plain static model - every bridge drawing its fallback - and nothing warns.
+     * Every custom blockstate model and loader model carries both loaders' keys: NeoForge reads
+     * {@code "type"} and {@code "loader"}, Fabric only {@code "fabric:type"}. With only NeoForge's
+     * key, Fabric loads a plain static model and nothing warns.
      */
     private static void loaderModelsAreReadOnBothLoaders(GameTestHelper helper) {
         List<String> wrong = new ArrayList<>();
@@ -180,10 +166,8 @@ final class AssetTests {
     }
 
     /**
-     * Every recipe file this mod ships either loaded, or carries this loader's load conditions and was
-     * skipped by them. A file with neither failed to parse. On Fabric that was every conditional
-     * recipe for a while: Fabric's datagen wrote them without conditions, and the NeoForge copy that
-     * shadowed it carries a key Fabric ignores - so only this loader's own key counts.
+     * Every recipe file either loaded or was skipped by this loader's own load conditions; anything
+     * else failed to parse.
      */
     private static void everyRecipeLoadsOrIsConditionedOff(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
@@ -212,11 +196,9 @@ final class AssetTests {
     }
 
     /**
-     * Every item tag outside minecraft has a name. Recipe viewers show it in place of the raw id,
-     * and it is the check Fabric API runs at dev startup ("Untranslated Item Tags detected"), made
-     * to fail here: the key is {@code tag.item.<namespace>.<path>} with each '/' in the path turned
-     * into '.'. Both loaders load every mod's lang file on a dedicated server and name the standard
-     * c: tags themselves, so whatever is still missing is one of ours.
+     * Every non-vanilla item tag has a {@code tag.item.<namespace>.<path>} name, the check Fabric
+     * API warns about at dev startup. Both loaders name the standard c: tags, so anything missing
+     * is ours.
      */
     private static void everyItemTagHasAName(GameTestHelper helper) {
         Language language = Language.getInstance();

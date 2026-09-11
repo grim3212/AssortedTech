@@ -16,11 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * What a headless server cannot see: how a bridge item is drawn.
- * <p>
- * Runs in a real client through Fabric's client gametest API - {@code ./gradlew :fabric:runClientGameTest}
- * - which exits non-zero on a failure. Fabric only, as NeoForge has no client gametest; the code
- * under test, {@code BridgeItemModel} over AssortedLib's {@code DataAwareItemModel}, is common.
+ * What a headless server cannot see: how a bridge item is drawn. Fabric only, as NeoForge has no
+ * client gametest; run with {@code ./gradlew :fabric:runClientGameTest}.
  */
 public class TechClientGameTests implements FabricClientGameTest {
 

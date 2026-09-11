@@ -47,10 +47,8 @@ public class FlipFlopWallTorchBlock extends FlipFlopTorchBlock {
     }
 
     /**
-     * {@code Blocks.WALL_TORCH}'s own {@code canSurvive} / {@code updateShape} / {@code rotate} /
-     * {@code mirror} are all {@code protected} now, so this can no longer delegate to the vanilla
-     * instance. The static helpers {@code WallTorchBlock} exposes cover the parts that are shared;
-     * the rest is the same logic written out here.
+     * The vanilla wall torch's hooks are {@code protected}, so this cannot delegate to that
+     * instance. It uses {@code WallTorchBlock}'s static helpers and writes out the rest.
      */
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {

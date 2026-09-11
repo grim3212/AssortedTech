@@ -18,10 +18,8 @@ import net.minecraft.world.level.redstone.Orientation;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * {@code TorchBlock} now takes a {@code SimpleParticleType} rather than any {@code ParticleOptions},
- * and {@code DustParticleOptions.REDSTONE} is not one, so this extends {@link BaseTorchBlock} - the
- * shared standing-torch shape and support rules - and draws its own flame particle exactly the way
- * vanilla's {@code RedstoneTorchBlock} does.
+ * Extends {@link BaseTorchBlock} rather than {@code TorchBlock}, which only takes a
+ * {@code SimpleParticleType}; the redstone flame is drawn here as {@code RedstoneTorchBlock} does.
  */
 public class FlipFlopTorchBlock extends BaseTorchBlock {
 

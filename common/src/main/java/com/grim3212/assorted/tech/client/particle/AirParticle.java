@@ -17,13 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * {@code TextureSheetParticle} was removed in 26.2; the textured base class is
- * {@link SingleQuadParticle}, which takes its {@link TextureAtlasSprite} in the constructor instead of
- * having one pushed in afterwards by {@code pickSprite}. {@code getRenderType()} was replaced by
- * {@link SingleQuadParticle#getLayer()}, which returns a {@link SingleQuadParticle.Layer} record
- * naming the atlas and the render pipeline rather than a {@code ParticleRenderType} constant.
- */
+/** The fan's air particle, which follows the range and mode of the fan that spawned it. */
 public class AirParticle extends SingleQuadParticle {
 
     private final FanBlockEntity fan;
@@ -133,10 +127,8 @@ public class AirParticle extends SingleQuadParticle {
         }
 
         /**
-         * {@code createParticle} is handed the engine's {@link RandomSource} now, and the provider is
-         * what resolves the sprite - {@code Particle#pickSprite} no longer exists. Returning null is
-         * the documented way to decline, which is used here when the fan the particle would follow is
-         * not loaded on the client; the 1.20.1 code cast the lookup unchecked and would have thrown.
+         * Returns null, declining the particle, when the fan it would follow is not loaded
+         * client-side.
          */
         @Nullable
         @Override

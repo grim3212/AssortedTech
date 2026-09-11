@@ -18,14 +18,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The undirected gravity field's range box. See {@link RangeRenderState} for why the level scan moved
- * into {@code extractRenderState}.
- * <p>
- * The {@code RenderSystem.enableBlend()} / {@code defaultBlendFunc()} / {@code lineWidth(2.0F)} /
- * {@code depthMask(false)} calls around the old draw are gone. Blending and depth masking are baked
- * into the render pipeline a {@code RenderType} names, and the line width is a parameter of
- * {@link SubmitNodeCollector#submitShapeOutline} - in 1.20.1 those calls were made while only queuing
- * into a {@code MultiBufferSource}, so they had already stopped affecting this draw.
+ * Draws the undirected gravity field's range box. The level scan happens in
+ * {@code extractRenderState}; see {@link RangeRenderState}.
  */
 public class GravityBlockEntityRenderer implements BlockEntityRenderer<GravityBlockEntity, RangeRenderState> {
 

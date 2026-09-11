@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import java.util.List;
@@ -89,12 +88,8 @@ final class BridgeTests {
     }
 
     /**
-     * A bridge control only accepts a block that fills its own collision box.
-     * <p>
-     * This is a behaviour change worth pinning: the 1.20.1 check was the deprecated
-     * {@code BlockState#isSolid} (the pre-1.13 "legacy solid" flag), and the live equivalent is
-     * {@code isCollisionShapeFullBlock}. A slab passed the old flag and must not pass this one -
-     * a projected segment always renders as a full cube.
+     * A bridge control only accepts a block that fills its collision box: a projected segment
+     * always renders as a full cube, so a slab is refused.
      */
     private static void bridgeControlRefusesNonFullCube(GameTestHelper helper) {
         BlockPos control = new BlockPos(4, 1, 4);
@@ -122,12 +117,9 @@ final class BridgeTests {
     }
 
     /**
-     * All five controls project their own kind of bridge while powered and tear it down again when
-     * the signal goes, in five lanes that cannot reach each other.
-     * <p>
-     * Only the laser control was covered before, and it is the one with the least to go wrong: the
-     * other four differ in {@link BridgeType#isSolid()} and in what {@code entityInside} does, and a
-     * control that projected the wrong type would still look right in a screenshot.
+     * All five controls project their own kind of bridge while powered and clear it when the signal
+     * goes. The types differ in {@link BridgeType#isSolid()} and {@code entityInside}, and a wrong
+     * type would still look right in a screenshot.
      */
     private static void everyBridgeControlProjectsAndClears(GameTestHelper helper) {
         List<IRegistryObject<BridgeControlBlock>> controls = List.of(TechBlocks.BRIDGE_CONTROL_LASER,
@@ -178,13 +170,9 @@ final class BridgeTests {
     }
 
     /**
-     * Every segment of a projected bridge carries the controller's stored block state and the
-     * direction the run travels in - the first is what the segment is drawn as, the second is how a
-     * broken segment finds its way back to the controller.
-     * <p>
-     * The state gets onto the controller the way a player puts it there, by right-clicking with a
-     * block item, so the whole path is covered rather than just the field. Note that the block comes
-     * from the click, not from a block placed behind or above the controller.
+     * Every segment of a projected bridge carries the controller's stored state (what it draws as)
+     * and the run's direction (how a broken segment finds its controller). The state is set by
+     * right-clicking the controller with a block item, as a player would.
      */
     private static void bridgeCopiesControlsStoredState(GameTestHelper helper) {
         BlockPos control = new BlockPos(1, 1, 4);
@@ -224,10 +212,9 @@ final class BridgeTests {
     }
 
     /**
-     * The three bridge types that do something to whatever touches them: accel hands out Speed on
-     * {@code stepOn}, death hurts on {@code entityInside}, and gravity flings along its stored
-     * facing. Health is read five ticks in, inside the twenty-tick invulnerability window that
-     * follows the first hit.
+     * The bridges that act on what touches them: accel gives Speed on {@code stepOn}, death hurts
+     * on {@code entityInside}, gravity flings along its facing. Health is read five ticks in,
+     * inside the invulnerability window after the first hit.
      */
     private static void bridgeEffectsApplyToEntities(GameTestHelper helper) {
         BlockPos accel = new BlockPos(2, 1, 4);

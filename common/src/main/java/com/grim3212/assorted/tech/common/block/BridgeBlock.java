@@ -11,7 +11,6 @@ import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -65,13 +64,7 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
         }
     }
 
-    /**
-     * {@code entityInside} gained an {@link InsideBlockEffectApplier} and an {@code isPrecise} flag.
-     * The applier is vanilla's deferred collector for fire/freeze style effects and has nothing this
-     * block needs; {@code isPrecise} only says whether the entity ends its movement inside the block
-     * rather than clipping through it, and vanilla's own hazard blocks (cactus, fire) ignore it -
-     * so both are ignored here and the call shape stays what it was.
-     */
+    /** The effect applier and {@code isPrecise} are ignored, as vanilla's own hazard blocks do. */
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         BridgeType type = level.getBlockState(pos).getValue(TYPE);

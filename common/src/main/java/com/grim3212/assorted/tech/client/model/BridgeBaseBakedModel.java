@@ -24,29 +24,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A bridge takes its geometry from a fixed shape and its texture from whatever block state the bridge
- * block entity is holding, so one baked bridge owns a cache of models keyed by that stored state.
- * <p>
- * The base type is {@link IDataAwareBakedModel} - a {@link BlockStateModel} that additionally sees the
- * block entity's model data - because the vanilla
- * {@link BlockStateModel#collectParts(RandomSource, List)} receives no level, position or model data.
- * <p>
- * <b>This model only survives if it is reached from the blockstate side.</b> A model json loader can
- * only contribute geometry, so AssortedLib's specification delegators flatten whatever a
- * specification bakes, once, against empty model data - which for a bridge is the fallback texture
- * everywhere. The blockstate json therefore names {@code assortedlib:specification}, which bakes this
- * model whole and hands it to {@code ForgeBakedModelDelegate} / {@code FabricBakedModelDelegate}.
- * <p>
- * The {@code BridgeType} the 1.20.1 version read is gone from this class rather than lost: it only
- * ever chose between the {@code bridge} and {@code bridge_gravity} fallback textures, and a
- * {@link BlockStateModel} is baked per block state now, so {@code TechBlockstateProvider} emits one
- * loader model per fallback and dispatches {@code BridgeBlock.TYPE} between them. The fallback here is
- * "apply no overrides", which leaves the {@code stored} slot the model json declares in place. For the
- * item side see the TODO on {@link BridgeBakedModel}.
- * <p>
- * The {@link ModelBaker} is deliberately held past baking, as it was in 1.20.1: a stored block state
- * is only known while rendering and there is no bounded set of them to bake eagerly. It stays usable
- * because the bakery's resolved models and atlas preparations live as long as the baked models do.
+ * A bridge takes its geometry from a fixed shape and its texture from the block state its block
+ * entity holds, so one baked bridge caches a model per stored state. It only sees that state
+ * through {@link IDataAwareBakedModel} when reached from the blockstate ({@code
+ * assortedlib:specification}): a model json loader is baked once, against empty model data.
+ * <p> The {@link ModelBaker} is held past baking because stored states are unbounded and only known
+ * while rendering.
  */
 public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 
@@ -124,10 +107,9 @@ public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
     }
 
     /**
-     * The texture slot overrides for a stored block texture. The slot is named {@code stored}, not
-     * {@code #stored} as it was in 1.20.1: a leading {@code #} marks a <em>reference</em> to another
-     * slot and {@link net.minecraft.client.resources.model.sprite.TextureSlots#getMaterial} strips it
-     * before looking a slot up, so a slot declared as {@code #stored} could never be found.
+     * Texture overrides putting {@code texture} in the {@code stored} slot. Not {@code #stored}: a
+     * leading {@code #} marks a reference, which {@code TextureSlots#getMaterial} strips before
+     * lookup.
      */
     private static ImmutableMap<String, String> textures(String texture) {
         return ImmutableMap.of("particle", texture, "stored", texture);

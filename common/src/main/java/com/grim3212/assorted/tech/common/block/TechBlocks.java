@@ -110,10 +110,8 @@ public class TechBlocks {
     }
 
     /**
-     * The spikes' damage line and the sensors' "detects X" line used to come from
-     * {@code Block.appendHoverText}, which no longer exists - tooltips are an item concern now - so
-     * they are carried by the block item instead. Both lines are fixed per block, so the component
-     * is built once at registration.
+     * Carries the spikes' damage line and the sensors' "detects X" line, which a block cannot add.
+     * Both are fixed per block, so the component is built once at registration.
      */
     private static class TooltipBlockItem extends BlockItem {
 

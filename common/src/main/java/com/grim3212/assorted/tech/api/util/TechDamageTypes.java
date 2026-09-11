@@ -16,12 +16,8 @@ public class TechDamageTypes {
     public static final ResourceKey<DamageType> LASER = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(Constants.MOD_ID, "laser"));
 
     /**
-     * Builds a damage source for one of this mod's damage types.
-     * <p>
-     * {@code DamageSources#source} is private now - it only exists to seed the vanilla types that
-     * class caches - so a modded type has to be turned into a {@link DamageSource} by resolving its
-     * {@link ResourceKey} against the level's dynamic damage type registry and calling the public
-     * {@link DamageSource} constructor directly.
+     * A damage source for one of this mod's damage types, resolved against the level's damage type
+     * registry ({@code DamageSources#source} is private).
      */
     public static DamageSource source(Level level, ResourceKey<DamageType> key) {
         return source(level, key, null, null);

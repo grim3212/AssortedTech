@@ -42,17 +42,10 @@ public class BridgeUnbakedModel implements IModelSpecification<BridgeUnbakedMode
     }
 
     /**
-     * The {@code "bridge"} object of a bridge model json: the parent model the bridge takes its shape
-     * from plus the texture slots that parent still needs filled in - in practice {@code stored},
-     * which is what a stored block state overrides at render time and what the bridge falls back to
-     * when it is holding nothing.
-     * <p>
-     * It used to be deserialized into a whole {@code BlockModel}. A 26.2 json model is a
-     * {@code CuboidModel} record whose element and face deserializers are package private, so it
-     * cannot be read from a foreign {@link JsonDeserializationContext}; the two fields the bridge
-     * models actually use are read directly instead and the parent is resolved through the
-     * {@link ModelBaker} at bake time like any other model reference. This mirrors AssortedDecor's
-     * {@code ColorizerUnbakedModel.Colorizer}, which is the same json shape.
+     * The {@code "bridge"} object of a bridge model json: the parent model giving the shape, plus
+     * the texture slots it still needs (in practice {@code stored}, overridden by the stored block
+     * state). Read field by field because a json {@code CuboidModel}'s deserializers are package
+     * private; the same shape as AssortedDecor's {@code ColorizerUnbakedModel.Colorizer}.
      */
     public record Bridge(Identifier parent, ImmutableMap<String, String> textures) {
     }
