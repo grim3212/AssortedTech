@@ -86,11 +86,14 @@ sourceSets {
     main.resources.srcDirs += ['src/generated/resources', '../common/src/generated/client', '../common/src/generated/server']
 }
 
-// Fabric consumes both its own generated tree and the shared one NeoForge writes into common, and
-// the two overlap on the shared c: tags (verified byte-identical). Allow the duplicate rather than
-// dropping a root - dropping the common root is what left every block with a missing model.
+// Fabric consumes its own generated tree and the shared one NeoForge writes into common - the only
+// source of client models, so that root cannot be dropped. The two overlap on every recipe,
+// advancement, loot table and tag both datagens write, and recipes and advancements differ: each
+// carries its own loader's load conditions. Fabric's tree is listed first and duplicates are
+// excluded, so Fabric's copy wins. INCLUDE let the NeoForge copy overwrite it, and Fabric then
+// loaded every conditional recipe unconditionally.
 tasks.withType(AbstractCopyTask).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 processResources {

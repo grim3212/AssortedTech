@@ -1,5 +1,6 @@
 package com.grim3212.assorted.tech;
 
+import com.grim3212.assorted.lib.data.FabricConditionalRecipeProvider;
 import com.grim3212.assorted.lib.data.FabricBlockTagProvider;
 import com.grim3212.assorted.lib.data.FabricEntityTagProvider;
 import com.grim3212.assorted.lib.data.FabricItemTagProvider;
@@ -17,7 +18,7 @@ public class AssortedTechFabricDatagen implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         // Recipe providers are not data providers any more - the Runner owns the output.
-        pack.addProvider((output, registriesFuture) -> new TechRecipes.Runner(output, registriesFuture));
+        pack.addProvider((output, registriesFuture) -> new FabricConditionalRecipeProvider(output, registriesFuture, new TechRecipes.Runner(output, registriesFuture)));
         FabricBlockTagProvider provider = pack.addProvider((output, registriesFuture) -> new FabricBlockTagProvider(output, registriesFuture, new TechBlockTagProvider(output, registriesFuture)));
         pack.addProvider((output, registriesFuture) -> new FabricItemTagProvider(output, registriesFuture, provider.contentsGetter(), new TechItemTagProvider(output, registriesFuture, provider.contentsGetter())));
         pack.addProvider((output, registriesFuture) -> new FabricEntityTagProvider(output, registriesFuture, new TechEntityTagProvider(output, registriesFuture)));
