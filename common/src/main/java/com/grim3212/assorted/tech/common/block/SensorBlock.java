@@ -114,8 +114,13 @@ public class SensorBlock extends Block implements EntityBlock {
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 
+    // Server only, like the vanilla hopper: the tick switches the DETECTED state of the block, and
+    // the server sends clients the result.
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide()) {
+            return null;
+        }
         return (level1, blockPos, blockState, t) -> {
             if (t instanceof SensorBlockEntity sensor) {
                 sensor.tick(this.sensorType);

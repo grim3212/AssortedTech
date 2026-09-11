@@ -18,8 +18,11 @@ Run each list on **both** NeoForge and Fabric.
 - [ ] The stored texture's alpha picks the layer you expect (a glass bridge is see-through)
 - [ ] Breaking a controller removes its bridge, and a broken segment is repaired on the next
       controller tick
+- [ ] On a dedicated server, a second player sees a bridge appear and disappear with its control,
+      with no ghost segments left behind
 
 ## Sensors, spikes, fans, alarms
+- [ ] On a dedicated server, a sensor lights up for a second player when it detects something
 - [ ] Each sensor's tooltip names what it detects
 - [ ] Spike tooltip shows its damage
 - [ ] Fan screen opens and its mode and range stick
