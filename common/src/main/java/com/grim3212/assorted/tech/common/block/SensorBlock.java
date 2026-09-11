@@ -57,9 +57,6 @@ public class SensorBlock extends Block implements EntityBlock {
         return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite()).setValue(DETECTED, false);
     }
 
-    // Block.appendHoverText no longer exists - tooltips are an item concern now - so the
-    // "detects X" line moved onto the block item; see TechBlocks.TooltipBlockItem.
-
     @Override
     protected BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));

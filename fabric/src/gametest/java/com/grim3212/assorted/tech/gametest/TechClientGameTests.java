@@ -9,15 +9,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.List;
+
 /**
- * What a headless server cannot see: how a bridge item is drawn. Fabric only, as NeoForge has no
- * client gametest; run with {@code ./gradlew :fabric:runClientGameTest}.
+ * What a headless server cannot see: how a bridge item is drawn, and a spike's tooltip as Fabric
+ * builds it. Fabric only, as NeoForge has no client gametest; run with
+ * {@code ./gradlew :fabric:runClientGameTest}.
  */
 public class TechClientGameTests implements FabricClientGameTest {
 
@@ -42,6 +48,15 @@ public class TechClientGameTests implements FabricClientGameTest {
                 Identifier emptyParticle = particle(client, new ItemStack(TechBlocks.BRIDGE.get()));
                 if (GOLD.equals(emptyParticle)) {
                     throw new AssertionError("an empty bridge item is drawn with gold");
+                }
+
+                // Fabric only adds component tooltip lines on the client.
+                ItemStack spike = new ItemStack(TechBlocks.SPIKES.get(0).get());
+                List<String> spikeTooltip = spike.getTooltipLines(Item.TooltipContext.of(client.level), client.player, TooltipFlag.NORMAL).stream()
+                        .map(line -> line.getContents() instanceof TranslatableContents translatable ? translatable.getKey() : line.getString())
+                        .toList();
+                if (!spikeTooltip.contains("tooltip.spike.damage")) {
+                    throw new AssertionError("a spike's tooltip is " + spikeTooltip);
                 }
             });
         }

@@ -1,6 +1,8 @@
 package com.grim3212.assorted.tech.common.block;
 
 import com.google.common.collect.Lists;
+import com.grim3212.assorted.lib.core.item.ItemDescription;
+import com.grim3212.assorted.lib.core.item.LibDataComponents;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.tech.Constants;
@@ -15,9 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -85,13 +84,20 @@ public class TechBlocks {
         }, null);
     }
 
+    /**
+     * A block and its item. A non-null {@code tooltip} is the item's fixed line (the spikes' damage,
+     * the sensors' "detects X"), which a block cannot add itself.
+     */
     private static <T extends Block> IRegistryObject<T> register(String name, Function<BlockBehaviour.Properties, ? extends T> factory, Consumer<Item.Properties> itemProperties, Component tooltip) {
         IRegistryObject<T> ret = registerNoItem(name, factory);
         final ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
         ITEMS.register(name, () -> {
             Item.Properties props = new Item.Properties().useBlockDescriptionPrefix().setId(key);
             itemProperties.accept(props);
-            return tooltip == null ? new BlockItem(ret.get(), props) : new TooltipBlockItem(ret.get(), props, tooltip);
+            if (tooltip != null) {
+                props.component(LibDataComponents.DESCRIPTION.get(), new ItemDescription(tooltip));
+            }
+            return new BlockItem(ret.get(), props);
         });
         return ret;
     }
@@ -107,32 +113,6 @@ public class TechBlocks {
         return (state) -> {
             return state.getValue(BlockStateProperties.LIT) ? litLevel : 0;
         };
-    }
-
-    /**
-     * Carries the spikes' damage line and the sensors' "detects X" line, which a block cannot add.
-     * Both are fixed per block, so the component is built once at registration.
-     */
-    private static class TooltipBlockItem extends BlockItem {
-
-        private final Component tooltip;
-
-        private TooltipBlockItem(Block block, Properties props, Component tooltip) {
-            super(block, props);
-            this.tooltip = tooltip;
-        }
-
-        /**
-         * {@code Item.appendHoverText} is marked deprecated in 26.x - tooltips are meant to come
-         * from data components implementing {@code TooltipProvider} - but it is still the only per
-         * item hook, and vanilla's own items still override it.
-         */
-        @SuppressWarnings("deprecation")
-        @Override
-        public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> adder, TooltipFlag flag) {
-            super.appendHoverText(stack, context, display, adder, flag);
-            adder.accept(this.tooltip);
-        }
     }
 
     public static void init() {

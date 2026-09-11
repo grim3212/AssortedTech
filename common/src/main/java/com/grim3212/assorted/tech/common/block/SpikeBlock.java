@@ -57,9 +57,6 @@ public class SpikeBlock extends Block implements SimpleWaterloggedBlock {
         return spikeType;
     }
 
-    // Block.appendHoverText no longer exists - tooltips are an item concern now - so the
-    // "damage X" line moved onto the block item; see TechBlocks.TooltipBlockItem.
-
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         builder.add(POWERED, FACING, WATERLOGGED);
