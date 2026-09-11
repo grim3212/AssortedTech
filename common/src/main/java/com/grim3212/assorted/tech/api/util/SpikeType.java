@@ -1,5 +1,6 @@
 package com.grim3212.assorted.tech.api.util;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import com.grim3212.assorted.lib.util.LibCommonTags;
 import com.grim3212.assorted.tech.api.TechTags;
 import net.minecraft.tags.ItemTags;
@@ -49,6 +50,14 @@ public enum SpikeType implements StringRepresentable {
 
     public float getDamage() {
         return damage;
+    }
+
+    /**
+     * Whether nothing can be this spike's material: its tag is empty, or no pack defines it at all,
+     * as with an Assorted Core metal when Assorted Core is not installed.
+     */
+    public boolean isUncraftable() {
+        return BuiltInRegistries.ITEM.get(this.getMaterial()).map(holders -> holders.size() < 1).orElse(true);
     }
 
     public TagKey<Item> getMaterial() {
