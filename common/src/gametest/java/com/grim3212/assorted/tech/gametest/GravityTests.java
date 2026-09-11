@@ -339,7 +339,7 @@ final class GravityTests {
     /**
      * Right-clicking a gravity block with an empty hand steps the range on, and shift-clicking steps
      * it back. Only the server-side number is checked here; the action bar it is echoed on needs a
-     * human, and stays on TESTING-CHECKLIST.md.
+     * human to check.
      * <p>
      * The subject is a real {@link ServerPlayer} rather than a mock, because the branch under test
      * ends in {@code ServerPlayer#sendSystemMessage} - a mock server player has no connection and
