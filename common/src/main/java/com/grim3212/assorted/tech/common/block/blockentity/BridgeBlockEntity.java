@@ -22,6 +22,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -142,7 +143,20 @@ public class BridgeBlockEntity extends BlockEntity implements IBlockEntityWithMo
         this.blockState = blockState;
 
         if (level != null) {
+            // Light dampening is baked into the block state, so a bridge carries its stored block's
+            // in a property. Changing it is an ordinary block update, and vanilla does the rest:
+            // relights, recomputes the sky column and sends the state to every client. Server only;
+            // a client takes the state from that update. A bridge control inherits this and is not a
+            // bridge, hence the block check.
+            if (!level.isClientSide() && getBlockState().getBlock() instanceof BridgeBlock) {
+                final BlockState lit = BridgeBlock.withStoredDampening(getBlockState(), blockState);
+                if (lit != getBlockState()) {
+                    level.setBlock(worldPosition, lit, Block.UPDATE_ALL);
+                }
+            }
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            // Emission is still read from the stored block per position, so the light has to be
+            // asked to look again.
             level.getLightEngine().checkBlock(getBlockPos());
             if (!level.isClientSide()) {
                 // Level#blockUpdated is gone; it was only ever a call through to updateNeighborsAt.

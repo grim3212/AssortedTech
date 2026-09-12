@@ -4,8 +4,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.core.component.DataComponents;
+import com.grim3212.assorted.lib.platform.Services;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import com.grim3212.assorted.tech.api.util.BridgeType;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
 import com.grim3212.assorted.tech.common.block.BridgeControlBlock;
@@ -46,6 +52,54 @@ final class BridgeTests {
         out.accept("bridge_copies_controls_stored_state", BridgeTests::bridgeCopiesControlsStoredState);
         out.accept("bridge_placed_from_an_item_keeps_its_block", BridgeTests::bridgePlacedFromAnItemKeepsItsBlock);
         out.accept("bridge_effects_apply_to_entities", BridgeTests::bridgeEffectsApplyToEntities);
+        out.accept("bridge_lights_like_its_block", BridgeTests::bridgeLightsLikeItsBlock);
+    }
+
+    /**
+     * A bridge answers the light questions with the block it stands in for, stated as "the same
+     * answer the real block gives" beside a real one: the dampening the light engines read, whether
+     * skylight passes as the library reports it, and the sky column. Glass is what makes the column
+     * assertion able to fail, since an empty bridge already stops it. Glowstone then checks the
+     * server's own block light at the bridge, which the engine asks from its own thread.
+     */
+    private static void bridgeLightsLikeItsBlock(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos bridgeRel = new BlockPos(2, 1, 4);
+        BlockPos referenceRel = new BlockPos(6, 1, 4);
+        BlockPos bridgePos = helper.absolutePos(bridgeRel);
+        BlockPos referencePos = helper.absolutePos(referenceRel);
+
+        helper.setBlock(bridgeRel, TechBlocks.BRIDGE.get());
+        helper.runBeforeTestEnd(() -> {
+            helper.setBlock(bridgeRel, Blocks.AIR);
+            helper.setBlock(referenceRel, Blocks.AIR);
+        });
+        BridgeBlockEntity bridge = helper.getBlockEntity(bridgeRel, BridgeBlockEntity.class);
+        helper.assertValueEqual(level.getBlockState(bridgePos).getLightDampening(), BridgeBlock.EMPTY_DAMPENING, "an empty bridge's light dampening");
+
+        for (Block block : List.of(Blocks.STONE, Blocks.GLASS, Blocks.GLOWSTONE)) {
+            String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            helper.setBlock(referenceRel, block);
+            bridge.setStoredBlockState(block.defaultBlockState());
+            BlockState filled = level.getBlockState(bridgePos);
+            BlockState real = level.getBlockState(referencePos);
+
+            helper.assertValueEqual(filled.getLightDampening(), real.getLightDampening(), "a " + name + " bridge's light dampening, against the real block's");
+            helper.assertValueEqual(Services.LEVEL_PROPERTIES.propagatesSkylightDown(level, bridgePos), Services.LEVEL_PROPERTIES.propagatesSkylightDown(level, referencePos),
+                    "whether skylight passes a " + name + " bridge, against the real block");
+            helper.assertValueEqual(lowestSkySource(level, bridgePos), lowestSkySource(level, referencePos),
+                    "where the sky stops reaching down a " + name + " bridge's column, against the real block's");
+        }
+
+        helper.startSequence()
+                .thenWaitUntil(() -> helper.assertValueEqual(level.getBrightness(LightLayer.BLOCK, bridgePos), 15, "the server's block light at a glowstone bridge"))
+                .thenExecute(() -> bridge.setStoredBlockState(Blocks.AIR.defaultBlockState()))
+                .thenWaitUntil(() -> helper.assertTrue(level.getBrightness(LightLayer.BLOCK, bridgePos) < 15, "a cleared bridge still reads as a light source on the server"))
+                .thenSucceed();
+    }
+
+    private static int lowestSkySource(ServerLevel level, BlockPos pos) {
+        return level.getChunkAt(pos).getSkyLightSources().getLowestSourceY(pos.getX() & 15, pos.getZ() & 15);
     }
 
     /**

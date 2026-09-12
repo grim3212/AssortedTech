@@ -20,6 +20,9 @@ Run each list on **both** NeoForge and Fabric.
       controller tick
 - [ ] On a dedicated server, a second player sees a bridge appear and disappear with its control,
       with no ghost segments left behind
+- [ ] A bridge projected as stone darkens the room behind it and casts a shadow on the client too,
+      and one projected as glowstone glows. The gametests only watch the server's light engine, and
+      the client sees the `light_dampening` state through a block update
 
 ## Sensors, spikes, fans, alarms
 - [ ] On a dedicated server, a sensor lights up for a second player when it detects something

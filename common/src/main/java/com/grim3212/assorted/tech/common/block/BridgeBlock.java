@@ -1,6 +1,8 @@
 package com.grim3212.assorted.tech.common.block;
 
 import com.grim3212.assorted.lib.core.block.ExtraPropertyBlock;
+import com.grim3212.assorted.lib.core.block.IBlockLightDampening;
+import com.grim3212.assorted.lib.core.block.IBlockLightEmission;
 import com.grim3212.assorted.lib.core.block.effects.*;
 import com.grim3212.assorted.lib.util.NBTHelper;
 import com.grim3212.assorted.tech.api.TechTags;
@@ -30,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -38,18 +41,60 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.function.Supplier;
 
-public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlockLandingEffects, IBlockRunningEffects, IBlockEffectSupplier {
+/**
+ * A bridge stands in for the block it stores: its light, shade, visual shape and effects come from
+ * that block. Vanilla bakes light dampening into the block state, so the stored block's is carried
+ * in {@link #LIGHT_DAMPENING}, set by the block entity when its block changes; vanilla then
+ * relights, recomputes the sky column and sends the state to every client on its own. A bridge is
+ * always a whole block, so every one takes it, as in 1.20.1.
+ */
+public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlockLightDampening, IBlockLandingEffects, IBlockRunningEffects, IBlockEffectSupplier {
 
     public static EnumProperty<BridgeType> TYPE = EnumProperty.create("type", BridgeType.class);
+    public static final IntegerProperty LIGHT_DAMPENING = IntegerProperty.create("light_dampening", 0, 15);
+
+    /**
+     * An empty bridge draws as a laser you can see through, so it passes light like glass: none
+     * stopped, and the sky column carries on through it. Vanilla would bake 1 for a
+     * {@code noOcclusion()} cube, which stopped the sky column at it.
+     */
+    public static final int EMPTY_DAMPENING = 0;
 
     public BridgeBlock(Properties props) {
         super(props);
-        this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, BridgeType.LASER));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, BridgeType.LASER).setValue(LIGHT_DAMPENING, EMPTY_DAMPENING));
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-        builder.add(TYPE);
+        builder.add(TYPE, LIGHT_DAMPENING);
+    }
+
+    /** The state {@code bridge} should have while standing in for {@code stored}. */
+    public static BlockState withStoredDampening(BlockState bridge, BlockState stored) {
+        return bridge.setValue(LIGHT_DAMPENING, stored.isAir() ? EMPTY_DAMPENING : stored.getLightDampening());
+    }
+
+    @Override
+    protected int getLightDampening(BlockState state) {
+        return state.getValue(LIGHT_DAMPENING);
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state) {
+        return state.getValue(LIGHT_DAMPENING) == 0;
+    }
+
+    /** The library's per-position answers; the state already carries the dampening. */
+    @Override
+    public int getLightDampening(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        return state.getLightDampening();
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter blockGetter, BlockPos pos) {
+        BlockState stored = this.getStoredState(blockGetter, pos);
+        return stored.isAir() ? state.propagatesSkylightDown() : stored.propagatesSkylightDown();
     }
 
     @Override
@@ -166,9 +211,11 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
         return stored.isAir() ? super.getShadeBrightness(state, reader, pos) : stored.getShadeBrightness(reader, pos);
     }
 
+    /** Read once: the light engines ask this per node, from their own thread. */
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return !this.getStoredState(level, pos).isAir() ? this.getStoredState(level, pos).getLightEmission() : state.getLightEmission();
+        BlockState stored = this.getStoredState(level, pos);
+        return stored.isAir() ? state.getLightEmission() : stored.getLightEmission();
     }
 
     @Override
@@ -178,9 +225,9 @@ public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlo
         return itemstack;
     }
 
+    /** Read the way the light engine reads it - from any thread - since that is who asks for the emission. */
     public BlockState getStoredState(BlockGetter worldIn, BlockPos pos) {
-        BlockEntity te = worldIn.getBlockEntity(pos);
-        if (te instanceof BridgeBlockEntity bridge) {
+        if (IBlockLightEmission.blockEntityAt(worldIn, pos) instanceof BridgeBlockEntity bridge) {
             return bridge.getStoredBlockState();
         }
         return Blocks.AIR.defaultBlockState();
