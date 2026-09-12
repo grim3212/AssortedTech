@@ -95,6 +95,14 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
         this.fillGapsRequested = true;
     }
 
+    /**
+     * A segment of this control's kind. Matched on block and type rather than on the whole state,
+     * because a segment also carries its stored block's light dampening in its state.
+     */
+    private static boolean isSegment(BlockState state, BridgeType bridgeType) {
+        return state.is(TechBlocks.BRIDGE.get()) && state.getValue(BridgeBlock.TYPE) == bridgeType;
+    }
+
     private void fillGaps(BlockState state, BridgeType bridgeType) {
         BlockPos pos = this.getBlockPos();
 
@@ -104,7 +112,7 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
 
             BlockState matchingBridgeState = TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, bridgeType);
 
-            if (newPosState == matchingBridgeState) {
+            if (isSegment(newPosState, bridgeType)) {
                 continue;
             }
 
@@ -131,9 +139,9 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
 
         BlockState matchingBridgeState = TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, bridgeType);
 
-        if (BridgeBlock.canLaserBreak(level, newPos) || newPosState == matchingBridgeState) {
+        if (BridgeBlock.canLaserBreak(level, newPos) || isSegment(newPosState, bridgeType)) {
 
-            if (newPosState != matchingBridgeState) {
+            if (!isSegment(newPosState, bridgeType)) {
                 level.setBlockAndUpdate(newPos, matchingBridgeState);
 
                 BlockEntity be = level.getBlockEntity(newPos);
@@ -161,9 +169,8 @@ public class BridgeControlBlockEntity extends BridgeBlockEntity {
         for (int i = 1; i <= length + 2; i++) {
             BlockPos newPos = pos.relative(state.getValue(BlockStateProperties.FACING), i);
             BlockState newStatePos = level.getBlockState(newPos);
-            BlockState testState = TechBlocks.BRIDGE.get().defaultBlockState().setValue(BridgeBlock.TYPE, bridgeType);
 
-            if (newStatePos == testState || newStatePos.isAir()) {
+            if (isSegment(newStatePos, bridgeType) || newStatePos.isAir()) {
                 level.removeBlock(newPos, false);
             }
         }
