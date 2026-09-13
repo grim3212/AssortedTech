@@ -64,5 +64,18 @@ publishing {
                 url "file://" + System.getenv("local_maven")
             }
         }
+
+        // The self-hosted Reposilite. Declared only when a deploy token is present so that
+        // `publish` on a machine without one is a no-op rather than a failure.
+        if (System.getenv("MAVEN_DEPLOY_TOKEN") != null) {
+            maven {
+                name = "AssortedMods"
+                url = "https://maven.grimoid.com/mods"
+                credentials {
+                    username = System.getenv("MAVEN_DEPLOY_USER") ?: findProperty("mavenUsername")
+                    password = System.getenv("MAVEN_DEPLOY_TOKEN")
+                }
+            }
+        }
     }
 }

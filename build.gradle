@@ -3,7 +3,6 @@ subprojects {
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(25)
     java.withSourcesJar()
-    java.withJavadocJar()
 
     jar {
         from(rootProject.file("LICENSE"))
@@ -30,9 +29,10 @@ subprojects {
     }
 
     repositories {
-        // AssortedLib 4.0.0 is not published anywhere yet for 26.2. Build it locally first with
+        // Picks up an AssortedLib built locally with
         //   cd ../AssortedLib && ./gradlew publishToMavenLocal
-        // and this picks it up; remote AssortedMods below stays the source for released versions.
+        // which is how you test an unreleased change to it. Remote AssortedMods below is the
+        // source for every published version, and the only one CI uses.
         mavenLocal()
 
         mavenCentral()
@@ -96,7 +96,9 @@ subprojects {
         it.options.compilerArgs << '-Xlint:deprecation'
     }
 
-    // Javadoc on Minecraft-derived sources trips doclint constantly; keep the jar, drop the pedantry.
+    // No javadoc jar is published - the sources jar already gives consumers IDE docs at a
+    // twentieth of the size. This only shapes a manual `gradlew javadoc`, which trips
+    // doclint constantly on Minecraft-derived sources.
     tasks.withType(Javadoc).configureEach {
         options.addStringOption('Xdoclint:none', '-quiet')
         failOnError = false
