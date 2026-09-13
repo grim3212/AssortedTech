@@ -43,10 +43,10 @@ import java.util.function.Supplier;
 
 /**
  * A bridge stands in for the block it stores: its light, shade, visual shape and effects come from
- * that block. Vanilla bakes light dampening into the block state, so the stored block's is carried
- * in {@link #LIGHT_DAMPENING}, set by the block entity when its block changes; vanilla then
- * relights, recomputes the sky column and sends the state to every client on its own. A bridge is
- * always a whole block, so every one takes it, as in 1.20.1.
+ * that block. Vanilla bakes light dampening into the block state, so the stored block's is carried in
+ * {@link #LIGHT_DAMPENING}, set by the block entity when its block changes; vanilla then relights,
+ * recomputes the sky column and syncs the state itself. Every bridge is a whole block, so every one
+ * takes it.
  */
 public class BridgeBlock extends ExtraPropertyBlock implements EntityBlock, IBlockLightDampening, IBlockLandingEffects, IBlockRunningEffects, IBlockEffectSupplier {
 

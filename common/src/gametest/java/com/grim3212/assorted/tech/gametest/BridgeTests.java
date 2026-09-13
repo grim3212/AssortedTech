@@ -59,9 +59,8 @@ final class BridgeTests {
     /**
      * A bridge answers the light questions with the block it stands in for, stated as "the same
      * answer the real block gives" beside a real one: the dampening the light engines read, whether
-     * skylight passes as the library reports it, and the sky column. Glass is what makes the column
-     * assertion able to fail, since an empty bridge already stops it. Glowstone then checks the
-     * server's own block light at the bridge, which the engine asks from its own thread.
+     * skylight passes, and the sky column. Glass is what makes the column assertion able to fail,
+     * since an empty bridge already stops it. Glowstone then checks the server's own block light.
      */
     private static void bridgeLightsLikeItsBlock(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();

@@ -25,11 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A bridge takes its geometry from a fixed shape and its texture from the block state its block
- * entity holds, so one baked bridge caches a model per stored state. It only sees that state
- * through {@link IDataAwareBakedModel} when reached from the blockstate ({@code
- * assortedlib:specification}): a model json loader is baked once, against empty model data.
- * <p> The {@link ModelBaker} is held past baking because stored states are unbounded and only known
- * while rendering.
+ * entity holds, so one baked bridge caches a model per stored state. It only sees that state when
+ * reached from the blockstate ({@code assortedlib:specification}): a model json loader is baked once,
+ * against empty model data. The {@link ModelBaker} is held past baking because stored states are
+ * unbounded and only known while rendering.
  */
 public abstract class BridgeBaseBakedModel implements IDataAwareBakedModel {
 

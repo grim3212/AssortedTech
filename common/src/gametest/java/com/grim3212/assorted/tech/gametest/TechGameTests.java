@@ -6,10 +6,9 @@ import java.util.function.Consumer;
 
 /**
  * Automated in-world checks for AssortedTech. Entity subjects are pigs spawned with no free will:
- * they still run {@code travel}/{@code move} every tick, which motion and {@code entityInside}
- * need. Item entities skip {@code move} most ticks while resting, so they are not used. The tests
- * live in the {@code *Tests} classes, with helpers in {@code TechTestSupport}; this only lists
- * them.
+ * they still run {@code travel}/{@code move} every tick, which motion and {@code entityInside} need,
+ * while an item entity skips {@code move} most ticks while resting. The tests live in the
+ * {@code *Tests} classes, with helpers in {@code TechTestSupport}; this only lists them.
  */
 public final class TechGameTests {
 
