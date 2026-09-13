@@ -31,6 +31,11 @@ dependencies {
     implementation "com.grim3212.assorted.lib:assortedlib-fabric-${minecraft_version}:${assortedlib_version}"
 
     implementation project(":common")
+
+    // Mod jars the production client gametest run loads beside our own jar. A dev run takes these
+    // off the classpath; a production run is a real client, so each one has to be a real mod jar.
+    productionRuntimeMods "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    productionRuntimeMods "com.grim3212.assorted.lib:assortedlib-fabric-${minecraft_version}:${assortedlib_version}"
 }
 
 loom {
@@ -143,6 +148,30 @@ tasks.named('processGametestResources') {
         expand 'version': project.version, 'mod_id': project.mod_id, 'mod_name': project.mod_name,
                 'mod_author': project.mod_author, 'license': project.license
     }
+}
+
+// The client gametests as CI runs them: a production run, which is what Fabric's own docs
+// recommend over driving the dev run above by hand. It launches a real client against the built
+// jars, and Loom wraps it in xvfb itself - `useXVFB` defaults to on when the CI environment
+// variable is set on Linux - so a runner needs no display and this stays a normal windowed run
+// locally. `runClientGameTest` remains the one to use while writing a test.
+tasks.register('gametestJar', Jar) {
+    archiveClassifier = 'gametest'
+    from sourceSets.gametest.output
+
+    // Deliberately not build/libs: that directory holds only what ships, and the release check
+    // greps it for exactly the test classes this jar is made of.
+    destinationDirectory = layout.buildDirectory.dir('gametest-mod')
+}
+
+tasks.register('runProductionClientGameTest', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+    jvmArgs.add('-Dfabric.client.gametest')
+
+    // `mods` already carries this module's own jar and everything in productionRuntimeMods. The
+    // tests are a second, development-only mod, so their jar has to be named here as well.
+    mods.from(tasks.named('gametestJar'))
+
+    runDir = layout.buildDirectory.dir('run/clientGameTest')
 }
 
 publishing {
