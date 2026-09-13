@@ -9,6 +9,23 @@ name: Build
 on:
   workflow_dispatch:
     inputs:
+      release:
+        description: Publish the built jars to Modrinth and CurseForge
+        type: boolean
+        default: false
+      release_type:
+        description: The channel a release goes out on
+        type: choice
+        options: [ release, beta, alpha ]
+        default: release
+      dry_run:
+        description: Rehearse the release without uploading anything
+        type: boolean
+        default: true
+      version:
+        description: Version to release (blank uses the one in gradle.properties)
+        type: string
+        default: ''
       client_gametests:
         description: Also run the Fabric client gametests (a real client, under xvfb)
         type: boolean
@@ -151,3 +168,97 @@ jobs:
             fabric/build/run/clientGameTest/screenshots/
             fabric/build/run/clientGameTest/logs/
             fabric/build/run/clientGameTest/crash-reports/
+
+  # Manual only, and only with the box ticked - a push to 26.2 must never publish. `needs` covers
+  # every other job, and a matrix `needs` waits for all of its legs, so one failed gametest on
+  # either loader skips this. The jars are rebuilt rather than downloaded from the build job's
+  # artifact: publishMods reads them from the projects that produce them.
+  release:
+    name: Release to Modrinth and CurseForge
+    if: github.event_name == 'workflow_dispatch' && inputs.release
+    needs: [ build, gametest, datagen ]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # Add required reviewers to this environment in the repository settings to gate a release
+    # behind an approval. With no protection rules it is a no-op.
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-build
+
+      # Both failures here are silent ones. A destination whose id is blank is left out of the
+      # build script entirely, and a missing token turns the whole run into a dry run - either way
+      # the job goes green having uploaded nothing. Skipped for a dry run, which is allowed to have
+      # neither.
+      - name: The release is configured
+        if: ${{ !inputs.dry_run }}
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          modrinth="$(sed -n 's/^modrinth_id=//p' gradle.properties)"
+          curseforge="$(sed -n 's/^curseforge_id=//p' gradle.properties)"
+          if [ -z "$modrinth" ] && [ -z "$curseforge" ]; then
+            echo "::error::neither modrinth_id nor curseforge_id is set in gradle.properties"
+            exit 1
+          fi
+
+          status=0
+          if [ -n "$modrinth" ] && [ -z "$MODRINTH_TOKEN" ]; then
+            echo "::error::modrinth_id is set but MODRINTH_TOKEN is not"
+            status=1
+          fi
+          if [ -n "$curseforge" ] && [ -z "$CURSEFORGE_TOKEN" ]; then
+            echo "::error::curseforge_id is set but CURSEFORGE_TOKEN is not"
+            status=1
+          fi
+          [ -n "$modrinth" ] || echo "::warning::modrinth_id is blank, so Modrinth is skipped"
+          [ -n "$curseforge" ] || echo "::warning::curseforge_id is blank, so CurseForge is skipped"
+          exit $status
+
+      # Everything the run is steered by reaches gradle through the environment rather than
+      # through `${{ }}` inside the script, so a crafted input cannot run as shell.
+      - name: Release
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=( "-PreleaseType=$RELEASE_TYPE" "-PdryRun=$DRY_RUN" )
+          if [ -n "$VERSION" ]; then
+            args+=( "-Pversion=$VERSION" )
+          fi
+          ./gradlew publishMods "${args[@]}" --stacktrace
+
+      # A dry run writes exactly what it would have uploaded here, which is the only way to check a
+      # release before making it. Kept for a real run too, as the record of what went out.
+      - name: Upload what was released
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          if-no-files-found: ignore
+          path: build/publishMods/
+
+      - name: Summary
+        env:
+          VERSION: ${{ inputs.version }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          released="${VERSION:-$(sed -n 's/^version=//p' gradle.properties)}"
+          mc="$(sed -n 's/^minecraft_version=//p' gradle.properties)"
+          modrinth="$(sed -n 's/^modrinth_id=//p' gradle.properties)"
+          curseforge="$(sed -n 's/^curseforge_id=//p' gradle.properties)"
+          {
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "**Dry run** - nothing was uploaded. The payload is in the \`release\` artifact."
+            else
+              echo "Released \`$released\` for Minecraft \`$mc\` on the \`$RELEASE_TYPE\` channel."
+            fi
+            echo
+            [ -n "$modrinth" ] && echo "- Modrinth <https://modrinth.com/mod/$modrinth>"
+            [ -n "$curseforge" ] && echo "- CurseForge <https://www.curseforge.com/projects/$curseforge>"
+          } >> "$GITHUB_STEP_SUMMARY"
