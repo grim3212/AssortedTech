@@ -76,6 +76,17 @@ neoForge {
             gameDirectory = project.file('run')
         }
 
+        // Renders every item icon into build/icons for the documentation site, then quits. The
+        // exporter is IconExporter in AssortedLib; it is inert without the property, and the
+        // images land under build, so nothing about this run reaches the jar. The stacks file is
+        // the site's list of component-dependent variants and is simply ignored when absent.
+        exportIcons {
+            client()
+            gameDirectory = project.file('run')
+            systemProperty 'assortedlib.exportIcons', file('build/icons').absolutePath
+            systemProperty 'assortedlib.exportIcons.stacks', rootProject.file('../assorted-mods-site/scripts/recipes/icon-stacks.json').absolutePath
+        }
+
         configureEach {
             logLevel = org.slf4j.event.Level.DEBUG
         }
