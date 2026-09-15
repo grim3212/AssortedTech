@@ -1,5 +1,7 @@
 name: Build
 
+# The pipeline itself lives in AssortedBuild (mod-build.yml); this only forwards the inputs.
+#
 # Manual only for now, until the pipeline has been run by hand a few times. Add back
 #   push:
 #     branches: [ 26.2 ]
@@ -11,6 +13,10 @@ on:
     inputs:
       release:
         description: Publish the built jars to Modrinth and CurseForge
+        type: boolean
+        default: false
+      publish_maven:
+        description: Publish the jars to maven.grimoid.com
         type: boolean
         default: false
       release_type:
@@ -42,223 +48,15 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-build
-
-      - name: Build
-        run: ./gradlew build --stacktrace
-
-      # Tests live in their own source set and are never an input to `jar`. A jar that ships them
-      # still works, which is why this is checked rather than trusted.
-      - name: No test classes ship in the jars
-        run: |
-          status=0
-          for jar in */build/libs/*.jar; do
-            hits=$(unzip -l "$jar" | grep -icE 'gametest|test_instance|test_box' || true)
-            if [ "$hits" != "0" ]; then
-              echo "::error::$jar ships $hits gametest entries"
-              status=1
-            fi
-          done
-          exit $status
-
-      - name: Upload the jars
-        uses: actions/upload-artifact@v4
-        with:
-          name: jars
-          path: |
-            fabric/build/libs/*.jar
-            neoforge/build/libs/*.jar
-            !**/*-sources.jar
-
-  gametest:
-    name: Gametests (${{ matrix.loader }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    strategy:
-      # Both loaders always run: which one fails is the useful half of the answer.
-      fail-fast: false
-      matrix:
-        include:
-          - loader: neoforge
-            task: ':neoforge:runGameTestServer'
-            run_dir: neoforge/run
-          - loader: fabric
-            task: ':fabric:runGameTest'
-            run_dir: fabric/build/gametest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-build
-
-      # Boots a dedicated server, runs every test_instance, exits non-zero on a failed required
-      # test.
-      - name: Run the gametests
-        run: ./gradlew ${{ matrix.task }} --stacktrace
-
-      - name: Upload the run directory
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gametest-${{ matrix.loader }}
-          if-no-files-found: ignore
-          path: |
-            ${{ matrix.run_dir }}/logs/
-            ${{ matrix.run_dir }}/crash-reports/
-            ${{ matrix.run_dir }}/report.xml
-
-  datagen:
-    name: Datagen
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-build
-
-      # Catches generated output that was never regenerated and committed.
-      - name: Datagen is committed
-        run: |
-          ./gradlew :neoforge:runClientData :neoforge:runServerData :fabric:runDatagenClient --stacktrace
-          changed="$(git status --porcelain -- common/src/generated fabric/src/generated)"
-          if [ -n "$changed" ]; then
-            echo "::error::Datagen does not match what is committed"
-            echo "$changed"
-            git diff --stat -- common/src/generated fabric/src/generated
-            exit 1
-          fi
-
-  # What a dedicated server cannot see: how an item or block is actually drawn. Fabric's own docs
-  # run these as a *production* run - a real client launched against the built jars - rather than
-  # driving the dev run by hand, and Loom starts xvfb itself when CI is set, so the runner only has
-  # to have the binary. Pinned to a fixed image because it is the one job whose result depends on
-  # the GL stack underneath. Slowest and most fragile here, hence opt-in: run the workflow by hand
-  # and tick `client_gametests`. NeoForge has no equivalent run.
-  client-gametest:
-    name: Client gametests (fabric)
-    if: inputs.client_gametests
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-build
-
-      # The docs ask only for xvfb; libgl1 is there because a missing libGL.so.1 fails inside
-      # LWJGL, where it reads as a crash rather than a missing package.
-      - name: Install xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends xvfb libgl1
-
-      - name: Run the client gametests
-        run: ./gradlew :fabric:runProductionClientGameTest --stacktrace
-
-      # Screenshots whatever the outcome: Fabric's client gametests take them as they go, and they
-      # are the only record of what the client actually drew.
-      - name: Upload the run directory
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: client-gametest
-          if-no-files-found: ignore
-          path: |
-            fabric/build/run/clientGameTest/screenshots/
-            fabric/build/run/clientGameTest/logs/
-            fabric/build/run/clientGameTest/crash-reports/
-
-  # Manual only, and only with the box ticked - a push to 26.2 must never publish. `needs` covers
-  # every other job, and a matrix `needs` waits for all of its legs, so one failed gametest on
-  # either loader skips this. The jars are rebuilt rather than downloaded from the build job's
-  # artifact: publishMods reads them from the projects that produce them.
-  release:
-    name: Release to Modrinth and CurseForge
-    if: github.event_name == 'workflow_dispatch' && inputs.release
-    needs: [ build, gametest, datagen ]
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    # Add required reviewers to this environment in the repository settings to gate a release
-    # behind an approval. With no protection rules it is a no-op.
-    environment: release
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-build
-
-      # Both failures here are silent ones. A destination whose id is blank is left out of the
-      # build script entirely, and a missing token turns the whole run into a dry run - either way
-      # the job goes green having uploaded nothing. Skipped for a dry run, which is allowed to have
-      # neither.
-      - name: The release is configured
-        if: ${{ !inputs.dry_run }}
-        env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-        run: |
-          modrinth="$(sed -n 's/^modrinth_id=//p' gradle.properties)"
-          curseforge="$(sed -n 's/^curseforge_id=//p' gradle.properties)"
-          if [ -z "$modrinth" ] && [ -z "$curseforge" ]; then
-            echo "::error::neither modrinth_id nor curseforge_id is set in gradle.properties"
-            exit 1
-          fi
-
-          status=0
-          if [ -n "$modrinth" ] && [ -z "$MODRINTH_TOKEN" ]; then
-            echo "::error::modrinth_id is set but MODRINTH_TOKEN is not"
-            status=1
-          fi
-          if [ -n "$curseforge" ] && [ -z "$CURSEFORGE_TOKEN" ]; then
-            echo "::error::curseforge_id is set but CURSEFORGE_TOKEN is not"
-            status=1
-          fi
-          [ -n "$modrinth" ] || echo "::warning::modrinth_id is blank, so Modrinth is skipped"
-          [ -n "$curseforge" ] || echo "::warning::curseforge_id is blank, so CurseForge is skipped"
-          exit $status
-
-      # Everything the run is steered by reaches gradle through the environment rather than
-      # through `${{ }}` inside the script, so a crafted input cannot run as shell.
-      - name: Release
-        env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          VERSION: ${{ inputs.version }}
-          RELEASE_TYPE: ${{ inputs.release_type }}
-          DRY_RUN: ${{ inputs.dry_run }}
-        run: |
-          args=( "-PreleaseType=$RELEASE_TYPE" "-PdryRun=$DRY_RUN" )
-          if [ -n "$VERSION" ]; then
-            args+=( "-Pversion=$VERSION" )
-          fi
-          ./gradlew publishMods "${args[@]}" --stacktrace
-
-      # A dry run writes exactly what it would have uploaded here, which is the only way to check a
-      # release before making it. Kept for a real run too, as the record of what went out.
-      - name: Upload what was released
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: release
-          if-no-files-found: ignore
-          path: build/publishMods/
-
-      - name: Summary
-        env:
-          VERSION: ${{ inputs.version }}
-          RELEASE_TYPE: ${{ inputs.release_type }}
-          DRY_RUN: ${{ inputs.dry_run }}
-        run: |
-          released="${VERSION:-$(sed -n 's/^version=//p' gradle.properties)}"
-          mc="$(sed -n 's/^minecraft_version=//p' gradle.properties)"
-          modrinth="$(sed -n 's/^modrinth_id=//p' gradle.properties)"
-          curseforge="$(sed -n 's/^curseforge_id=//p' gradle.properties)"
-          {
-            if [ "$DRY_RUN" = "true" ]; then
-              echo "**Dry run** - nothing was uploaded. The payload is in the \`release\` artifact."
-            else
-              echo "Released \`$released\` for Minecraft \`$mc\` on the \`$RELEASE_TYPE\` channel."
-            fi
-            echo
-            [ -n "$modrinth" ] && echo "- Modrinth <https://modrinth.com/mod/$modrinth>"
-            [ -n "$curseforge" ] && echo "- CurseForge <https://www.curseforge.com/projects/$curseforge>"
-          } >> "$GITHUB_STEP_SUMMARY"
+  mod:
+    uses: grim3212/AssortedBuild/.github/workflows/mod-build.yml@main
+    # inputs.* are empty outside workflow_dispatch, and an empty string coerces equal to false in
+    # these expressions, so each boolean is gated on the event rather than defaulted.
+    with:
+      release: ${{ github.event_name == 'workflow_dispatch' && inputs.release }}
+      publish_maven: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_maven }}
+      release_type: ${{ inputs.release_type || 'release' }}
+      dry_run: ${{ github.event_name != 'workflow_dispatch' || inputs.dry_run }}
+      version: ${{ inputs.version }}
+      client_gametests: ${{ github.event_name == 'workflow_dispatch' && inputs.client_gametests }}
+    secrets: inherit

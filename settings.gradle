@@ -1,6 +1,11 @@
 pluginManagement {
     repositories {
+        mavenLocal()
         gradlePluginPortal()
+        maven {
+            name = 'AssortedMods'
+            url = 'https://maven.grimoid.com/mods'
+        }
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
@@ -9,20 +14,11 @@ pluginManagement {
             name = 'NeoForged'
             url = 'https://maven.neoforged.net/releases'
         }
-        maven {
-            name = 'Sponge Snapshots'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
     }
 }
 
+// Everything about how this mod is built lives in AssortedBuild, pinned by assortedbuild_version
+// in gradle.properties: the Minecraft and loader versions, the module layout, the runs, publishing.
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
-}
-
-rootProject.name = "${mod_name}"
-if (startParameter.projectProperties.containsKey('commonOnly')) {
-    include("common")
-} else {
-    include("common", "fabric", "neoforge")
+    id 'com.grim3212.assorted' version "${assortedbuild_version}"
 }
