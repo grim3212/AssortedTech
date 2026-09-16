@@ -23,7 +23,7 @@ public class TechManualProvider extends LibManualProvider {
 
     @Override
     protected void addChapters() {
-        this.section(10, TechBlocks.BRIDGE_CONTROL_LASER.get());
+        this.section(100, TechBlocks.BRIDGE_CONTROL_LASER.get());
 
         this.addBridges();
         this.addGravity();
