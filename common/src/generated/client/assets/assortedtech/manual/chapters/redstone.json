@@ -1,0 +1,41 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:recipe",
+      "id": "fan",
+      "recipes": [
+        "assortedtech:fan"
+      ],
+      "text": "manual.assortedtech.chapter.redstone.fan",
+      "title": "manual.assortedtech.chapter.redstone.fan.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "alarm",
+      "recipes": [
+        "assortedtech:alarm"
+      ],
+      "text": "manual.assortedtech.chapter.redstone.alarm",
+      "title": "manual.assortedtech.chapter.redstone.alarm.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "glowstone_torch",
+      "recipes": [
+        "assortedtech:glowstone_torch"
+      ],
+      "text": "manual.assortedtech.chapter.redstone.glowstone_torch",
+      "title": "manual.assortedtech.chapter.redstone.glowstone_torch.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "flip_flop_torch",
+      "recipes": [
+        "assortedtech:flip_flop_torch"
+      ],
+      "text": "manual.assortedtech.chapter.redstone.flip_flop_torch",
+      "title": "manual.assortedtech.chapter.redstone.flip_flop_torch.title"
+    }
+  ],
+  "sort_order": 40
+}

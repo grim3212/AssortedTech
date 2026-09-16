@@ -1,0 +1,49 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:recipe",
+      "id": "laser",
+      "recipes": [
+        "assortedtech:bridge_control_laser"
+      ],
+      "text": "manual.assortedtech.chapter.bridges.laser",
+      "title": "manual.assortedtech.chapter.bridges.laser.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "trick",
+      "recipes": [
+        "assortedtech:bridge_control_trick"
+      ],
+      "text": "manual.assortedtech.chapter.bridges.trick",
+      "title": "manual.assortedtech.chapter.bridges.trick.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "accel",
+      "recipes": [
+        "assortedtech:bridge_control_accel"
+      ],
+      "text": "manual.assortedtech.chapter.bridges.accel",
+      "title": "manual.assortedtech.chapter.bridges.accel.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "death",
+      "recipes": [
+        "assortedtech:bridge_control_death"
+      ],
+      "text": "manual.assortedtech.chapter.bridges.death",
+      "title": "manual.assortedtech.chapter.bridges.death.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "gravity",
+      "recipes": [
+        "assortedtech:bridge_control_gravity"
+      ],
+      "text": "manual.assortedtech.chapter.bridges.gravity",
+      "title": "manual.assortedtech.chapter.bridges.gravity.title"
+    }
+  ]
+}

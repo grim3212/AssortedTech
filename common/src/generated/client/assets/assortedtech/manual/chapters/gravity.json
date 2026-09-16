@@ -1,0 +1,47 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:recipe",
+      "id": "attractors",
+      "interval": 60,
+      "recipes": [
+        "assortedtech:attractor",
+        "assortedtech:attractor_directional"
+      ],
+      "text": "manual.assortedtech.chapter.gravity.attractors",
+      "title": "manual.assortedtech.chapter.gravity.attractors.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "repulsors",
+      "interval": 60,
+      "recipes": [
+        "assortedtech:repulsor",
+        "assortedtech:repulsor_directional"
+      ],
+      "text": "manual.assortedtech.chapter.gravity.repulsors",
+      "title": "manual.assortedtech.chapter.gravity.repulsors.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "gravitors",
+      "interval": 60,
+      "recipes": [
+        "assortedtech:gravitor",
+        "assortedtech:gravitor_directional"
+      ],
+      "text": "manual.assortedtech.chapter.gravity.gravitors",
+      "title": "manual.assortedtech.chapter.gravity.gravitors.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "id": "boots",
+      "recipes": [
+        "assortedtech:gravity_boots"
+      ],
+      "text": "manual.assortedtech.chapter.gravity.boots",
+      "title": "manual.assortedtech.chapter.gravity.boots.title"
+    }
+  ],
+  "sort_order": 10
+}

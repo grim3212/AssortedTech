@@ -1,0 +1,133 @@
+{
+  "links": [
+    {
+      "blocks": [
+        "assortedtech:bridge_control_laser",
+        "assortedtech:bridge"
+      ],
+      "page": "assortedtech:bridges/laser"
+    },
+    {
+      "blocks": [
+        "assortedtech:bridge_control_trick"
+      ],
+      "page": "assortedtech:bridges/trick"
+    },
+    {
+      "blocks": [
+        "assortedtech:bridge_control_accel"
+      ],
+      "page": "assortedtech:bridges/accel"
+    },
+    {
+      "blocks": [
+        "assortedtech:bridge_control_death"
+      ],
+      "page": "assortedtech:bridges/death"
+    },
+    {
+      "blocks": [
+        "assortedtech:bridge_control_gravity"
+      ],
+      "page": "assortedtech:bridges/gravity"
+    },
+    {
+      "blocks": [
+        "assortedtech:attractor",
+        "assortedtech:attractor_directional"
+      ],
+      "page": "assortedtech:gravity/attractors"
+    },
+    {
+      "blocks": [
+        "assortedtech:repulsor",
+        "assortedtech:repulsor_directional"
+      ],
+      "page": "assortedtech:gravity/repulsors"
+    },
+    {
+      "blocks": [
+        "assortedtech:gravitor",
+        "assortedtech:gravitor_directional"
+      ],
+      "page": "assortedtech:gravity/gravitors"
+    },
+    {
+      "items": [
+        "assortedtech:gravity_boots"
+      ],
+      "page": "assortedtech:gravity/boots"
+    },
+    {
+      "blocks": [
+        "assortedtech:wood_sensor",
+        "assortedtech:stone_sensor",
+        "assortedtech:iron_sensor",
+        "assortedtech:mossy_cobblestone_sensor",
+        "assortedtech:prismarine_sensor",
+        "assortedtech:gold_sensor",
+        "assortedtech:emerald_sensor",
+        "assortedtech:netherrack_sensor",
+        "assortedtech:cobweb_sensor",
+        "assortedtech:end_stone_sensor",
+        "assortedtech:hay_bale_sensor",
+        "assortedtech:feather_sensor"
+      ],
+      "page": "assortedtech:sensors/sensors"
+    },
+    {
+      "blocks": [
+        "assortedtech:wood_spike",
+        "assortedtech:stone_spike",
+        "assortedtech:iron_spike",
+        "assortedtech:copper_spike",
+        "assortedtech:diamond_spike",
+        "assortedtech:gold_spike",
+        "assortedtech:netherite_spike",
+        "assortedtech:amethyst_spike",
+        "assortedtech:emerald_spike",
+        "assortedtech:tin_spike",
+        "assortedtech:silver_spike",
+        "assortedtech:aluminum_spike",
+        "assortedtech:nickel_spike",
+        "assortedtech:platinum_spike",
+        "assortedtech:lead_spike",
+        "assortedtech:bronze_spike",
+        "assortedtech:electrum_spike",
+        "assortedtech:invar_spike",
+        "assortedtech:steel_spike",
+        "assortedtech:ruby_spike",
+        "assortedtech:sapphire_spike",
+        "assortedtech:topaz_spike",
+        "assortedtech:peridot_spike"
+      ],
+      "page": "assortedtech:spikes/spikes"
+    },
+    {
+      "blocks": [
+        "assortedtech:fan"
+      ],
+      "page": "assortedtech:redstone/fan"
+    },
+    {
+      "blocks": [
+        "assortedtech:alarm"
+      ],
+      "page": "assortedtech:redstone/alarm"
+    },
+    {
+      "blocks": [
+        "assortedtech:glowstone_torch",
+        "assortedtech:glowstone_wall_torch"
+      ],
+      "page": "assortedtech:redstone/glowstone_torch"
+    },
+    {
+      "blocks": [
+        "assortedtech:flip_flop_torch",
+        "assortedtech:flip_flop_wall_torch"
+      ],
+      "page": "assortedtech:redstone/flip_flop_torch"
+    }
+  ]
+}

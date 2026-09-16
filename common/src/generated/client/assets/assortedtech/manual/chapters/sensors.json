@@ -1,0 +1,32 @@
+{
+  "pages": [
+    {
+      "type": "assortedlib:recipe",
+      "id": "sensors",
+      "interval": 60,
+      "recipes": [
+        "assortedtech:wood_sensor",
+        "assortedtech:stone_sensor",
+        "assortedtech:iron_sensor",
+        "assortedtech:mossy_cobblestone_sensor",
+        "assortedtech:prismarine_sensor",
+        "assortedtech:gold_sensor",
+        "assortedtech:emerald_sensor",
+        "assortedtech:netherrack_sensor",
+        "assortedtech:cobweb_sensor",
+        "assortedtech:end_stone_sensor",
+        "assortedtech:hay_bale_sensor",
+        "assortedtech:feather_sensor"
+      ],
+      "text": "manual.assortedtech.chapter.sensors.sensors",
+      "title": "manual.assortedtech.chapter.sensors.sensors.title"
+    },
+    {
+      "type": "assortedlib:text",
+      "id": "triggers",
+      "text": "manual.assortedtech.chapter.sensors.triggers",
+      "title": "manual.assortedtech.chapter.sensors.triggers.title"
+    }
+  ],
+  "sort_order": 20
+}
