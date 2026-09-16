@@ -2,6 +2,12 @@
   "pages": [
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gravity"
+        }
+      ],
       "id": "attractors",
       "interval": 60,
       "recipes": [
@@ -13,6 +19,12 @@
     },
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gravity"
+        }
+      ],
       "id": "repulsors",
       "interval": 60,
       "recipes": [
@@ -24,6 +36,12 @@
     },
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gravity"
+        }
+      ],
       "id": "gravitors",
       "interval": 60,
       "recipes": [

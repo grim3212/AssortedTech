@@ -2,6 +2,12 @@
   "pages": [
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "fan"
+        }
+      ],
       "id": "fan",
       "recipes": [
         "assortedtech:fan"
@@ -11,6 +17,12 @@
     },
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "alarm"
+        }
+      ],
       "id": "alarm",
       "recipes": [
         "assortedtech:alarm"
@@ -20,6 +32,12 @@
     },
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "torches"
+        }
+      ],
       "id": "glowstone_torch",
       "recipes": [
         "assortedtech:glowstone_torch"
@@ -29,6 +47,12 @@
     },
     {
       "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "torches"
+        }
+      ],
       "id": "flip_flop_torch",
       "recipes": [
         "assortedtech:flip_flop_torch"

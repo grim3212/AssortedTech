@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "bridges"
+    }
+  ],
   "pages": [
     {
       "type": "assortedlib:recipe",

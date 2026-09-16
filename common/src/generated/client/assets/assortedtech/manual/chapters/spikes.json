@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "spikes"
+    }
+  ],
   "pages": [
     {
       "type": "assortedlib:recipe",
