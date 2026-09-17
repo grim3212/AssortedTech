@@ -24,5 +24,6 @@ public final class TechGameTests {
         TooltipTests.register(out);
         DeviceTests.register(out);
         AssetTests.register(out);
+        CrossLoaderDataTests.register(out);
     }
 }

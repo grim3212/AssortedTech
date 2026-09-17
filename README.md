@@ -44,10 +44,10 @@ Then from this repository:
 ./gradlew :fabric:runProductionClientGameTest   # the same tests against the built jars; what CI runs
 ./gradlew :neoforge:runClientData      # datagen
 ./gradlew :neoforge:runServerData
-./gradlew :fabric:runDatagenClient
 ```
 
-Generated resources are committed. Datagen output is regenerated, never hand-edited.
+Generated resources are committed. The NeoForge datagen writes them for both loaders; they are
+regenerated, never hand-edited.
 `TESTING-CHECKLIST.md` lists the in-game checks the gametests cannot cover.
 
 ## License

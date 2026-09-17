@@ -24,6 +24,12 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "gravity"
+    }
+  ],
   "requirements": [
     [
       "has_the_recipe",

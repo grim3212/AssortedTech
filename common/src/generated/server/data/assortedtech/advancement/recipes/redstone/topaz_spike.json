@@ -33,6 +33,24 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:gems/topaz"
+          ]
+        }
+      ]
+    }
+  ],
   "requirements": [
     [
       "has_the_recipe",

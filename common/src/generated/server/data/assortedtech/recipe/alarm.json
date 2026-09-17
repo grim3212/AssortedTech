@@ -7,6 +7,12 @@
   ],
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "alarm"
+    }
+  ],
   "key": {
     "I": "#c:ingots/iron",
     "R": "#c:dusts/redstone",

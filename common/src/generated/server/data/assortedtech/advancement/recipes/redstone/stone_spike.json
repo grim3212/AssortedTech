@@ -33,6 +33,24 @@
       "trigger": "minecraft:recipe_unlocked"
     }
   },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "minecraft:stone_tool_materials"
+          ]
+        }
+      ]
+    }
+  ],
   "requirements": [
     [
       "has_the_recipe",

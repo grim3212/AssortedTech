@@ -16,6 +16,24 @@
   ],
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "spikes"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:ingots/iron"
+          ]
+        }
+      ]
+    }
+  ],
   "key": {
     "X": "#c:ingots/iron"
   },

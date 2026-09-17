@@ -19,9 +19,6 @@
     ],
     "client": [
       "com.grim3212.assorted.tech.AssortedTechFabricClient"
-    ],
-    "fabric-datagen": [
-      "com.grim3212.assorted.tech.AssortedTechFabricDatagen"
     ]
   },
   "accessWidener": "${mod_id}_fabric.accesswidener",

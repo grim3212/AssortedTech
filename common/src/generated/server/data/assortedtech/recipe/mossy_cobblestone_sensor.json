@@ -7,6 +7,12 @@
   ],
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "sensors"
+    }
+  ],
   "key": {
     "G": "#c:glass_blocks",
     "M": "minecraft:mossy_cobblestone",
