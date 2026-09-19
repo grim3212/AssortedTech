@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/platinum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/platinum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/platinum"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/platinum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/platinum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/platinum"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/platinum",
+    "M": "#assortedtech:extruders/level_2",
+    "P": "#c:pickaxes/platinum",
+    "S": "#c:shovels/platinum"
+  },
+  "pattern": [
+    " P ",
+    "SMA"
+  ],
+  "result": {
+    "id": "assortedtech:platinum_extruder"
+  }
+}

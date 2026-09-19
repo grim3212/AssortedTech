@@ -16,6 +16,8 @@ public class TechCommonConfig {
     public final Supplier<Boolean> alarmEnabled;
     public final Supplier<Boolean> bridgesEnabled;
     public final Supplier<Boolean> gravityEnabled;
+    public final Supplier<Boolean> extruderEnabled;
+    public final Supplier<Boolean> gpsEnabled;
 
     public final Supplier<Boolean> hideUncraftableItems;
 
@@ -31,6 +33,14 @@ public class TechCommonConfig {
 
     public final Supplier<Integer> gravityMaxRange;
 
+    public final Supplier<Double> extruderMoveSpeed;
+    public final Supplier<Integer> extruderFuelPerMinedBlock;
+    public final Supplier<Integer> extruderFuelPerExtrudedBlock;
+
+    public final Supplier<Integer> gpsSensorRange;
+    public final Supplier<Integer> upgradedGpsSensorRange;
+    public final Supplier<Integer> upgradedGpsSensorMaxRadius;
+
     public TechCommonConfig() {
         final IConfigurationBuilder builder = Services.CONFIG.createBuilder(ConfigurationType.NOT_SYNCED, Constants.MOD_ID + "-common");
 
@@ -41,6 +51,8 @@ public class TechCommonConfig {
         alarmEnabled = builder.defineBoolean("parts.alarmEnabled", true, "Set this to true if you would like the alarm to be craftable and found in the creative tab.");
         bridgesEnabled = builder.defineBoolean("parts.bridgesEnabled", true, "Set this to true if you would like the bridges to be craftable and found in the creative tab.");
         gravityEnabled = builder.defineBoolean("parts.gravityEnabled", true, "Set this to true if you would like the gravity blocks and items to be craftable and found in the creative tab.");
+        extruderEnabled = builder.defineBoolean("parts.extruderEnabled", true, "Set this to true if you would like the extruder to be craftable and found in the creative tab.");
+        gpsEnabled = builder.defineBoolean("parts.gpsEnabled", true, "Set this to true if you would like the GPS and the GPS sensors to be craftable and found in the creative tab.");
 
         hideUncraftableItems = builder.defineBoolean("general.hideUncraftableItems", false, "For any item that is unobtainable (like missing materials from other mods) hide it from the creative menu / JEI.");
 
@@ -54,6 +66,14 @@ public class TechCommonConfig {
         attractRepulseSpeed = builder.defineDouble("gravity.attractRepulseSpeed", 0.13D, 0.001D, 1000D, "The base speed at which the attractor and repulsor moves entities.");
         attractRepulseModSpeed = builder.defineDouble("gravity.attractRepulseModSpeed", 0.065D, 0.001D, 1000D, "The modifier speed at which the attractor and repulsor moves entities will be added onto the base speed divided by the maxRange-fanRange.");
         gravitorSpeed = builder.defineDouble("gravity.gravitorSpeed", 0.1D, 0.001D, 10D, "The speed at which the gravitor blocks will move entities up.");
+
+        extruderMoveSpeed = builder.defineDouble("extruder.moveSpeed", 0.1D, 0.001D, 1.0D, "How far the extruder moves each tick, in blocks, before its material's speed modifier.");
+        extruderFuelPerMinedBlock = builder.defineInteger("extruder.fuelPerMinedBlock", 400, 0, 100000, "The fuel the extruder spends on every block it mines, on top of one per tick while it runs.");
+        extruderFuelPerExtrudedBlock = builder.defineInteger("extruder.fuelPerExtrudedBlock", 200, 0, 100000, "The fuel the extruder spends on every block it places behind itself.");
+
+        gpsSensorRange = builder.defineInteger("gps.gpsSensorRange", 7, 1, 64, "How far from a GPS sensor, in blocks, the position it watches can be.");
+        upgradedGpsSensorRange = builder.defineInteger("gps.upgradedGpsSensorRange", 11, 1, 64, "How far from an upgraded GPS sensor, in blocks, the position it watches can be.");
+        upgradedGpsSensorMaxRadius = builder.defineInteger("gps.upgradedGpsSensorMaxRadius", 4, 0, 16, "How far around its position, in blocks, an upgraded GPS sensor can be set to watch.");
 
         builder.setup();
     }

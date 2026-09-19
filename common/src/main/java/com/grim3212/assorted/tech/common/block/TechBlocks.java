@@ -60,6 +60,9 @@ public class TechBlocks {
     public static final IRegistryObject<GravityDirectionalBlock> REPULSOR_DIRECTIONAL = register("repulsor_directional", props -> new GravityDirectionalBlock(GravityType.REPULSE, props.mapColor(MapColor.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
     public static final IRegistryObject<GravityDirectionalBlock> GRAVITOR_DIRECTIONAL = register("gravitor_directional", props -> new GravityDirectionalBlock(GravityType.GRAVITATE, props.mapColor(MapColor.METAL).sound(SoundType.METAL).strength(0.3F, 10.0F).requiresCorrectToolForDrops()));
 
+    public static final IRegistryObject<GpsSensorBlock> GPS_SENSOR = register("gps_sensor", props -> new GpsSensorBlock(props.mapColor(MapColor.COLOR_RED).sound(SoundType.STONE).strength(1.5F, 10.0F), false));
+    public static final IRegistryObject<GpsSensorBlock> UPGRADED_GPS_SENSOR = register("upgraded_gps_sensor", props -> new GpsSensorBlock(props.mapColor(MapColor.COLOR_RED).sound(SoundType.STONE).strength(3.0F, 12.0F), true));
+
     public static final List<IRegistryObject<SpikeBlock>> SPIKES = Lists.newArrayList();
     public static final List<IRegistryObject<SensorBlock>> SENSORS = Lists.newArrayList();
 

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:extruder_recipes_climb_a_level_at_a_time",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

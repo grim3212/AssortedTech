@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "key": {
+    "G": "assortedtech:gps",
+    "L": "minecraft:redstone_lamp",
+    "R": "#c:storage_blocks/redstone"
+  },
+  "pattern": [
+    " R ",
+    "LGL",
+    " R "
+  ],
+  "result": {
+    "id": "assortedtech:gps_sensor"
+  }
+}

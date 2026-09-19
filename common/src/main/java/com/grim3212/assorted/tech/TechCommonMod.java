@@ -5,6 +5,9 @@ import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
 import com.grim3212.assorted.tech.common.crafting.TechConditions;
 import com.grim3212.assorted.tech.api.util.TechDamageTypes;
 import com.grim3212.assorted.tech.common.handlers.TechCreativeItems;
+import com.grim3212.assorted.tech.common.entity.TechEntities;
+import com.grim3212.assorted.tech.common.inventory.TechMenuTypes;
+import com.grim3212.assorted.tech.common.item.TechDataComponents;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import com.grim3212.assorted.tech.common.network.TechPackets;
 import com.grim3212.assorted.tech.common.particle.TechParticleTypes;
@@ -18,9 +21,12 @@ public class TechCommonMod {
     public static void init() {
         Constants.LOG.info(Constants.MOD_NAME + " starting up...");
 
+        TechDataComponents.init();
         TechBlocks.init();
         TechBlockEntityTypes.init();
         TechItems.init();
+        TechEntities.init();
+        TechMenuTypes.init();
         TechSounds.init();
         TechParticleTypes.init();
         TechPackets.init();

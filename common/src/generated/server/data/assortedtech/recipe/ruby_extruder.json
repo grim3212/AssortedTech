@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/ruby"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/ruby"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/ruby"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/ruby"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/ruby"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/ruby"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/ruby",
+    "M": "#assortedtech:extruders/level_1",
+    "P": "#c:pickaxes/ruby",
+    "S": "#c:shovels/ruby"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:ruby_extruder"
+  }
+}

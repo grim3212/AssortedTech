@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.1.1
+
+Brought over from GrimPack:
+
+- The extruder.
+- The GPS and the GPS sensors.
+
 ## 9.1.0
 
 - Added instruction manual support

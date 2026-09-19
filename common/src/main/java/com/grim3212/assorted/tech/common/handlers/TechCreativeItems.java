@@ -6,6 +6,7 @@ import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.lib.registry.RegistryProvider;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.TechCommonMod;
+import com.grim3212.assorted.tech.api.util.ExtruderType;
 import com.grim3212.assorted.tech.api.util.SpikeType;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.item.TechItems;
@@ -66,6 +67,18 @@ public class TechCreativeItems {
             items.add(TechBlocks.BRIDGE_CONTROL_GRAVITY.get());
             items.add(TechBlocks.BRIDGE_CONTROL_LASER.get());
             items.add(TechBlocks.BRIDGE_CONTROL_TRICK.get());
+        }
+
+        if (TechCommonMod.COMMON_CONFIG.extruderEnabled.get()) {
+            for (ExtruderType type : ExtruderType.values()) {
+                items.add(TechItems.extruder(type));
+            }
+        }
+
+        if (TechCommonMod.COMMON_CONFIG.gpsEnabled.get()) {
+            items.add(TechItems.GPS.get());
+            items.add(TechBlocks.GPS_SENSOR.get());
+            items.add(TechBlocks.UPGRADED_GPS_SENSOR.get());
         }
 
         if (TechCommonMod.COMMON_CONFIG.sensorsEnabled.get()) {

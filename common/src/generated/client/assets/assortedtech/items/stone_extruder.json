@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "assortedtech:item/stone_extruder",
+    "model": {
+      "type": "assortedtech:extruder",
+      "texture": "assortedtech:textures/entity/extruders/stone.png"
+    }
+  }
+}

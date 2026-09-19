@@ -1,13 +1,18 @@
 package com.grim3212.assorted.tech.client.data;
 
 import com.grim3212.assorted.tech.Constants;
+import com.grim3212.assorted.tech.api.util.ExtruderType;
+import com.grim3212.assorted.tech.client.render.ExtruderRenderer;
+import com.grim3212.assorted.tech.client.render.ExtruderSpecialRenderer;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +20,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplateBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -35,7 +42,9 @@ public class TechItemModelProvider extends ModelProvider {
      * the same file.
      */
     private static List<Item> owned() {
-        return List.of(TechItems.FLIP_FLOP_TORCH.get(), TechItems.GLOWSTONE_TORCH.get(), TechItems.GRAVITY_BOOTS.get());
+        List<Item> owned = new ArrayList<>(List.of(TechItems.FLIP_FLOP_TORCH.get(), TechItems.GLOWSTONE_TORCH.get(), TechItems.GRAVITY_BOOTS.get(), TechItems.GPS.get()));
+        TechItems.EXTRUDERS.values().forEach(extruder -> owned.add(extruder.get()));
+        return owned;
     }
 
     public static boolean owns(Item item) {
@@ -69,6 +78,19 @@ public class TechItemModelProvider extends ModelProvider {
         flatItem(itemModels, TechItems.FLIP_FLOP_TORCH.get(), "block/flip_flop_torch_off");
         flatItem(itemModels, TechItems.GLOWSTONE_TORCH.get(), "block/glowstone_torch_off");
         flatItem(itemModels, TechItems.GRAVITY_BOOTS.get(), "item/gravity_boots");
+        TechItems.EXTRUDERS.forEach((type, extruder) -> extruder(itemModels, extruder.get(), type));
+        flatItem(itemModels, TechItems.GPS.get(), "item/gps");
+    }
+
+    /**
+     * The extruder itself in 3D, drawn by {@link ExtruderSpecialRenderer}. The base model only holds
+     * {@code block/block}'s display settings and the particle for when it breaks, which has to be an
+     * atlas sprite rather than the entity texture: the body's back, cut from it, the same for all.
+     */
+    private void extruder(ItemModelGenerators itemModels, Item item, ExtruderType type) {
+        TextureMapping particle = new TextureMapping().put(TextureSlot.PARTICLE, prefixed("item/extruder_particle"));
+        Identifier base = EXTRUDER_BASE.create(modelId(name(item)), particle, itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(item, ItemModelUtils.specialModel(base, new ExtruderSpecialRenderer.Unbaked(ExtruderRenderer.texture(type))));
     }
 
     private void flatItem(ItemModelGenerators itemModels, Item item, String texture) {
@@ -79,6 +101,11 @@ public class TechItemModelProvider extends ModelProvider {
     private static String name(Item item) {
         return BuiltInRegistries.ITEM.getKey(item).getPath();
     }
+
+    private static final ModelTemplate EXTRUDER_BASE = ExtendedModelTemplateBuilder.builder()
+            .parent(Identifier.withDefaultNamespace("block/block"))
+            .requiredTextureSlot(TextureSlot.PARTICLE)
+            .build();
 
     private static Identifier modelId(String path) {
         return Identifier.fromNamespaceAndPath(Constants.MOD_ID, "item/" + path);

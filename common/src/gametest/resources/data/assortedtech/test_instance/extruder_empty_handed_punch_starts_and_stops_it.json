@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:extruder_empty_handed_punch_starts_and_stops_it",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

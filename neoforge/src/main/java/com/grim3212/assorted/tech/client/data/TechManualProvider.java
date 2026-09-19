@@ -4,9 +4,11 @@ import com.grim3212.assorted.lib.data.LibManualProvider;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
 import com.grim3212.assorted.tech.Constants;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
+import com.grim3212.assorted.tech.common.entity.TechEntities;
 import com.grim3212.assorted.tech.common.item.TechItems;
 import com.grim3212.assorted.tech.common.crafting.TechConditions;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import java.util.List;
@@ -30,6 +32,15 @@ public class TechManualProvider extends LibManualProvider {
         this.addSensors();
         this.addSpikes();
         this.addRedstone();
+        this.addExtruder();
+    }
+
+    private void addExtruder() {
+        Item[] all = TechItems.EXTRUDERS.values().stream().map(IRegistryObject::get).toArray(Item[]::new);
+
+        ChapterBuilder extruder = this.chapter("extruder").whenPartEnabled(TechConditions.Parts.EXTRUDER);
+        extruder.recipes("extruder", all).every(50).opens(all).opens(TechEntities.EXTRUDER.get());
+        extruder.text("materials");
     }
 
     private void addBridges() {
@@ -62,6 +73,9 @@ public class TechManualProvider extends LibManualProvider {
         ChapterBuilder sensors = this.chapter("sensors").whenPartEnabled(TechConditions.Parts.SENSORS);
         sensors.recipes("sensors", all).every(60).opens(all);
         sensors.text("triggers");
+        sensors.recipes("gps", TechItems.GPS.get()).whenPartEnabled(TechConditions.Parts.GPS).opens(TechItems.GPS.get());
+        sensors.recipes("gps_sensor", TechBlocks.GPS_SENSOR.get()).whenPartEnabled(TechConditions.Parts.GPS).opens(TechBlocks.GPS_SENSOR.get());
+        sensors.recipes("upgraded_gps_sensor", TechBlocks.UPGRADED_GPS_SENSOR.get()).whenPartEnabled(TechConditions.Parts.GPS).opens(TechBlocks.UPGRADED_GPS_SENSOR.get());
     }
 
     private void addSpikes() {

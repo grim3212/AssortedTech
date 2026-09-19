@@ -37,6 +37,8 @@
     "assortedtech:end_stone_sensor",
     "assortedtech:hay_bale_sensor",
     "assortedtech:feather_sensor",
+    "assortedtech:gps_sensor",
+    "assortedtech:upgraded_gps_sensor",
     "assortedtech:attractor",
     "assortedtech:gravitor",
     "assortedtech:repulsor",

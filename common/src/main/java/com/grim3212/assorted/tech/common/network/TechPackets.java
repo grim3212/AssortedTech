@@ -12,6 +12,7 @@ public class TechPackets {
         Services.NETWORK.register(new INetworkHelper.MessageHandler<>(resource("alarm_update"), AlarmUpdatePacket.class, AlarmUpdatePacket::encode, AlarmUpdatePacket::decode, AlarmUpdatePacket::handle, INetworkHelper.MessageBoundSide.SERVER));
         Services.NETWORK.register(new INetworkHelper.MessageHandler<>(resource("fan_open"), FanOpenPacket.class, FanOpenPacket::encode, FanOpenPacket::decode, FanOpenPacket::handle, INetworkHelper.MessageBoundSide.CLIENT));
         Services.NETWORK.register(new INetworkHelper.MessageHandler<>(resource("fan_update"), FanUpdatePacket.class, FanUpdatePacket::encode, FanUpdatePacket::decode, FanUpdatePacket::handle, INetworkHelper.MessageBoundSide.SERVER));
+        Services.NETWORK.register(new INetworkHelper.MessageHandler<>(resource("gps_sensor_filter"), GpsSensorFilterPacket.class, GpsSensorFilterPacket::encode, GpsSensorFilterPacket::decode, GpsSensorFilterPacket::handle, INetworkHelper.MessageBoundSide.SERVER));
     }
 
     private static Identifier resource(String name) {

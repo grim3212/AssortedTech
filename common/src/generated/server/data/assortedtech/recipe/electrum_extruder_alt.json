@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/electrum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/electrum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/electrum"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/electrum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/electrum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/electrum"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/electrum",
+    "M": "#assortedtech:extruders/level_2",
+    "P": "#c:pickaxes/electrum",
+    "S": "#c:shovels/electrum"
+  },
+  "pattern": [
+    " P ",
+    "SMA"
+  ],
+  "result": {
+    "id": "assortedtech:electrum_extruder"
+  }
+}

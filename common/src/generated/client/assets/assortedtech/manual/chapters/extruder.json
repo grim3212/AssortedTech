@@ -1,0 +1,49 @@
+{
+  "conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "extruder"
+    }
+  ],
+  "pages": [
+    {
+      "type": "assortedlib:recipe",
+      "id": "extruder",
+      "interval": 50,
+      "recipes": [
+        "assortedtech:wood_extruder",
+        "assortedtech:stone_extruder",
+        "assortedtech:copper_extruder",
+        "assortedtech:iron_extruder",
+        "assortedtech:gold_extruder",
+        "assortedtech:diamond_extruder",
+        "assortedtech:netherite_extruder",
+        "assortedtech:amethyst_extruder",
+        "assortedtech:emerald_extruder",
+        "assortedtech:tin_extruder",
+        "assortedtech:silver_extruder",
+        "assortedtech:aluminum_extruder",
+        "assortedtech:nickel_extruder",
+        "assortedtech:platinum_extruder",
+        "assortedtech:lead_extruder",
+        "assortedtech:bronze_extruder",
+        "assortedtech:electrum_extruder",
+        "assortedtech:invar_extruder",
+        "assortedtech:steel_extruder",
+        "assortedtech:ruby_extruder",
+        "assortedtech:sapphire_extruder",
+        "assortedtech:topaz_extruder",
+        "assortedtech:peridot_extruder"
+      ],
+      "text": "manual.assortedtech.chapter.extruder.extruder",
+      "title": "manual.assortedtech.chapter.extruder.extruder.title"
+    },
+    {
+      "type": "assortedlib:text",
+      "id": "materials",
+      "text": "manual.assortedtech.chapter.extruder.materials",
+      "title": "manual.assortedtech.chapter.extruder.materials.title"
+    }
+  ],
+  "sort_order": 50
+}

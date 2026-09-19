@@ -76,6 +76,24 @@
       "page": "assortedtech:sensors/sensors"
     },
     {
+      "items": [
+        "assortedtech:gps"
+      ],
+      "page": "assortedtech:sensors/gps"
+    },
+    {
+      "blocks": [
+        "assortedtech:gps_sensor"
+      ],
+      "page": "assortedtech:sensors/gps_sensor"
+    },
+    {
+      "blocks": [
+        "assortedtech:upgraded_gps_sensor"
+      ],
+      "page": "assortedtech:sensors/upgraded_gps_sensor"
+    },
+    {
       "blocks": [
         "assortedtech:wood_spike",
         "assortedtech:stone_spike",
@@ -128,6 +146,37 @@
         "assortedtech:flip_flop_wall_torch"
       ],
       "page": "assortedtech:redstone/flip_flop_torch"
+    },
+    {
+      "entities": [
+        "assortedtech:extruder"
+      ],
+      "items": [
+        "assortedtech:wood_extruder",
+        "assortedtech:stone_extruder",
+        "assortedtech:copper_extruder",
+        "assortedtech:iron_extruder",
+        "assortedtech:gold_extruder",
+        "assortedtech:diamond_extruder",
+        "assortedtech:netherite_extruder",
+        "assortedtech:amethyst_extruder",
+        "assortedtech:emerald_extruder",
+        "assortedtech:tin_extruder",
+        "assortedtech:silver_extruder",
+        "assortedtech:aluminum_extruder",
+        "assortedtech:nickel_extruder",
+        "assortedtech:platinum_extruder",
+        "assortedtech:lead_extruder",
+        "assortedtech:bronze_extruder",
+        "assortedtech:electrum_extruder",
+        "assortedtech:invar_extruder",
+        "assortedtech:steel_extruder",
+        "assortedtech:ruby_extruder",
+        "assortedtech:sapphire_extruder",
+        "assortedtech:topaz_extruder",
+        "assortedtech:peridot_extruder"
+      ],
+      "page": "assortedtech:extruder/extruder"
     }
   ]
 }

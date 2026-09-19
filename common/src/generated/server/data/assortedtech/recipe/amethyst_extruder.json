@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/amethyst"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/amethyst"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/amethyst"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/amethyst"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/amethyst"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/amethyst"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/amethyst",
+    "M": "#assortedtech:extruders/level_1",
+    "P": "#c:pickaxes/amethyst",
+    "S": "#c:shovels/amethyst"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:amethyst_extruder"
+  }
+}

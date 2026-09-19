@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:upgraded_gps_sensor_signal_counts_what_it_sees",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

@@ -32,6 +32,51 @@
       "id": "triggers",
       "text": "manual.assortedtech.chapter.sensors.triggers",
       "title": "manual.assortedtech.chapter.sensors.triggers.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gps"
+        }
+      ],
+      "id": "gps",
+      "recipes": [
+        "assortedtech:gps"
+      ],
+      "text": "manual.assortedtech.chapter.sensors.gps",
+      "title": "manual.assortedtech.chapter.sensors.gps.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gps"
+        }
+      ],
+      "id": "gps_sensor",
+      "recipes": [
+        "assortedtech:gps_sensor"
+      ],
+      "text": "manual.assortedtech.chapter.sensors.gps_sensor",
+      "title": "manual.assortedtech.chapter.sensors.gps_sensor.title"
+    },
+    {
+      "type": "assortedlib:recipe",
+      "conditions": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "gps"
+        }
+      ],
+      "id": "upgraded_gps_sensor",
+      "recipes": [
+        "assortedtech:upgraded_gps_sensor"
+      ],
+      "text": "manual.assortedtech.chapter.sensors.upgraded_gps_sensor",
+      "title": "manual.assortedtech.chapter.sensors.upgraded_gps_sensor.title"
     }
   ],
   "sort_order": 20

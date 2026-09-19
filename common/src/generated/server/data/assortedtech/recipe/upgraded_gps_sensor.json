@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "key": {
+    "G": "#c:storage_blocks/gold",
+    "P": "assortedtech:gps",
+    "S": "assortedtech:gps_sensor",
+    "X": "#c:ingots/gold"
+  },
+  "pattern": [
+    "GXG",
+    "PSP",
+    "GXG"
+  ],
+  "result": {
+    "id": "assortedtech:upgraded_gps_sensor"
+  }
+}

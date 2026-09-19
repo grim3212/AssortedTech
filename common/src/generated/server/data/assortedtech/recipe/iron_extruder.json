@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/iron"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/iron"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/iron"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/iron"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/iron"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/iron"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/iron",
+    "M": "#assortedtech:extruders/level_1",
+    "P": "#c:pickaxes/iron",
+    "S": "#c:shovels/iron"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:iron_extruder"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/silver"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/silver"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/silver"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/silver"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/silver"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/silver"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/silver",
+    "M": "#assortedtech:extruders/level_2",
+    "P": "#c:pickaxes/silver",
+    "S": "#c:shovels/silver"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:silver_extruder"
+  }
+}

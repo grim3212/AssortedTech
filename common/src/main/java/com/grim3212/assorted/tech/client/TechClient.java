@@ -3,16 +3,24 @@ package com.grim3212.assorted.tech.client;
 import com.google.common.collect.ImmutableList;
 import com.grim3212.assorted.lib.platform.ClientServices;
 import com.grim3212.assorted.tech.client.blockentity.GravityBlockEntityRenderer;
+import com.grim3212.assorted.tech.client.blockentity.GpsSensorBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.blockentity.GravityDirectionalBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.blockentity.SensorBlockEntityRenderer;
 import com.grim3212.assorted.tech.client.color.BridgeItemTintSource;
 import com.grim3212.assorted.tech.client.model.BridgeItemModel;
 import com.grim3212.assorted.tech.client.model.BridgeUnbakedModel;
 import com.grim3212.assorted.tech.client.particle.AirParticle;
+import com.grim3212.assorted.tech.client.render.ExtruderModel;
+import com.grim3212.assorted.tech.client.render.ExtruderSpecialRenderer;
+import com.grim3212.assorted.tech.client.render.ExtruderRenderer;
+import com.grim3212.assorted.tech.client.screen.ExtruderScreen;
+import com.grim3212.assorted.tech.client.screen.GpsSensorScreen;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
 import com.grim3212.assorted.tech.common.block.TechBlocks;
 import com.grim3212.assorted.tech.common.block.blockentity.BridgeBlockEntity;
 import com.grim3212.assorted.tech.common.block.blockentity.TechBlockEntityTypes;
+import com.grim3212.assorted.tech.common.entity.TechEntities;
+import com.grim3212.assorted.tech.common.inventory.TechMenuTypes;
 import com.grim3212.assorted.tech.common.particle.TechParticleTypes;
 import com.grim3212.assorted.tech.config.TechClientConfig;
 import net.minecraft.client.color.block.BlockTintSource;
@@ -33,6 +41,14 @@ public class TechClient {
         ClientServices.CLIENT.registerBlockEntityRenderer(TechBlockEntityTypes.SENSOR, SensorBlockEntityRenderer::new);
         ClientServices.CLIENT.registerBlockEntityRenderer(TechBlockEntityTypes.GRAVITY, GravityBlockEntityRenderer::new);
         ClientServices.CLIENT.registerBlockEntityRenderer(TechBlockEntityTypes.GRAVITY_DIRECTIONAL, GravityDirectionalBlockEntityRenderer::new);
+        ClientServices.CLIENT.registerBlockEntityRenderer(TechBlockEntityTypes.GPS_SENSOR, GpsSensorBlockEntityRenderer::new);
+
+        ClientServices.CLIENT.registerEntityLayer(ExtruderModel.LAYER, ExtruderModel::createLayer);
+        // The extruder items draw the entity's model; their model json picks this by id.
+        ClientServices.CLIENT.registerSpecialModelRenderers(register -> register.registerSpecialModelRenderer(ExtruderSpecialRenderer.ID, ExtruderSpecialRenderer.Unbaked.MAP_CODEC));
+        ClientServices.CLIENT.registerEntityRenderer(() -> TechEntities.EXTRUDER.get(), ExtruderRenderer::new);
+        ClientServices.CLIENT.registerScreen(TechMenuTypes.EXTRUDER::get, ExtruderScreen::new);
+        ClientServices.CLIENT.registerScreen(TechMenuTypes.GPS_SENSOR::get, GpsSensorScreen::new);
 
         ClientServices.CLIENT.registerModelLoader(BridgeUnbakedModel.LOADER_NAME, BridgeUnbakedModel.Loader.INSTANCE);
 

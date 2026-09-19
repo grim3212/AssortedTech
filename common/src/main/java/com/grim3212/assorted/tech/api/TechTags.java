@@ -17,6 +17,8 @@ public class TechTags {
         public static final TagKey<Block> SENSORS = techTag("sensors");
 
         public static final TagKey<Block> LASER_BREAKABLES = techTag("laser_breakables");
+        /** What the extruder stops at rather than mines; unbreakable blocks always stop it. */
+        public static final TagKey<Block> EXTRUDER_UNMINEABLE = techTag("extruder_unmineable");
 
         private static TagKey<Block> techTag(String name) {
             return TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(Constants.MOD_ID, name));
@@ -27,6 +29,12 @@ public class TechTags {
 
         public static final TagKey<Item> SENSORS = techTag("sensors");
         public static final TagKey<Item> SPIKES = techTag("spikes");
+        public static final int EXTRUDER_LEVELS = 5;
+
+        /** Every extruder of one level, any of which crafts into one of the next. */
+        public static TagKey<Item> extruders(int level) {
+            return techTag("extruders/level_" + level);
+        }
         public static final TagKey<Item> INGOTS_TIN = commonTag("ingots/tin");
         public static final TagKey<Item> INGOTS_SILVER = commonTag("ingots/silver");
         public static final TagKey<Item> INGOTS_ALUMINUM = commonTag("ingots/aluminum");

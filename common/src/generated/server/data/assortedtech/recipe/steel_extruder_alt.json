@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/steel"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/steel"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/steel"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/steel"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/steel"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/steel"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/steel",
+    "M": "#assortedtech:extruders/level_2",
+    "P": "#c:pickaxes/steel",
+    "S": "#c:shovels/steel"
+  },
+  "pattern": [
+    " P ",
+    "SMA"
+  ],
+  "result": {
+    "id": "assortedtech:steel_extruder"
+  }
+}

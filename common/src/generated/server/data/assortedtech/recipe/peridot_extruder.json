@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/peridot"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/peridot"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/peridot"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/peridot"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/peridot"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/peridot"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/peridot",
+    "M": "#assortedtech:extruders/level_1",
+    "P": "#c:pickaxes/peridot",
+    "S": "#c:shovels/peridot"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:peridot_extruder"
+  }
+}

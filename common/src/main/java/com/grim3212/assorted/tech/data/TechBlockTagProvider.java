@@ -2,6 +2,7 @@ package com.grim3212.assorted.tech.data;
 
 import com.grim3212.assorted.lib.data.LibBlockTagProvider;
 import com.grim3212.assorted.lib.registry.IRegistryObject;
+import com.grim3212.assorted.lib.util.LibCommonTags;
 import com.grim3212.assorted.tech.api.TechTags;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
 import com.grim3212.assorted.tech.common.block.SpikeBlock;
@@ -15,6 +16,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -41,6 +43,16 @@ public class TechBlockTagProvider extends LibBlockTagProvider {
             tagger.apply(TechTags.Blocks.SENSORS).add(b.get());
             tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(b.get());
         }
+
+        tagger.apply(BlockTags.MINEABLE_WITH_PICKAXE).add(TechBlocks.GPS_SENSOR.get(), TechBlocks.UPGRADED_GPS_SENSOR.get());
+        tagger.apply(TechTags.Blocks.EXTRUDER_UNMINEABLE).addTag(LibCommonTags.Blocks.OBSIDIAN);
+        // The extruder already refuses anything that cannot be broken (ExtruderEntity#canMine), other
+        // mods' blocks included; listing vanilla's and ours here makes the tag show the whole story.
+        // Sorted, so the generated file does not churn.
+        tagger.apply(TechTags.Blocks.EXTRUDER_UNMINEABLE).add(BuiltInRegistries.BLOCK.stream()
+                .filter(block -> block.defaultDestroyTime() < 0.0F)
+                .sorted(Comparator.comparing(block -> BuiltInRegistries.BLOCK.getKey(block).toString()))
+                .toArray(Block[]::new));
 
         tagger.apply(TechTags.Blocks.LASER_BREAKABLES).add(Blocks.WATER, Blocks.LAVA, Blocks.ICE, Blocks.SUGAR_CANE, Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.WHEAT, Blocks.POTATOES, Blocks.CARROTS, Blocks.BEETROOTS);
 

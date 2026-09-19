@@ -23,6 +23,8 @@ public final class TechGameTests {
         SpikeTests.register(out);
         TooltipTests.register(out);
         DeviceTests.register(out);
+        GpsSensorTests.register(out);
+        ExtruderTests.register(out);
         AssetTests.register(out);
         CrossLoaderDataTests.register(out);
     }

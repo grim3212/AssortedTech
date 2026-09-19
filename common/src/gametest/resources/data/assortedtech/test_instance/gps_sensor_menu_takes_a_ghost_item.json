@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:gps_sensor_menu_takes_a_ghost_item",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 1,
+  "setup_ticks": 0,
+  "required": true
+}

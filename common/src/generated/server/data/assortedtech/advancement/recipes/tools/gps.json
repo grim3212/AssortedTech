@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:compass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "assortedtech:gps"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "assortedlib:part_enabled",
+      "part": "gps"
+    }
+  ],
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compass"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "assortedtech:gps"
+    ]
+  }
+}

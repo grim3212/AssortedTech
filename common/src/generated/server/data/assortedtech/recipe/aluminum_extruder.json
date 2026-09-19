@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/aluminum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/aluminum"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/aluminum"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/aluminum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/aluminum"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/aluminum"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/aluminum",
+    "M": "#assortedtech:extruders/level_0",
+    "P": "#c:pickaxes/aluminum",
+    "S": "#c:shovels/aluminum"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:aluminum_extruder"
+  }
+}

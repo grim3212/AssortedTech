@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/diamond"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/diamond"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/diamond"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/diamond"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/diamond"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/diamond"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/diamond",
+    "M": "#assortedtech:extruders/level_2",
+    "P": "#c:pickaxes/diamond",
+    "S": "#c:shovels/diamond"
+  },
+  "pattern": [
+    " P ",
+    "SMA"
+  ],
+  "result": {
+    "id": "assortedtech:diamond_extruder"
+  }
+}

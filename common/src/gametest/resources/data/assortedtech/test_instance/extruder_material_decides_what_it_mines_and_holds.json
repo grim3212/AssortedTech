@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "assortedtech:extruder_material_decides_what_it_mines_and_holds",
+  "structure": "assortedtech:test_box",
+  "max_ticks": 200,
+  "setup_ticks": 0,
+  "required": true
+}

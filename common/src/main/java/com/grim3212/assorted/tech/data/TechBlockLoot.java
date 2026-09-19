@@ -21,6 +21,8 @@ public class TechBlockLoot extends LibBlockLootProvider {
         this.blocks.add(TechBlocks.GLOWSTONE_TORCH.get());
         this.blocks.add(TechBlocks.FAN.get());
         this.blocks.add(TechBlocks.ALARM.get());
+        this.blocks.add(TechBlocks.GPS_SENSOR.get());
+        this.blocks.add(TechBlocks.UPGRADED_GPS_SENSOR.get());
         this.blocks.add(TechBlocks.BRIDGE_CONTROL_ACCEL.get());
         this.blocks.add(TechBlocks.BRIDGE_CONTROL_DEATH.get());
         this.blocks.add(TechBlocks.BRIDGE_CONTROL_GRAVITY.get());

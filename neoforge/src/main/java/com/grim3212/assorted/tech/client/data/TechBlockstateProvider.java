@@ -10,6 +10,7 @@ import com.grim3212.assorted.tech.common.block.AlarmBlock;
 import com.grim3212.assorted.tech.common.block.BridgeBlock;
 import com.grim3212.assorted.tech.common.block.FanBlock;
 import com.grim3212.assorted.tech.common.block.FlipFlopTorchBlock;
+import com.grim3212.assorted.tech.common.block.GpsSensorBlock;
 import com.grim3212.assorted.tech.common.block.GravityBlock;
 import com.grim3212.assorted.tech.common.block.GravityDirectionalBlock;
 import com.grim3212.assorted.tech.common.block.SensorBlock;
@@ -107,6 +108,8 @@ public class TechBlockstateProvider extends ModelProvider {
 
         fan(blockModels);
         alarm(blockModels);
+        gpsSensor(blockModels, TechBlocks.GPS_SENSOR.get());
+        gpsSensor(blockModels, TechBlocks.UPGRADED_GPS_SENSOR.get());
 
         bridge(blockModels);
         bridgeControl(blockModels, TechBlocks.BRIDGE_CONTROL_ACCEL.get());
@@ -299,6 +302,18 @@ public class TechBlockstateProvider extends ModelProvider {
     }
 
     // ------------------------------------------------------------------ sensors, spikes, torches
+
+    /** The same texture on every face, lit while it sees something. */
+    private void gpsSensor(BlockModelGenerators blockModels, Block b) {
+        String name = name(b);
+        Identifier off = ModelTemplates.CUBE_ALL.create(resource("block/" + name), TextureMapping.cube(texture("block/" + name + "_off")), blockModels.modelOutput);
+        Identifier on = ModelTemplates.CUBE_ALL.create(resource("block/" + name + "_active"), TextureMapping.cube(texture("block/" + name + "_on")), blockModels.modelOutput);
+
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(b)
+                .with(BlockModelGenerators.createBooleanModelDispatch(GpsSensorBlock.ACTIVE, BlockModelGenerators.plainVariant(on), BlockModelGenerators.plainVariant(off))));
+
+        blockModels.registerSimpleItemModel(b, off);
+    }
 
     private void sensor(BlockModelGenerators blockModels, Block b) {
         String name = name(b);

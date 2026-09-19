@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "assortedtech:block/upgraded_gps_sensor"
+    },
+    "active=true": {
+      "model": "assortedtech:block/upgraded_gps_sensor_active"
+    }
+  }
+}

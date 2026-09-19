@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/tin"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/tin"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/tin"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/tin"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/tin"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/tin"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/tin",
+    "M": "#assortedtech:extruders/level_0",
+    "P": "#c:pickaxes/tin",
+    "S": "#c:shovels/tin"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:tin_extruder"
+  }
+}

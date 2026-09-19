@@ -1,0 +1,74 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/gold"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/gold"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/gold"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/gold"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/gold"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/gold"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/gold",
+    "D": "minecraft:dispenser",
+    "M": "minecraft:piston",
+    "P": "#c:pickaxes/gold",
+    "S": "#c:shovels/gold"
+  },
+  "pattern": [
+    " P ",
+    "SMA",
+    " D "
+  ],
+  "result": {
+    "id": "assortedtech:gold_extruder"
+  }
+}

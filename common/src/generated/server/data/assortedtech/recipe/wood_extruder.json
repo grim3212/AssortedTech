@@ -1,0 +1,74 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/wood"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/wood"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/wood"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/wood"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/wood"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/wood"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/wood",
+    "D": "minecraft:dispenser",
+    "M": "minecraft:piston",
+    "P": "#c:pickaxes/wood",
+    "S": "#c:shovels/wood"
+  },
+  "pattern": [
+    " P ",
+    "AMS",
+    " D "
+  ],
+  "result": {
+    "id": "assortedtech:wood_extruder"
+  }
+}

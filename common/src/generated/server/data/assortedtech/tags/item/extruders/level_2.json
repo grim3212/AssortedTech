@@ -1,0 +1,14 @@
+{
+  "values": [
+    "assortedtech:iron_extruder",
+    "assortedtech:amethyst_extruder",
+    "assortedtech:nickel_extruder",
+    "assortedtech:lead_extruder",
+    "assortedtech:bronze_extruder",
+    "assortedtech:invar_extruder",
+    "assortedtech:ruby_extruder",
+    "assortedtech:sapphire_extruder",
+    "assortedtech:topaz_extruder",
+    "assortedtech:peridot_extruder"
+  ]
+}

@@ -14,6 +14,7 @@ public class TechBlockEntityTypes {
     public static final RegistryProvider<BlockEntityType<?>> BLOCK_ENTITIES = RegistryProvider.create(Registries.BLOCK_ENTITY_TYPE, Constants.MOD_ID);
 
     public static final IRegistryObject<BlockEntityType<SensorBlockEntity>> SENSOR = BLOCK_ENTITIES.register("sensor", () -> Services.PLATFORM.createBlockEntityType(SensorBlockEntity::new, TechBlocks.SENSORS.stream().map(x -> x.get()).toArray(Block[]::new)));
+    public static final IRegistryObject<BlockEntityType<GpsSensorBlockEntity>> GPS_SENSOR = BLOCK_ENTITIES.register("gps_sensor", () -> Services.PLATFORM.createBlockEntityType(GpsSensorBlockEntity::new, TechBlocks.GPS_SENSOR.get(), TechBlocks.UPGRADED_GPS_SENSOR.get()));
     public static final IRegistryObject<BlockEntityType<FanBlockEntity>> FAN = BLOCK_ENTITIES.register("fan", () -> Services.PLATFORM.createBlockEntityType(FanBlockEntity::new, TechBlocks.FAN.get()));
     // Pre-existing bug, not a porting change: the alarm block entity type was bound to the fan
     // block, so an alarm's block entity was never valid for the block it lives on.

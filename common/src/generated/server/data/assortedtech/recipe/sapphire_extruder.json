@@ -1,0 +1,72 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:pickaxes/sapphire"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:shovels/sapphire"
+        },
+        {
+          "type": "assortedlib:item_tag_populated",
+          "tag": "c:axes/sapphire"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:and",
+      "values": [
+        {
+          "condition": "assortedlib:part_enabled",
+          "part": "extruder"
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:pickaxes/sapphire"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:shovels/sapphire"
+          ]
+        },
+        {
+          "condition": "fabric:tags_populated",
+          "registry": "minecraft:item",
+          "values": [
+            "c:axes/sapphire"
+          ]
+        }
+      ]
+    }
+  ],
+  "key": {
+    "A": "#c:axes/sapphire",
+    "M": "#assortedtech:extruders/level_1",
+    "P": "#c:pickaxes/sapphire",
+    "S": "#c:shovels/sapphire"
+  },
+  "pattern": [
+    " P ",
+    "AMS"
+  ],
+  "result": {
+    "id": "assortedtech:sapphire_extruder"
+  }
+}
