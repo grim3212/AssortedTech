@@ -49,7 +49,7 @@ permissions:
 
 jobs:
   mod:
-    uses: grim3212/AssortedBuild/.github/workflows/mod-build.yml@main
+    uses: AssortedMods/AssortedBuild/.github/workflows/mod-build.yml@main
     # inputs.* are empty outside workflow_dispatch, and an empty string coerces equal to false in
     # these expressions, so each boolean is gated on the event rather than defaulted.
     with:
